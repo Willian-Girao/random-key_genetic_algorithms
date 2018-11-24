@@ -1,12 +1,12 @@
 # Random-Key Genetic Algorithms
 
 ## Introduction
-Random-Key Genetic Algorithm (RKGA) is a new class of John Holland's Genetic Algorithms (GA). This new class described by Bean[6] works by representing the possible solutions of an optimization problem as permutation vectors composed of random keys.
+Random-Key Genetic Algorithm (RKGA) is a new class of John Holland's Genetic Algorithms (GA). This new class described by Bean[6] works somewhat similarly to GA's, applying the Darwinian principle of survival of the fittest, with a few differences related to the encoding/decoding and manipulation of the generations, representing the possible solutions of an optimization problem as permutation vectors composed of random keys.
 
 [6] J. C. Bean. Genetic algorithms and random keys for sequencing and optimization. ORSA J. on Computing, 6:154–160, 1994.
 
 ## Overview
-A random-key genetic algorithm (RKGA) is an evolutionary metaheuristic for discrete and global optimization. Each solution is encoded as an array og *n* random keys where a random key is a real number, randomly generated, in the continuous interval [0,1).
+A RKGA is an evolutionary metaheuristic for discrete and global optimization. Each solution is encoded as an array og *n* random keys where a random key is a real number, randomly generated, in the continuous interval [0,1).
 
 A decoder maps each array of random keys to a solution of the optimization problem being solved and computes its cost.
 
@@ -16,10 +16,17 @@ All elite elements are copied, without change, to the next population. A small n
 
 [1] http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.567.6832&rep=rep1&type=pdf
 
+## Algorithmic behavior
+The algorithm starts by generating a population of *p* vectors of *n* random keys, which is referred to as the *1st* generation.
+
+In the *k-th* generation, the *p* vectors of the population are partitioned into two sets: a small set of *p_e < p/2* vectors corresponding to the best solutions (called *elite* set) and a bigger set with the remainder of the population (called *non-elite* set).
+
+All elite vectors of the current *k-th* generation are copied, **unchanged**, to the population of the *k+1-th* (next) generation. Next, *p_m* vectors of random keys are introduced into the population of the *k+1-th* generation. These vectors, called *mutants*, <code>play the same role as the mutation operators of classical genetic algorithms</code>.
+
+To complete the *p* elements of the population of the *k+1-th* generation, *p - p_e - p_m* vectors are generated, combining pairs of solutions from the population of the *k-th* (current) generation, with a <code>parametrized uniform crossover</code>. This process is described bellow:
+
+Let *a* and *b* be the selected vectors for mating and let *c* be the offspring produced. In the crossover of Spears and DeJong [58], *c[i]*, the *i-th* component of the offspring vector, receives the *i-th* key of one of its parents. It receives the key *a[i]* with probability *p_a* and *b[i]* with probability *p_b = 1 - p_a*.
+
 ## Decoder
 The decoder proposed by Bean [6] simply orders the elements of the vector of random keys, thus producing a permutation corresponding to the indices of the sorted elements.
-
-## Something
-
-Testing 2.
 
