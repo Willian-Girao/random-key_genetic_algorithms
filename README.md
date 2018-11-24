@@ -19,3 +19,5 @@ All elite elements are copied, without change, to the next population. A small n
 ## Decoder
 The decoder proposed by Bean [6] simply orders the elements of the vector of random keys, thus producing a permutation corresponding to the indices of the sorted elements.
 
+## Something
+
