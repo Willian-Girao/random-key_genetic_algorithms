@@ -36,6 +36,39 @@ Chromosome * Population::getElite(void) {
   return elite;
 }
 
+Chromosome * Population::getRandomPair(void) {
+  static Chromosome pair[2];
+
+  int p_a = rand() % 6;
+  int p_b = rand() % 6;
+
+  while (p_a == p_b) {
+    p_b = rand() % 6;
+  }
+
+  pair[0] = population[p_a];
+  pair[1] = population[p_b];
+
+  return pair;
+}
+
+Chromosome Population::matePair(Chromosome a, Chromosome b) {
+  double prob;
+  Chromosome offspring;
+
+  for (size_t i = 0; i < 5; i++) {
+    prob = ((double) rand() / RAND_MAX); /* TODO - this probability should be proportional to the vectors fitness value */
+
+    if (prob >= 0.5) {
+      offspring.genes[i] = a.getGene(i);
+    } else {
+      offspring.genes[i] = b.getGene(i);
+    }
+  }
+
+  return offspring;
+}
+
 void Population::printPopulation(void) {
   for (size_t i = 0; i < population.size(); i++) {
     cout << "Vector " << i << endl;

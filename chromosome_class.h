@@ -4,6 +4,9 @@
 using namespace std;
 
 class Chromosome {
+
+  friend class Population;
+
   public:
     Chromosome();
     double getFitness(void); /* Returns the fiteness value of a chromosome. */
@@ -13,7 +16,8 @@ class Chromosome {
 
   private:
     void setFitness(double fit); /* Updates a chromosome fitness value. */
-    void generateGenes(); /* Initializes the random keys of the chromosome. */
+    void generateGenes(void); /* Initializes the random keys of the chromosome. */
+    void updateGene(int i, double key); /* Updates the key 'i' of the vector with the value 'key'. */
     double fitness;
     array<double,5> genes;
 };

@@ -12,7 +12,7 @@ void Chromosome::setFitness(double fit) {
   fitness = fit;
 }
 
-void Chromosome::generateGenes() {
+void Chromosome::generateGenes(void) {
   for (size_t i = 0; i < genes.size(); i++) {
     double key = ((double) rand() / RAND_MAX);
     while (key == 1.0) {
@@ -20,6 +20,10 @@ void Chromosome::generateGenes() {
     }
     genes[i] = key;
   }
+}
+
+void Chromosome::updateGene(int i, double key) {
+  genes[i] = key;
 }
 
 /* Public methods */
