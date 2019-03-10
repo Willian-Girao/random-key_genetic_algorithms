@@ -1,28 +1,10 @@
 #include <iostream>
 #include <array>
 #include <stdlib.h>
-#include <time.h>
+
+#include "chromosome_class.h"
 
 using namespace std;
-
-class Chromosome {
-  public:
-    double getFitness(void);
-    void printGenes(void);
-    void calculateFitness(void);
-    Chromosome();
-
-  private:
-    void setFitness(double fit);
-    void generateGenes();
-    double fitness;
-    array<double,5> genes;
-};
-
-Chromosome::Chromosome() {
-  fitness = 0.0;
-  generateGenes();
-}
 
 /* Private methods */
 
@@ -40,11 +22,13 @@ void Chromosome::generateGenes() {
   }
 }
 
-/* Mutation actually has to be a method of the class representing the
-  evolution of the solution process: mutation on RKGA is achived by
-  introducing a set o randomly generated (new) random key vectors. */
-
 /* Public methods */
+
+Chromosome::Chromosome() {
+  // fitness = 0.0;
+  fitness = ((double) rand() / RAND_MAX);
+  generateGenes();
+}
 
 double Chromosome::getFitness(void) {
   return fitness;
@@ -56,20 +40,12 @@ void Chromosome::calculateFitness(void) {
   setFitness(updatedFitness);
 }
 
+double Chromosome::getGene(int index) {
+  return genes[index];
+}
+
 void Chromosome::printGenes(void) {
   for (size_t i = 0; i < genes.size(); i++) {
     cout << genes[i] << endl;
   }
-}
-
-
-
-int main() {
-  srand (time(NULL));
-  Chromosome chromosome;
-
-  cout << "Current fitness: " << chromosome.getFitness() << endl;
-  cout << "\n" << endl;
-  chromosome.printGenes();
-  return 0;
 }
