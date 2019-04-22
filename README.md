@@ -27,10 +27,10 @@ To complete the *p* elements of the population of the *k+1-th* generation, *p - 
 
 Let *a* and *b* be the selected vectors for mating and let *c* be the offspring produced. In the crossover of Spears and DeJong [58], *c[i]*, the *i-th* component of the offspring vector, receives the *i-th* key of one of its parents. It receives the key *a[i]* with probability *p_a* and *b[i]* with probability *p_b = 1 - p\_a*.
 
+![alt text](https://github.com/Willian-Girao/random-key_genetic_algorithms/blob/master/algorithm_cycle.jpg)
+
 ## Decoder
 The decoder proposed by Bean [6] simply orders the elements of the vector of random keys, thus producing a permutation corresponding to the indices of the sorted elements.
-
-![alt text](https://github.com/Willian-Girao/random-key_genetic_algorithms/blob/master/algorithm_cycle.jpg)
 
 # Data Mule Scheduling Problem
 
