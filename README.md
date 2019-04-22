@@ -30,3 +30,22 @@ Let *a* and *b* be the selected vectors for mating and let *c* be the offspring 
 ## Decoder
 The decoder proposed by Bean [6] simply orders the elements of the vector of random keys, thus producing a permutation corresponding to the indices of the sorted elements.
 
+# Data Mule Scheduling Problem
+
+https://pdfs.semanticscholar.org/f339/7ec243dce5fd5869cf523a3ee1a77c54957a.pdf
+https://link.springer.com/referenceworkentry/10.1007%2F978-3-319-07153-4_30-1
+
+## Introduction
+
+A usual way to collect data in a Wireless Sensor Network (WSN) is by the support of a special agent, called data mule, that moves among sensors nodes and performs all communication between them. A data mule is a mobile node that moves inside the field (network) and collects data from sensors within the network. The Data Mule Scheduling Problem (DMSP) consists in planning the route of the data mule, the order of attendence of the sensors, and also plan the velocity it will use to move. The idea os that each sensor in the network generates some amount of information per unit of time and it has a limited amount of memory to retain this information generated, and when the amount of information generated exceeds the memory capacity, information is lost. The data mule work is to prevent information loss by visiting and retreaving the sensors information to free its memory, preventing the information losss.
+
+We cam decompose  the problem into the following three subproblems:
+- Path selection: which trajectory the data mule follows
+- Speed control: how the data mule changes the speed during the travel
+- Job scheduling: from which sensor the data mule collects data at each time point
+
+**Path selction** is to determine the trajectory of the data mule in the network. To collect data from each particular sensor, the data mule needs to go within the sensor's communication range at least once. Depending on the mobility capacity of the mule, there can be some constraints on the path, such as minimum turning radious.
+
+Once the path is chosen, 2-D/3-D data mule scheduling problems are reduced to 1-D data mule scheduling problem, in which the communication ranges of each node are given as intervals on the location axis. **Spped control** is to determine how the data mule changes its speed along the chosen path. The data mule needs to change the speed so that it stays within each node's communication range long enough to collect all the data from it. The objective in this problem is to find an optimal time-speed profile while satisfying that constraint.
+
+Once we have a time-speed profile, we have a mapping from each location to time point. Thus we get a scheduling problem by regarding data collection from each sensor as a job. Each job has one or more intervals in which it can be executed. Job scheduling is to determine the allocation of time slots to jobs so that all jobs can be completed.

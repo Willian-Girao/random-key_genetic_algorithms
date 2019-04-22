@@ -21,8 +21,6 @@ int main() {
   Chromosome *elite;
   Chromosome *pair;
 
-  pop.printFitness();
-
   elite = pop.getElite();
   pair = pop.getRandomPair();
 
