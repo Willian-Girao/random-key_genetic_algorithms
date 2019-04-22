@@ -30,6 +30,8 @@ Let *a* and *b* be the selected vectors for mating and let *c* be the offspring 
 ## Decoder
 The decoder proposed by Bean [6] simply orders the elements of the vector of random keys, thus producing a permutation corresponding to the indices of the sorted elements.
 
+![alt text](https://github.com/Willian-Girao/random-key_genetic_algorithms/blob/master/algorithm_cycle.jpg)
+
 # Data Mule Scheduling Problem
 
 https://pdfs.semanticscholar.org/f339/7ec243dce5fd5869cf523a3ee1a77c54957a.pdf
