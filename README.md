@@ -49,3 +49,5 @@ We cam decompose  the problem into the following three subproblems:
 Once the path is chosen, 2-D/3-D data mule scheduling problems are reduced to 1-D data mule scheduling problem, in which the communication ranges of each node are given as intervals on the location axis. **Spped control** is to determine how the data mule changes its speed along the chosen path. The data mule needs to change the speed so that it stays within each node's communication range long enough to collect all the data from it. The objective in this problem is to find an optimal time-speed profile while satisfying that constraint.
 
 Once we have a time-speed profile, we have a mapping from each location to time point. Thus we get a scheduling problem by regarding data collection from each sensor as a job. Each job has one or more intervals in which it can be executed. Job scheduling is to determine the allocation of time slots to jobs so that all jobs can be completed.
+
+![alt text](https://github.com/Willian-Girao/random-key_genetic_algorithms/blob/master/substeps_dmsp.png)
