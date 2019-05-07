@@ -30,7 +30,16 @@ Let *a* and *b* be the selected vectors for mating and let *c* be the offspring 
 ![alt text](https://github.com/Willian-Girao/random-key_genetic_algorithms/blob/master/algorithm_cycle.jpg)
 
 ## Decoder
-The decoder proposed by Bean [6] simply orders the elements of the vector of random keys, thus producing a permutation corresponding to the indices of the sorted elements.
+A *decoder* is a deterministic algorithm that takes as input a random-key vector and returns a feasible solution of the optimization problem and its cost. The decoder proposed by Bean (2014) simply orders the elements of the vector of random keys, thus producing a permutation corresponding to the indices of the sorted elements.
+
+Thus, a random-key GA searches the solution space indirectly by searching the space of random keys and using the decoder to evaluate the fitness of the vector.
+
+## Common Parameters Settings
+
+- Size of population: a function of *N*, say *N* or *2N*
+- Size of elite partition: 15-25% of population
+- Size of mutant set: 5-15% of population
+- Child inheritance (from elite) probability: > 0.5, say 0.7
 
 # Data Mule Scheduling Problem
 
