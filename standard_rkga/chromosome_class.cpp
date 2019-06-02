@@ -41,9 +41,9 @@ double Chromosome::getFitness(void) {
 void Chromosome::calculateFitness(void) {
   double updatedFitness = 0.0;
   // get chromosome genes here and evaluate the objective funtion (that should be passed as argument)
-  for (size_t i = 0; i < count; i++) {
-    /* code */
-  }
+  // for (size_t i = 0; i < count; i++) {
+  //   /* code */
+  // }
   setFitness(updatedFitness);
 }
 

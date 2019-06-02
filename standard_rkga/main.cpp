@@ -52,14 +52,5 @@ int main() {
 
   offspring.printGenes();
 
-  // cout << endl;
-  //
-  // cout << a.getFitness() << endl;
-  // cout << pop.gett(a) << endl;
-
-  // Chromosome n = (*(elite));
-  //
-  // cout << "Copy: " << n.getFitness() << endl;
-
   return 0;
 }
