@@ -14,13 +14,17 @@ using namespace std;
   total_nodes: number of total nodes after graphs pre-processing
   speeds_count: number of allowed speeds
 */
-Instance::Instance(int orig_nodes_n, int total_nodes, int speeds_count) {
-  original_nodes_n = orig_nodes_n;
-  total_nodes_n = total_nodes;
-  speeds_n = speeds_count;
+Instance::Instance() {
+}
 
+void Instance::setTotalNodesNumber(int total_nodes) {
+  total_nodes_n = total_nodes;
+  return;
+}
+
+void Instance::setOriginalNodesNumber(int orig_nodes_n) {
+  original_nodes_n = orig_nodes_n;
   original_nodes = new Node[original_nodes_n];
-  speeds = new double[speeds_n];
 
   for (int i = 0; i < original_nodes_n; ++i)
   {
@@ -36,10 +40,19 @@ Instance::Instance(int orig_nodes_n, int total_nodes, int speeds_count) {
     original_nodes[i] = node_i;
   }
 
+  return;
+}
+
+void Instance::setSpeedNumber(int speeds_count) {
+  speeds_n = speeds_count;
+  speeds = new double[speeds_n];
+
   for (int i = 0; i < speeds_n; ++i)
   {
     speeds[i] = 1.0;
   }
+
+  return;
 }
 
 void Instance::setSpeed(int i, double s) { /* Sets the value of the i-th possible speed to 's' */
@@ -121,7 +134,7 @@ void Instance::printNode(int index) { /* Prints the informations of a node index
 
   cout << "Label: " << (*(original_nodes + index)).label << endl << endl;
   cout << "X component: " << (*(original_nodes + index)).x_axis << endl;
-  cout << "y component: " << (*(original_nodes + index)).y_axis << endl;
+  cout << "Y component: " << (*(original_nodes + index)).y_axis << endl;
   cout << "Communication range: " << (*(original_nodes + index)).c_range << endl;
   cout << "Transmition rate: " << (*(original_nodes + index)).t_rate << endl;
   cout << "Demmand: " << (*(original_nodes + index)).demmand << endl << endl;
@@ -151,6 +164,91 @@ void Instance::setNode(int index, double x, double y, double c_range, double t_r
   (*(original_nodes + index)).c_range = c_range;
   (*(original_nodes + index)).t_rate = t_rate; 
   (*(original_nodes + index)).demmand = demmand;
+
+  return;
+}
+
+void Instance::setNodeX(int index, double x) {
+  if (index < 0 || index == original_nodes_n)
+  {
+    return;
+  }
+
+  (*(original_nodes + index)).x_axis = x;
+
+  return;
+}
+
+void Instance::setNodeY(int index, double y) {
+  if (index < 0 || index == original_nodes_n)
+  {
+    return;
+  }
+
+  (*(original_nodes + index)).y_axis = y;
+
+  return;
+}
+
+void Instance::setNodeCRange(int index, double c_range) {
+  if (index < 0 || index == original_nodes_n)
+  {
+    return;
+  }
+
+  (*(original_nodes + index)).c_range = c_range;
+
+  return;
+}
+
+void Instance::setNodeTRate(int index, double t_rate) {
+  if (index < 0 || index == original_nodes_n)
+  {
+    return;
+  }
+
+  (*(original_nodes + index)).t_rate = t_rate;
+
+  return;
+}
+
+void Instance::setNodeDemmand(int index, double demmand) {
+  if (index < 0 || index == original_nodes_n)
+  {
+    return;
+  }
+
+  (*(original_nodes + index)).demmand = demmand;
+
+  return;
+}
+
+void Instance::printInstanceMetadata(void) { /* Prints all the metadata associated with the graph */
+  cout << endl;
+
+  cout << "Original nodes: " << original_nodes_n << endl;
+  cout << "Total nodes: " << total_nodes_n << endl;
+  cout << "Number of speeds: " << speeds_n << endl;
+  
+  cout << "Speeds values: ";
+  for (int i = 0; i < speeds_n; ++i)
+  {
+    if (i == (speeds_n - 1))
+    {
+      cout << (*(speeds + i));
+    } else
+    {
+      cout << (*(speeds + i)) << ", ";
+    }
+  }
+  cout << endl;
+
+  cout << "Original nodes information: " << endl << endl;
+  cout << "   label - [x component, y component, communication range, transmition rate, demmand]" << endl;
+  for (int index = 0; index < original_nodes_n; ++index)
+  {
+    cout << "   " << (*(original_nodes + index)).label << " - " << "[" << (*(original_nodes + index)).x_axis << ", " << (*(original_nodes + index)).y_axis << ", " << (*(original_nodes + index)).c_range << ", " << (*(original_nodes + index)).t_rate << ", " << (*(original_nodes + index)).demmand << " ]" << endl;
+  }
 
   return;
 }

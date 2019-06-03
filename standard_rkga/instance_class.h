@@ -19,7 +19,7 @@ class Instance {
      total_nodes: number of total nodes after graphs pre-processing
      speeds_count: number of allowed speeds
     */
-    Instance(int orig_nodes_n, int total_nodes, int speeds_count);
+    Instance();
 
     /* Getters */
     int getNodesLabel(int index); /* Gets the label of a node indexed by 'index' */
@@ -30,12 +30,21 @@ class Instance {
     double getNodesDemmand(int index); /* Gets the demmand of a node indexed by 'index' */
     void printNode(int index); /* Prints the informations of a node indexed by 'index' */
     void printSpeeds(void); /* Prints the allowed speed's values */
+    void printInstanceMetadata(void); /* Prints all the metadata associated with the graph */
     Node getNode(int index); /* Gets the representation of a node indexed by 'index' */
     Node getBaseStation(); /* Gets the representation of the base station */
 
     /* Setters */
+    void setSpeedNumber(int speeds_count);
+    void setOriginalNodesNumber(int orig_nodes_n);
+    void setTotalNodesNumber(int total_nodes);
     void setNode(int index, double x, double y, double c_range, double t_rate, double demmand); /* Sets the properties of the node indexed by 'index' */
     void setSpeed(int i, double x); /* Sets the value of the i-th possible speed */
+    void setNodeX(int index, double x);
+    void setNodeY(int index, double y);
+    void setNodeCRange(int index, double c_range);
+    void setNodeTRate(int index, double t_rate);
+    void setNodeDemmand(int index, double demmand);
 
   private:
     int original_nodes_n; /* Number of nodes in the original graph */
