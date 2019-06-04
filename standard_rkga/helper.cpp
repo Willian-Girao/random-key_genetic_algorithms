@@ -73,7 +73,7 @@ void fileLineHandler(int line_index, int value_index, double value, Instance *in
 	{
 		cout << "	Accessing general metadata header... ";
         initialInstanceData(value_index, value, inst);
-	} else if (line_index > 0 && line_index < 7)
+	} else if (line_index > 0 && line_index < (inst->getNumberOfOriginalNodes() + 1))
 	{
 		cout << "	Setting up node's '" << (line_index - 1) << "' information... " << endl;
         setOriginalNodeData(line_index, value_index, value, inst); 

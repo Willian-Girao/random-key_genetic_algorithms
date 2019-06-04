@@ -8,14 +8,7 @@
 using namespace std;
 
 /* Public methods */
-
-/*
-  orig_nodes_n: number of original nodes
-  total_nodes: number of total nodes after graphs pre-processing
-  speeds_count: number of allowed speeds
-*/
-Instance::Instance() {
-}
+Instance::Instance() {}
 
 void Instance::setTotalNodesNumber(int total_nodes) {
   total_nodes_n = total_nodes;
@@ -251,6 +244,10 @@ void Instance::printInstanceMetadata(void) { /* Prints all the metadata associat
   }
 
   return;
+}
+
+int Instance::getNumberOfOriginalNodes(void) { /* Gets the number of original nodes in the graph */
+  return original_nodes_n;
 }
 
 /* Private methods */

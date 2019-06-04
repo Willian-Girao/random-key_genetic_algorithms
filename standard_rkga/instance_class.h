@@ -12,13 +12,26 @@ struct Node { /* Data associated to a node */
     double demmand; /* Information menaging demand */
 };
 
+struct EdgeData { /* Holds the information assiciated to 'w' edges - created due to presence of artificial node */
+    int edge_label; /* Edge identifier */
+    double start_x_axis; /* X-start coordiante in the plane */
+    double start_y_axis; /* Y-start coordiante in the plane */
+    double end_x_axis; /* X-end coordiante in the plane */
+    double end_y_axis; /* Y-end coordiante in the plane */
+    double length; /* length of the edge */
+    int n_nodes_can_serve; /* Number of nodes that can be served while in this edge */
+    int *ids_nodes_can_serve; /* Ids of the nodes that can be served while in this edge */
+};
+
+struct NodePairInfo { /* Holds the information (with artificial nodes) regarding two connected nodes */
+    array<int,2> pair_ids; /* Ids of the refered two nodes */
+    double distance; /* Distance between them */
+    int n_edges_between; /* Number of edges 'w' caused by presence of artifial nodes */
+    EdgeData *edges_between_info; /* 'w' edges associated information */
+};
+
 class Instance {
   public:
-    /*
-     orig_nodes_n: number of original nodes
-     total_nodes: number of total nodes after graphs pre-processing
-     speeds_count: number of allowed speeds
-    */
     Instance();
 
     /* Getters */
@@ -28,9 +41,7 @@ class Instance {
     double getNodesCRange(int index); /* Gets the communication rang of a node indexed by 'index' */
     double getNodesTRate(int index); /* Gets the transmition rate of a node indexed by 'index' */
     double getNodesDemmand(int index); /* Gets the demmand of a node indexed by 'index' */
-    void printNode(int index); /* Prints the informations of a node indexed by 'index' */
-    void printSpeeds(void); /* Prints the allowed speed's values */
-    void printInstanceMetadata(void); /* Prints all the metadata associated with the graph */
+    int getNumberOfOriginalNodes(void); /* Gets the number of original nodes in the graph */
     Node getNode(int index); /* Gets the representation of a node indexed by 'index' */
     Node getBaseStation(); /* Gets the representation of the base station */
 
@@ -45,6 +56,11 @@ class Instance {
     void setNodeCRange(int index, double c_range);
     void setNodeTRate(int index, double t_rate);
     void setNodeDemmand(int index, double demmand);
+
+    /* Helpers */
+    void printNode(int index); /* Prints the informations of a node indexed by 'index' */
+    void printSpeeds(void); /* Prints the allowed speed's values */
+    void printInstanceMetadata(void); /* Prints all the metadata associated with the graph */
 
   private:
     int original_nodes_n; /* Number of nodes in the original graph */
