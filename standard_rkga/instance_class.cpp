@@ -29,6 +29,9 @@ void Instance::setOriginalNodesNumber(int orig_nodes_n) {
     node_i.c_range = (i + 0.1);
     node_i.t_rate = 0.0; 
     node_i.demmand = 0.0;
+    node_i.paired_with_nodes_info = new NodePairInfo;
+    node_i.paired_with_nodes_info->edges_between_info = new EdgeData;
+    node_i.paired_with_nodes_info->edges_between_info->ids_nodes_can_serve = new int;
 
     original_nodes[i] = node_i;
   }
@@ -167,7 +170,7 @@ void Instance::setNodeX(int index, double x) {
     return;
   }
 
-  (*(original_nodes + index)).x_axis = x;
+  (*(original_nodes + index)).x_axis = x;;
 
   return;
 }
@@ -250,4 +253,47 @@ int Instance::getNumberOfOriginalNodes(void) { /* Gets the number of original no
   return original_nodes_n;
 }
 
+void Instance::setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info) {
+  switch(value_index) {
+    case 0 :
+      break;
+    case 1 :
+      ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->pair_id = int(value);
+      break;
+    case 2 :
+      ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->distance = value;
+      break;
+    case 3 :
+      ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->n_edges_between = int(value);
+      if (int(value) > 0)
+      {
+        is_parsing_artificial_info = true;
+      }
+      // Must increase only after processing the information associated to the artificial edge segmentation due to artifical node between pairs.
+      pair_node_index++;
+      break;
+    default :
+      break;
+  }
+}
+
+void Instance::setNodePairEdgeData(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info) {
+  int pair_aux = pair_node_index - 1;
+  switch(value_index) {
+    case 0 :
+      // Getting an error here.
+      ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + 0)->edge_label = int(value);
+      break;
+    default :
+      cout << " - Paused -" << endl;
+      cout << ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)->pair_id << endl;
+      cout << ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)->distance << endl;
+      cout << ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)->n_edges_between << endl;
+      int pause = 0;
+      cin >> pause;
+      break;
+  }
+}
+
 /* Private methods */
+ 

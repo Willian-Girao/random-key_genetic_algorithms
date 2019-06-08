@@ -67,19 +67,34 @@ void setOriginalNodeData(int line_index, int value_index, double value, Instance
 	return;
 }
 
-void fileLineHandler(int line_index, int value_index, double value, Instance *inst) {
+void setNodesPairData(int value_index, double value, Instance *inst, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info) {
+	inst->setNodePair(value_index, value, main_node_index, pair_node_index, is_parsing_artificial_info);
+	return;
+}
 
+void setNodesPairSegmentedEdgeData(int value_index, double value, Instance *inst, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info) {
+	inst->setNodePairEdgeData(value_index, value, main_node_index, pair_node_index, is_parsing_artificial_info);
+	return;
+}
+
+void fileLineHandler(int line_index, int value_index, double value, Instance *inst, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info) {
 	if (line_index == 0)
 	{
-		cout << "	Accessing general metadata header... ";
+		// cout << "	Accessing general metadata header... ";
         initialInstanceData(value_index, value, inst);
 	} else if (line_index > 0 && line_index < (inst->getNumberOfOriginalNodes() + 1))
 	{
-		cout << "	Setting up node's '" << (line_index - 1) << "' information... " << endl;
+		// cout << "	Setting up node's '" << (line_index - 1) << "' information... " << endl;
         setOriginalNodeData(line_index, value_index, value, inst); 
+	} else if ((line_index > inst->getNumberOfOriginalNodes()) && !is_parsing_artificial_info)
+	{
+		// cout << "	Processing artifially created graphs data..." << endl;
+		setNodesPairData(value_index, value, inst, main_node_index, pair_node_index, is_parsing_artificial_info);
+	} else if ((line_index > inst->getNumberOfOriginalNodes()) && is_parsing_artificial_info)
+	{
+		// cout << "	Processing artifially created edge metadata...";
+		setNodesPairSegmentedEdgeData(value_index, value, inst, main_node_index, pair_node_index, is_parsing_artificial_info);
 	}
-
-   return;
 }
 
 void consumeInstance(ifstream& instance_file, Instance *inst) {
@@ -87,6 +102,10 @@ void consumeInstance(ifstream& instance_file, Instance *inst) {
 	int line_index = 0;
 
 	cout << "Reading through instace file lines: " << endl;
+
+	int main_node_index = 0;
+    int pair_node_index = 0;
+    bool is_parsing_artificial_info = false;
 
 	while(getline(instance_file, str)) {
 	    string parsed_line = "";
@@ -108,7 +127,7 @@ void consumeInstance(ifstream& instance_file, Instance *inst) {
 	    /* Numerical content of the n-th line i the file */
 	    for (int i = 0; i < n_of_values; ++i)
 	    {
-	    	fileLineHandler(line_index, i, (*(values + i)), inst);
+	    	fileLineHandler(line_index, i, (*(values + i)), inst, main_node_index, pair_node_index, is_parsing_artificial_info);
 	    }
 
 	    line_index++;

@@ -3,15 +3,6 @@
 
 using namespace std;
 
-struct Node { /* Data associated to a node */
-    int label; /* Id that differentiates the nodes */
-    double x_axis; /* X coordiante in the plane */
-    double y_axis; /* Y coordiante in the plane */
-    double c_range; /* Communication range */
-    double t_rate; /* Transmition rate */
-    double demmand; /* Information menaging demand */
-};
-
 struct EdgeData { /* Holds the information assiciated to 'w' edges - created due to presence of artificial node */
     int edge_label; /* Edge identifier */
     double start_x_axis; /* X-start coordiante in the plane */
@@ -24,16 +15,25 @@ struct EdgeData { /* Holds the information assiciated to 'w' edges - created due
 };
 
 struct NodePairInfo { /* Holds the information (with artificial nodes) regarding two connected nodes */
-    array<int,2> pair_ids; /* Ids of the refered two nodes */
-    double distance; /* Distance between them */
-    int n_edges_between; /* Number of edges 'w' caused by presence of artifial nodes */
+    int pair_id = -1; /* Id of the refered two node's pair */
+    double distance = -1.0; /* Distance between them */
+    int n_edges_between = -1; /* Number of edges 'w' caused by presence of artifial nodes */
     EdgeData *edges_between_info; /* 'w' edges associated information */
+};
+
+struct Node { /* Data associated to a node */
+    int label; /* Id that differentiates the nodes */
+    double x_axis; /* X coordiante in the plane */
+    double y_axis; /* Y coordiante in the plane */
+    double c_range; /* Communication range */
+    double t_rate; /* Transmition rate */
+    double demmand; /* Information menaging demand */
+    NodePairInfo *paired_with_nodes_info; /* Information regarding this node being connected to another node 'x' */
 };
 
 class Instance {
   public:
     Instance();
-
     /* Getters */
     int getNodesLabel(int index); /* Gets the label of a node indexed by 'index' */
     double getNodesX(int index); /* Gets the x coordinate of a node indexed by 'index' */
@@ -56,6 +56,8 @@ class Instance {
     void setNodeCRange(int index, double c_range);
     void setNodeTRate(int index, double t_rate);
     void setNodeDemmand(int index, double demmand);
+    void setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info);
+    void setNodePairEdgeData(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info);
 
     /* Helpers */
     void printNode(int index); /* Prints the informations of a node indexed by 'index' */
