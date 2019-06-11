@@ -27,6 +27,10 @@ int main() {
 
   inst.printInstanceMetadata();
 
+  cout << " FINISHED  " << endl;
+
+  inst.printPairsFromMainNode(0);
+
   // test(instance_file);
   // print(&inst);
 

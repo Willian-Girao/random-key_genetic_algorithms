@@ -84,7 +84,6 @@ void fileLineHandler(int line_index, int value_index, double value, Instance *in
         initialInstanceData(value_index, value, inst);
 	} else if (line_index > 0 && line_index < (inst->getNumberOfOriginalNodes() + 1))
 	{
-		// cout << "	Setting up node's '" << (line_index - 1) << "' information... " << endl;
         setOriginalNodeData(line_index, value_index, value, inst); 
 	} else if ((line_index > inst->getNumberOfOriginalNodes()) && !is_parsing_artificial_info)
 	{
@@ -95,7 +94,10 @@ void fileLineHandler(int line_index, int value_index, double value, Instance *in
 	} else if ((line_index > inst->getNumberOfOriginalNodes()) && is_parsing_artificial_info)
 	{
 		// cout << "	Processing artifially created edge metadata...";
+		// cout << value << endl;
 		setNodesPairSegmentedEdgeData(value_index, value, inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter, nodes_can_be_served_counter);
+	} else {
+		cout << " SHOULD NOT HAVE ENTERED HERE " << endl;
 	}
 }
 
@@ -114,7 +116,7 @@ void consumeInstance(ifstream& instance_file, Instance *inst) {
 	while(getline(instance_file, str)) {
 	    string parsed_line = "";
 	    int n_of_values = 0;
-	    double *values = new double[30];
+	    double *values = new double[100];
 
 	    for(char& c : str) {
 	      parsed_line += isspace(c) ? ',' : c;
@@ -131,6 +133,7 @@ void consumeInstance(ifstream& instance_file, Instance *inst) {
 	    /* Numerical content of the n-th line i the file */
 	    for (int i = 0; i < n_of_values; ++i)
 	    {
+	    	cout << (*(values + i)) << "*" << endl;
 	    	fileLineHandler(line_index, i, (*(values + i)), inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter, nodes_can_be_served_counter);
 	    }
 

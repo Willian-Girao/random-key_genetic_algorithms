@@ -62,6 +62,7 @@ class Instance {
     /* Helpers */
     void printNode(int index); /* Prints the informations of a node indexed by 'index' */
     void printSpeeds(void); /* Prints the allowed speed's values */
+    void printPairsFromMainNode(int main_node_index);
     void printInstanceMetadata(void); /* Prints all the metadata associated with the graph */
     void pauseExecution(int line, string str); /* Pauses the execution of the program for debbuging purposes */
 
