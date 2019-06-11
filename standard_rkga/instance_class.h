@@ -56,13 +56,14 @@ class Instance {
     void setNodeCRange(int index, double c_range);
     void setNodeTRate(int index, double t_rate);
     void setNodeDemmand(int index, double demmand);
-    void setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info);
-    void setNodePairEdgeData(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info);
+    void setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter);
+    void setNodePairEdgeData(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, int &nodes_can_be_served_counter);
 
     /* Helpers */
     void printNode(int index); /* Prints the informations of a node indexed by 'index' */
     void printSpeeds(void); /* Prints the allowed speed's values */
     void printInstanceMetadata(void); /* Prints all the metadata associated with the graph */
+    void pauseExecution(int line, string str); /* Pauses the execution of the program for debbuging purposes */
 
   private:
     int original_nodes_n; /* Number of nodes in the original graph */

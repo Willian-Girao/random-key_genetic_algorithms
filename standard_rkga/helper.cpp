@@ -67,17 +67,17 @@ void setOriginalNodeData(int line_index, int value_index, double value, Instance
 	return;
 }
 
-void setNodesPairData(int value_index, double value, Instance *inst, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info) {
-	inst->setNodePair(value_index, value, main_node_index, pair_node_index, is_parsing_artificial_info);
+void setNodesPairData(int value_index, double value, Instance *inst, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter) {
+	inst->setNodePair(value_index, value, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter);
 	return;
 }
 
-void setNodesPairSegmentedEdgeData(int value_index, double value, Instance *inst, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info) {
-	inst->setNodePairEdgeData(value_index, value, main_node_index, pair_node_index, is_parsing_artificial_info);
+void setNodesPairSegmentedEdgeData(int value_index, double value, Instance *inst, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, int &nodes_can_be_served_counter) {
+	inst->setNodePairEdgeData(value_index, value, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter, nodes_can_be_served_counter);
 	return;
 }
 
-void fileLineHandler(int line_index, int value_index, double value, Instance *inst, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info) {
+void fileLineHandler(int line_index, int value_index, double value, Instance *inst, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, int &nodes_can_be_served_counter) {
 	if (line_index == 0)
 	{
 		// cout << "	Accessing general metadata header... ";
@@ -88,12 +88,14 @@ void fileLineHandler(int line_index, int value_index, double value, Instance *in
         setOriginalNodeData(line_index, value_index, value, inst); 
 	} else if ((line_index > inst->getNumberOfOriginalNodes()) && !is_parsing_artificial_info)
 	{
+		artifial_edge_info_counter = 0; /* Reseting */
+		nodes_can_be_served_counter = 0; /* Reseting */
 		// cout << "	Processing artifially created graphs data..." << endl;
-		setNodesPairData(value_index, value, inst, main_node_index, pair_node_index, is_parsing_artificial_info);
+		setNodesPairData(value_index, value, inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter);
 	} else if ((line_index > inst->getNumberOfOriginalNodes()) && is_parsing_artificial_info)
 	{
 		// cout << "	Processing artifially created edge metadata...";
-		setNodesPairSegmentedEdgeData(value_index, value, inst, main_node_index, pair_node_index, is_parsing_artificial_info);
+		setNodesPairSegmentedEdgeData(value_index, value, inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter, nodes_can_be_served_counter);
 	}
 }
 
@@ -105,6 +107,8 @@ void consumeInstance(ifstream& instance_file, Instance *inst) {
 
 	int main_node_index = 0;
     int pair_node_index = 0;
+    int artifial_edge_info_counter = 0;
+    int nodes_can_be_served_counter = 0;
     bool is_parsing_artificial_info = false;
 
 	while(getline(instance_file, str)) {
@@ -127,7 +131,7 @@ void consumeInstance(ifstream& instance_file, Instance *inst) {
 	    /* Numerical content of the n-th line i the file */
 	    for (int i = 0; i < n_of_values; ++i)
 	    {
-	    	fileLineHandler(line_index, i, (*(values + i)), inst, main_node_index, pair_node_index, is_parsing_artificial_info);
+	    	fileLineHandler(line_index, i, (*(values + i)), inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter, nodes_can_be_served_counter);
 	    }
 
 	    line_index++;

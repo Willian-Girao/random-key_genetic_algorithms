@@ -2,6 +2,7 @@
 #include <array>
 #include <stdlib.h>
 #include <fstream>
+#include <string>
 
 #include "instance_class.h"
 
@@ -26,7 +27,7 @@ void Instance::setOriginalNodesNumber(int orig_nodes_n) {
     node_i.label = i;
     node_i.x_axis = 0.0;
     node_i.y_axis = 0.0;
-    node_i.c_range = (i + 0.1);
+    node_i.c_range = 0.0;
     node_i.t_rate = 0.0; 
     node_i.demmand = 0.0;
     node_i.paired_with_nodes_info = new NodePairInfo;
@@ -253,7 +254,7 @@ int Instance::getNumberOfOriginalNodes(void) { /* Gets the number of original no
   return original_nodes_n;
 }
 
-void Instance::setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info) {
+void Instance::setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter) {
   switch(value_index) {
     case 0 :
       break;
@@ -264,11 +265,17 @@ void Instance::setNodePair(int value_index, double value, int &main_node_index, 
       ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->distance = value;
       break;
     case 3 :
+      // Initializing data struct to hold information regarding to artificial edges (segmented due to the presence of an artidial vertex).
+      ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->edges_between_info = new EdgeData;
+      // Setting number of artificial edges (segmentation of an original edge).
       ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->n_edges_between = int(value);
       if (int(value) > 0)
       {
         is_parsing_artificial_info = true;
+        // There are now artificial edges information regarding this pair.
+        ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)).edges_between_info)->edge_label = -1;
       }
+      artifial_edge_info_counter = int(value);
       // Must increase only after processing the information associated to the artificial edge segmentation due to artifical node between pairs.
       pair_node_index++;
       break;
@@ -277,23 +284,79 @@ void Instance::setNodePair(int value_index, double value, int &main_node_index, 
   }
 }
 
-void Instance::setNodePairEdgeData(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info) {
+void Instance::setNodePairEdgeData(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, int &nodes_can_be_served_counter) {
   int pair_aux = pair_node_index - 1;
+  int edge_label_aux = ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)->n_edges_between;
   switch(value_index) {
     case 0 :
-      // Getting an error here.
-      ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + 0)->edge_label = int(value);
+      ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + (edge_label_aux - artifial_edge_info_counter))->edge_label = int(value);
+      break;
+    case 1 :
+      ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + (edge_label_aux - artifial_edge_info_counter))->start_x_axis = value;
+      break;
+    case 2 :
+      ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + (edge_label_aux - artifial_edge_info_counter))->start_y_axis = value;
+      break;
+    case 3 :
+      ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + (edge_label_aux - artifial_edge_info_counter))->end_x_axis = value;
+      break;
+    case 4 :
+      ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + (edge_label_aux - artifial_edge_info_counter))->end_y_axis = value;
+      break;
+    case 5 :
+      ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + (edge_label_aux - artifial_edge_info_counter))->length = value;
+      break;
+    case 6 :
+      ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + (edge_label_aux - artifial_edge_info_counter))->n_nodes_can_serve = int(value);
+      if (int(value) > 0)
+      {
+        ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + (edge_label_aux - artifial_edge_info_counter))->ids_nodes_can_serve = new int[int(value) - 1];
+        nodes_can_be_served_counter = int(value);
+      }
       break;
     default :
-      cout << " - Paused -" << endl;
-      cout << ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)->pair_id << endl;
-      cout << ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)->distance << endl;
-      cout << ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)->n_edges_between << endl;
-      int pause = 0;
-      cin >> pause;
+      int n_nodes_can_serve_aux = ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + (edge_label_aux - artifial_edge_info_counter))->n_nodes_can_serve;
+      int ids_can_be_served_counter_aux = n_nodes_can_serve_aux - nodes_can_be_served_counter;
+      if (ids_can_be_served_counter_aux < n_nodes_can_serve_aux)
+      {
+        cout << "current value: " << int(value) << endl;
+        cout << "id counter: " << ids_can_be_served_counter_aux << endl;
+        pauseExecution(322, "instance_class.cpp");
+        *((((original_nodes + main_node_index)->paired_with_nodes_info + pair_aux)->edges_between_info + (edge_label_aux - artifial_edge_info_counter))->ids_nodes_can_serve + ids_can_be_served_counter_aux) = int(value);
+        nodes_can_be_served_counter--;
+      }
+      if ((n_nodes_can_serve_aux - nodes_can_be_served_counter) == n_nodes_can_serve_aux)
+      {
+        // Not parsing segmented edge information anymore.
+        // Set 'is_parsing_artificial_info' to false.
+        pauseExecution(329, "instance_class.cpp");
+      }
       break;
   }
 }
+
+void Instance::pauseExecution(int line, string str) { /* Pauses the execution of the program for debbuging purposes */
+  cout << "\n[ EXECUTION PAUSED ON LINE '" << line << "' of file '" << str << "' ] _";
+  int pause = 0;
+  cin >> pause;
+  cout << endl;
+  return;
+}
+
+// cout << ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + 1)->edge_label << endl;
+// cout << ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + 1)->start_x_axis << endl;
+// cout << ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + 1)->start_y_axis << endl;
+// cout << ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + 1)->end_x_axis << endl;
+// cout << ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + 1)->end_y_axis << endl;
+// cout << ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + 1)->length << endl;
+// cout << ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + 1)->n_nodes_can_serve << endl;
+
+// cout << "Main: " << main_node_index << endl;
+// cout << "Pair: " << pair_aux << endl;
+// cout << "Edge: " << (edge_label_aux - artifial_edge_info_counter) << endl;
+// cout << "----------------------------------------------" << endl;
+// cout << ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_aux)).edges_between_info + (edge_label_aux - artifial_edge_info_counter))->edge_label << endl;
+// cout << "----------------------------------------------" << endl;
 
 /* Private methods */
  
