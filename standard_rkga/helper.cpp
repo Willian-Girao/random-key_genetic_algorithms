@@ -80,21 +80,23 @@ void setNodesPairSegmentedEdgeData(int value_index, double value, Instance *inst
 void fileLineHandler(int line_index, int value_index, double value, Instance *inst, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, int &nodes_can_be_served_counter) {
 	if (line_index == 0)
 	{
-		// cout << "	Accessing general metadata header... ";
+		/* Parsing general graphs data */
         initialInstanceData(value_index, value, inst);
 	} else if (line_index > 0 && line_index < (inst->getNumberOfOriginalNodes() + 1))
 	{
+		/* Parsing original node's graph's data */
         setOriginalNodeData(line_index, value_index, value, inst); 
 	} else if ((line_index > inst->getNumberOfOriginalNodes()) && !is_parsing_artificial_info)
 	{
 		artifial_edge_info_counter = 0; /* Reseting */
 		nodes_can_be_served_counter = 0; /* Reseting */
-		// cout << "	Processing artifially created graphs data..." << endl;
+		/* Parsing main_node -> pair_node data */
 		setNodesPairData(value_index, value, inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter);
 	} else if ((line_index > inst->getNumberOfOriginalNodes()) && is_parsing_artificial_info)
 	{
-		// cout << "	Processing artifially created edge metadata...";
-		// cout << value << endl;
+		// cout << "Value: " << value << endl;
+		// inst->pauseExecution(98, "parsing edge data");
+		/* Parsing artificial edges segmentation data */
 		setNodesPairSegmentedEdgeData(value_index, value, inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter, nodes_can_be_served_counter);
 	} else {
 		cout << " SHOULD NOT HAVE ENTERED HERE " << endl;
