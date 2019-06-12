@@ -25,11 +25,16 @@ int main() {
 
   consumeInstance(instance_file, &inst);
 
-  inst.printInstanceMetadata();
+  // inst.printInstanceMetadata();
 
-  cout << " FINISHED  " << endl;
+  cout << "\n[ FINISHED PROCESSING .txt ]\n";
 
-  inst.printPairsFromMainNode(0);
+  inst.printPairsFromMainNode(1,0);
+  inst.printPairsFromMainNode(1,1);
+  inst.printPairsFromMainNode(1,2);
+  inst.printPairsFromMainNode(1,3);
+  inst.printPairsFromMainNode(1,4);
+  inst.printPairsFromMainNode(1,5);
 
   // test(instance_file);
   // print(&inst);

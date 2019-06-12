@@ -88,27 +88,20 @@ void fileLineHandler(int line_index, int value_index, double value, Instance *in
         setOriginalNodeData(line_index, value_index, value, inst); 
 	} else if ((line_index > inst->getNumberOfOriginalNodes()) && !is_parsing_artificial_info)
 	{
-		artifial_edge_info_counter = 0; /* Reseting */
-		nodes_can_be_served_counter = 0; /* Reseting */
-		/* Parsing main_node -> pair_node data */
+		/* Parsing main_node -> pair_node data */		
 		setNodesPairData(value_index, value, inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter);
 	} else if ((line_index > inst->getNumberOfOriginalNodes()) && is_parsing_artificial_info)
 	{
-		// cout << "Value: " << value << endl;
-		// inst->pauseExecution(98, "parsing edge data");
 		/* Parsing artificial edges segmentation data */
 		setNodesPairSegmentedEdgeData(value_index, value, inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter, nodes_can_be_served_counter);
 	} else {
-		cout << " SHOULD NOT HAVE ENTERED HERE " << endl;
+		inst->pauseExecution(99,"WARNING - Uncaught case in file line 'helper.cpp'.");
 	}
 }
 
 void consumeInstance(ifstream& instance_file, Instance *inst) {
 	string str;
 	int line_index = 0;
-
-	cout << "Reading through instace file lines: " << endl;
-
 	int main_node_index = 0;
     int pair_node_index = 0;
     int artifial_edge_info_counter = 0;
@@ -135,7 +128,7 @@ void consumeInstance(ifstream& instance_file, Instance *inst) {
 	    /* Numerical content of the n-th line i the file */
 	    for (int i = 0; i < n_of_values; ++i)
 	    {
-	    	cout << (*(values + i)) << "*" << endl;
+	    	cout << "[ " << (*(values + i)) << " ]" << endl;
 	    	fileLineHandler(line_index, i, (*(values + i)), inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter, nodes_can_be_served_counter);
 	    }
 

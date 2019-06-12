@@ -46,25 +46,34 @@ class Instance {
     Node getBaseStation(); /* Gets the representation of the base station */
 
     /* Setters */
+
     void setSpeedNumber(int speeds_count);
     void setOriginalNodesNumber(int orig_nodes_n);
     void setTotalNodesNumber(int total_nodes);
-    void setNode(int index, double x, double y, double c_range, double t_rate, double demmand); /* Sets the properties of the node indexed by 'index' */
-    void setSpeed(int i, double x); /* Sets the value of the i-th possible speed */
+    /* Sets the properties of the node indexed by 'index' */
+    void setNode(int index, double x, double y, double c_range, double t_rate, double demmand);
+    /* Sets the value of the i-th possible speed */
+    void setSpeed(int i, double x);
     void setNodeX(int index, double x);
     void setNodeY(int index, double y);
     void setNodeCRange(int index, double c_range);
     void setNodeTRate(int index, double t_rate);
     void setNodeDemmand(int index, double demmand);
+    /* Sets up information associated to a pair of nodes in the file - [int main_node_id, int pair_node_id, double distance, int artificial_edges_between] */
     void setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter);
     void setNodePairEdgeData(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, int &nodes_can_be_served_counter);
 
     /* Helpers */
-    void printNode(int index); /* Prints the informations of a node indexed by 'index' */
-    void printSpeeds(void); /* Prints the allowed speed's values */
-    void printPairsFromMainNode(int main_node_index);
-    void printInstanceMetadata(void); /* Prints all the metadata associated with the graph */
-    void pauseExecution(int line, string str); /* Pauses the execution of the program for debbuging purposes */
+
+    /* Prints the informations of a node indexed by 'index' */
+    void printNode(int index);
+    /* Prints the allowed speed's values */
+    void printSpeeds(void);
+    /* Prints all the metadata associated with the graph */
+    void printInstanceMetadata(void);
+    /* Pauses the execution of the program for debbuging purposes */
+    void pauseExecution(int line, string str);
+    void printPairsFromMainNode(int main_node_index, int pair_index);
 
   private:
     int original_nodes_n; /* Number of nodes in the original graph */
