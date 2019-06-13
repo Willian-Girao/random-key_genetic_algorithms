@@ -145,16 +145,17 @@ void consumeInstance(ifstream& instance_file, Instance *inst) {
 	    /* Numerical content of the n-th line i the file */
 	    for (int i = 0; i < n_of_values; ++i)
 	    {
-	    	fileLineHandler(line_index, i, (*(values + i)), inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter, nodes_can_be_served_counter, done);
-	    }
-
-	    if (done)
-	    {
-	    	delete []values;
+	    	double current_value = (*(values + i));
+	    	fileLineHandler(line_index, i, current_value, inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter, nodes_can_be_served_counter, done);
+	    	cout << "[ " << current_value << " ]" << endl;
 	    }
 
 	    line_index++;
+	    str.clear();
+	    delete []values;
   }
+
+  instance_file.close();
 
   return;
 }

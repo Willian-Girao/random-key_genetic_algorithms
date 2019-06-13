@@ -296,7 +296,7 @@ void Instance::setNodePair(int value_index, double value, int &main_node_index, 
         // There is no artificial edge information -> no change in the line controlling parameters required
       }
       // cout << "main: " << main_node_index << " pair: " << pair_node_index << endl;
-      cout << "node pair info just set: " << main_node_index << " ";
+      cout << "Just finished parsing: " << main_node_index << " ";
       cout << ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->pair_id << " ";
       cout << ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->distance << " ";
       cout << ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->n_edges_between << endl;
