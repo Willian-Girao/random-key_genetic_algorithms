@@ -116,7 +116,6 @@ void fileLineHandler(int line_index, int value_index, double value, Instance *in
 }
 
 void consumeInstance(ifstream& instance_file, Instance *inst) {
-	cout << "[ done 1] \n";
 	string str;
 	int line_index = 0;
 	int main_node_index = 0;
@@ -146,7 +145,6 @@ void consumeInstance(ifstream& instance_file, Instance *inst) {
 	    /* Numerical content of the n-th line i the file */
 	    for (int i = 0; i < n_of_values; ++i)
 	    {
-	    	// cout << "[ " << (*(values + i)) << " ]" << endl;	    	
 	    	fileLineHandler(line_index, i, (*(values + i)), inst, main_node_index, pair_node_index, is_parsing_artificial_info, artifial_edge_info_counter, nodes_can_be_served_counter, done);
 	    }
 
@@ -157,8 +155,6 @@ void consumeInstance(ifstream& instance_file, Instance *inst) {
 
 	    line_index++;
   }
-
-  cout << "[ done] \n";
 
   return;
 }

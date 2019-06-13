@@ -27,5 +27,12 @@ int main() {
 
   cout << "\n[ FINISHED PROCESSING .txt ]\n";
 
+  inst.printPairsFromMainNode(0,0);
+  inst.printPairsFromMainNode(0,1);
+  inst.printPairsFromMainNode(0,2);
+  inst.printPairsFromMainNode(0,3);
+  inst.printPairsFromMainNode(0,4);
+  inst.printPairsFromMainNode(0,5);
+
   return 0;
 }
