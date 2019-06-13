@@ -12,19 +12,21 @@ using namespace std;
 Instance::Instance() {}
 
 Instance::~Instance() {
-  delete []speeds;
-  delete []original_nodes->paired_with_nodes_info->edges_between_info->ids_nodes_can_serve;
-  delete []original_nodes->paired_with_nodes_info->edges_between_info;
-  delete []original_nodes->paired_with_nodes_info;
+  delete []speeds;  
+  // delete []original_nodes->paired_with_nodes_info->edges_between_info->ids_nodes_can_serve;
+  // delete []original_nodes->paired_with_nodes_info->edges_between_info;
+  // delete []original_nodes->paired_with_nodes_info;
   delete []original_nodes;
-  cout << "\n> Instance object terminated" << endl;;
+  cout << "\n> Instance object terminated" << endl;
 }
 
+/* Sets number of total nodes - after pre-processing */
 void Instance::setTotalNodesNumber(int total_nodes) {
   total_nodes_n = total_nodes;
   return;
 }
 
+/* Used in pre-processing to reset structures of edges between pairs of nodes */
 void Instance::resetEdgesBetweenInfo(int main_node_index, int pair_node_index, int value) {
   // Initializing data struct to hold information regarding to artificial edges (segmented due to the presence of an artidial vertex)
   original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info = new EdgeData[value];
@@ -55,6 +57,7 @@ void Instance::resetEdgesBetweenInfo(int main_node_index, int pair_node_index, i
   return;
 }
 
+/* Used in pre-processing to reset structures of ids served in artificial edges between pairs of nodes */
 void Instance::resetIdsCanbeServed(int main_node_index, int pair_node_index, int value, int artificial_edge_pointer_index_counter) {
   original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[artificial_edge_pointer_index_counter].ids_nodes_can_serve = new int[value];
   for (int i = 0; i < value; ++i)
@@ -63,6 +66,7 @@ void Instance::resetIdsCanbeServed(int main_node_index, int pair_node_index, int
   }
 }
 
+/* Sets number of total original nodes - including the BS */
 void Instance::setOriginalNodesNumber(int orig_nodes_n) {
   original_nodes_n = orig_nodes_n;
   original_nodes = new Node[original_nodes_n];
@@ -122,6 +126,7 @@ void Instance::setOriginalNodesNumber(int orig_nodes_n) {
   return;
 }
 
+/* Sets number of possible speeds to be used */
 void Instance::setSpeedNumber(int speeds_count) {
   speeds_n = speeds_count;
   speeds = new double[speeds_n];
@@ -134,7 +139,8 @@ void Instance::setSpeedNumber(int speeds_count) {
   return;
 }
 
-void Instance::setSpeed(int i, double s) { /* Sets the value of the i-th possible speed to 's' */
+/* Sets the value of the i-th possible speed to 's' */
+void Instance::setSpeed(int i, double s) {
   if (i < 0 || i == speeds_n)
   {
     return;
@@ -145,7 +151,8 @@ void Instance::setSpeed(int i, double s) { /* Sets the value of the i-th possibl
   return;
 }
 
-int Instance::getNodesLabel(int index) { /* Gets the label of a node indexed by 'index' */
+/* Gets the label of a node indexed by 'index' */
+int Instance::getNodesLabel(int index) {
   if (index < 0 || index == original_nodes_n)
   {
     return (*(original_nodes)).label;
@@ -153,7 +160,8 @@ int Instance::getNodesLabel(int index) { /* Gets the label of a node indexed by 
   return (*(original_nodes + index)).label;
 }
 
-double Instance::getNodesX(int index) { /* Gets the x coordinate of a node indexed by 'index' */
+/* Gets the x coordinate of a node indexed by 'index' */
+double Instance::getNodesX(int index) {
   if (index < 0 || index == original_nodes_n)
   {
     return (*(original_nodes)).x_axis;
@@ -161,7 +169,8 @@ double Instance::getNodesX(int index) { /* Gets the x coordinate of a node index
   return (*(original_nodes + index)).x_axis;
 }
 
-double Instance::getNodesY(int index) { /* Gets the y coordinate of a node indexed by 'index' */
+/* Gets the y coordinate of a node indexed by 'index' */
+double Instance::getNodesY(int index) {
   if (index < 0 || index == original_nodes_n)
   {
     return (*(original_nodes)).y_axis;
@@ -169,7 +178,8 @@ double Instance::getNodesY(int index) { /* Gets the y coordinate of a node index
   return (*(original_nodes + index)).y_axis;
 }
 
-double Instance::getNodesCRange(int index) { /* Gets the communication rang of a node indexed by 'index' */
+/* Gets the communication rang of a node indexed by 'index' */
+double Instance::getNodesCRange(int index) {
   if (index < 0 || index == original_nodes_n)
   {
     return (*(original_nodes)).c_range;
@@ -177,7 +187,8 @@ double Instance::getNodesCRange(int index) { /* Gets the communication rang of a
   return (*(original_nodes + index)).c_range;
 }
 
-double Instance::getNodesTRate(int index) { /* Gets the transmition rate of a node indexed by 'index' */
+/* Gets the transmition rate of a node indexed by 'index' */
+double Instance::getNodesTRate(int index) {
   if (index < 0 || index == original_nodes_n)
   {
     return (*(original_nodes)).t_rate;
@@ -185,7 +196,8 @@ double Instance::getNodesTRate(int index) { /* Gets the transmition rate of a no
   return (*(original_nodes + index)).t_rate;
 }
 
-double Instance::getNodesDemmand(int index) { /* Gets the demmand of a node indexed by 'index' */
+/* Gets the demmand of a node indexed by 'index' */
+double Instance::getNodesDemmand(int index) {
   if (index < 0 || index == original_nodes_n)
   {
     return (*(original_nodes)).demmand;
@@ -193,7 +205,8 @@ double Instance::getNodesDemmand(int index) { /* Gets the demmand of a node inde
   return (*(original_nodes + index)).demmand;
 }
 
-Node Instance::getNode(int index) { /* Gets the representation of a node indexed by 'index' */
+/* Gets the representation of a node indexed by 'index' */
+Node Instance::getNode(int index) {
   if (index < 0 || index == original_nodes_n)
   {
     return (*(original_nodes));
@@ -201,11 +214,13 @@ Node Instance::getNode(int index) { /* Gets the representation of a node indexed
   return (*(original_nodes + index));
 }
 
-Node Instance::getBaseStation() { /* Gets the representation of the base station */
+/* Gets the representation of the base station */
+Node Instance::getBaseStation() {
   return (*(original_nodes));
 }
 
-void Instance::printNode(int index) { /* Prints the informations of a node indexed by 'index' */
+/* Prints the informations of a node indexed by 'index' */
+void Instance::printNode(int index) {
   if (index < 0 || index == original_nodes_n)
   {
     return;
@@ -221,7 +236,8 @@ void Instance::printNode(int index) { /* Prints the informations of a node index
   return;
 }
 
-void Instance::printSpeeds(void) { /* Prints the allowed speed's values */
+/* Prints the allowed speed's values */
+void Instance::printSpeeds(void) {
   cout << endl;
   for (int i = 0; i < speeds_n; ++i)
   {
@@ -232,7 +248,8 @@ void Instance::printSpeeds(void) { /* Prints the allowed speed's values */
   return;
 }
 
-void Instance::setNode(int index, double x, double y, double c_range, double t_rate, double demmand) { /* Sets the properties of the node indexed by 'index' */
+/* Sets the properties of the node indexed by 'index' */
+void Instance::setNode(int index, double x, double y, double c_range, double t_rate, double demmand) {
   if (index < 0 || index == original_nodes_n)
   {
     return;
@@ -247,70 +264,69 @@ void Instance::setNode(int index, double x, double y, double c_range, double t_r
   return;
 }
 
+/* Sets the x axis of the node indexd by 'index' */
 void Instance::setNodeX(int index, double x) {
   if (index < 0 || index == original_nodes_n)
   {
     return;
   }
 
-  // (*(original_nodes + index)).x_axis = x;
   original_nodes[index].x_axis = x;
 
   return;
 }
 
+/* Sets the y axis of the node indexd by 'index' */
 void Instance::setNodeY(int index, double y) {
   if (index < 0 || index == original_nodes_n)
   {
     return;
   }
 
-  // (*(original_nodes + index)).y_axis = y;
   original_nodes[index].y_axis = y;
 
   return;
 }
 
+/* Sets the communication range of the node indexd by 'index' */
 void Instance::setNodeCRange(int index, double c_range) {
   if (index < 0 || index == original_nodes_n)
   {
     return;
   }
 
-  // (*(original_nodes + index)).c_range = c_range;
   original_nodes[index].c_range = c_range;
 
   return;
 }
 
+/* Sets the transmission rate of the node indexd by 'index' */
 void Instance::setNodeTRate(int index, double t_rate) {
   if (index < 0 || index == original_nodes_n)
   {
     return;
   }
 
-  // (*(original_nodes + index)).t_rate = t_rate;
   original_nodes[index].t_rate = t_rate;
 
   return;
 }
 
+/* Sets the demmand of the node indexd by 'index' */
 void Instance::setNodeDemmand(int index, double demmand) {
   if (index < 0 || index == original_nodes_n)
   {
     return;
   }
 
-  // (*(original_nodes + index)).demmand = demmand;
   original_nodes[index].demmand = demmand;
 
   return;
 }
 
-void Instance::printInstanceMetadata(void) { /* Prints all the metadata associated with the graph */
-  cout << endl;
-
-  cout << "Original nodes: " << original_nodes_n << endl;
+/* Prints all the metadata associated with the graph */
+void Instance::printInstanceMetadata(void) {
+  cout << "\nOriginal nodes: " << original_nodes_n << endl;
   cout << "Total nodes: " << total_nodes_n << endl;
   cout << "Number of speeds: " << speeds_n << endl;
   
@@ -337,7 +353,8 @@ void Instance::printInstanceMetadata(void) { /* Prints all the metadata associat
   return;
 }
 
-int Instance::getNumberOfOriginalNodes(void) { /* Gets the number of original nodes in the graph */
+/* Gets the number of original nodes in the graph */
+int Instance::getNumberOfOriginalNodes(void) {
   return original_nodes_n;
 }
 
@@ -345,20 +362,20 @@ int Instance::getNumberOfOriginalNodes(void) { /* Gets the number of original no
 void Instance::setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, bool &done) {  
   switch(value_index) {
     case 0 :
-      /* ID of the current main node of the pair - should be equal to 'main_node_index' */      
+      // ID of the current main node of the pair - should be equal to 'main_node_index'
       main_node_index = int(value);      
       break;
     case 1 :
-      /* ID of the node being paired with the main node - should be equal to 'pair_node_index' */
+      // ID of the node being paired with the main node - should be equal to 'pair_node_index'
       pair_node_index = int(value);
       original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].pair_id = int(value);
       break;
     case 2 :
-      /* Distance between the two nodes */
+      // Distance between the two nodes
       original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].distance = value;
       break;
     case 3 :
-      /* Number of artificial edges (segments of the original edge) between the two nodes */
+      // Number of artificial edges (segments of the original edge) between the two nodes
       original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].n_edges_between = int(value); // Setting number of artificial edges (segmentation of an original edge)
       
       resetEdgesBetweenInfo(main_node_index, pair_node_index, int(value)); // Initializing data struct to hold information regarding to artificial edges (segmented due to the presence of an artidial vertex)
@@ -391,41 +408,41 @@ void Instance::setNodePairEdgeData(int value_index, double value, int &main_node
   int artificial_edge_pointer_index_counter = (total_artificial_edges - artifial_edge_info_counter); // Value starts as '0' and increases until it reaches...
   switch(value_index) {
     case 0 :
-      /* Artificial edge "label" */
+      // Artificial edge "label"
       original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[artificial_edge_pointer_index_counter].edge_label = int(value);
       break;
     case 1 :
-      /* Artificial edge starting node x axis */
+      // Artificial edge starting node x axis
       original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[artificial_edge_pointer_index_counter].start_x_axis = value;
       break;
     case 2 :
-      /* Artificial edge starting node y axis */
+      // Artificial edge starting node y axis
       original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[artificial_edge_pointer_index_counter].start_y_axis = value;
       break;
     case 3 :
-      /* Artificial edge ending node x axis */
+      // Artificial edge ending node x axis
       original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[artificial_edge_pointer_index_counter].end_x_axis = value;
       break;
     case 4 :
-      /* Artificial edge ending node y axis */
+      // Artificial edge ending node y axis
       original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[artificial_edge_pointer_index_counter].end_y_axis = value;
       break;
     case 5 :
-      /* Artificial edge length */
+      // Artificial edge length
       original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[artificial_edge_pointer_index_counter].length = value;
       break;
     case 6 :
-      /* Number of original nodes that can be served while crossing this artificial edge */
+      // Number of original nodes that can be served while crossing this artificial edge
       original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[artificial_edge_pointer_index_counter].n_nodes_can_serve = int(value);
 
       if (int(value) > 0)
       {
-        /* There are nodes that can be served */
+        // There are nodes that can be served
         // original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[artificial_edge_pointer_index_counter].ids_nodes_can_serve = new int[int(value) - 1];
         resetIdsCanbeServed(main_node_index, pair_node_index, int(value), artificial_edge_pointer_index_counter);
       } else
       {
-        /* There are no nodes that can be served */        
+        // There are no nodes that can be served
         // original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[artificial_edge_pointer_index_counter].ids_nodes_can_serve = new int[1];
         resetIdsCanbeServed(main_node_index, pair_node_index, 1, artificial_edge_pointer_index_counter);
 
@@ -438,7 +455,7 @@ void Instance::setNodePairEdgeData(int value_index, double value, int &main_node
 
         if (is_last_artificial_edge)
         {
-          /* This is the last artificial edge to be processed and the next line regards to node->pair information */
+          // This is the last artificial edge to be processed and the next line regards to node->pair information
           is_parsing_artificial_info = false;
         }
 
@@ -458,12 +475,11 @@ void Instance::setNodePairEdgeData(int value_index, double value, int &main_node
         // Ex.: number of nodes i can serve equals to 1 AND 'index_id_node_can_be_served' starts as 0 (always) -> when 'index_id_node_can_be_served' reaches '1' it means I've already parsed all the ids
         if (index_id_node_can_be_served < number_nodes_can_be_served)
         {
-          // *((((original_nodes + main_node_index)->paired_with_nodes_info + pair_node_index)->edges_between_info + artificial_edge_pointer_index_counter)->ids_nodes_can_serve + index_id_node_can_be_served) = int(value);
           original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[artificial_edge_pointer_index_counter].ids_nodes_can_serve[index_id_node_can_be_served] = int(value);
           nodes_can_be_served_counter--; // Decreasing account for the accounting of an id I can serve. Ex.: 4 -> 3 == "Out of 4 id's there are 3 left to set"
         } else
         {
-          /* There are no nodes that can be served while in this edge */
+          // There are no nodes that can be served while in this edge
         }
         
         // "Label" of the current artificial edge being processed
@@ -478,22 +494,23 @@ void Instance::setNodePairEdgeData(int value_index, double value, int &main_node
         //    2 - i have already processed all the ids of the nodes that can be served in this edge
         if ((nodes_can_be_served_counter == 0) && is_last_artificial_edge)
         {       
-          /* Not parsing segmented edge information anymore */
+          // Not parsing segmented edge information anymore
           is_parsing_artificial_info = false;
         } else if (nodes_can_be_served_counter == 0)
         {
-          /* There are no nodes that can be served while in this edge - just go to the next line in the file */
+          // There are no nodes that can be served while in this edge - just go to the next line in the file
           artifial_edge_info_counter--; // Go to net artificial edge
         } else
         {
-          /* There are still ids of nodes that can be served to be parsed - do nothing here */
+          // There are still ids of nodes that can be served to be parsed - do nothing here
         }        
       }
       break;
   }
 }
 
-void Instance::pauseExecution(int line, string str) { /* Pauses the execution of the program for debbuging purposes */
+/* Pauses the execution of the program for debbuging purposes */
+void Instance::pauseExecution(int line, string str) {
   cout << "\n[ EXECUTION PAUSED ON LINE '" << line << "' -> '" << str << "' ] _: ";
   int pause = 0;
   cin >> pause;
@@ -501,6 +518,7 @@ void Instance::pauseExecution(int line, string str) { /* Pauses the execution of
   return;
 }
 
+/* Prints all the metadata associated all pairs of original nodes */
 void Instance::printPairsRelatedInfo(void) {
   for (int i = 0; i < original_nodes_n; ++i)
   {

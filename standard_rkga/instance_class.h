@@ -33,8 +33,10 @@ struct Node { /* Data associated to a node */
 
 class Instance {
   public:
+    /* Constructor and Destructor */
     Instance();
     ~Instance();
+
     /* Getters */
     int getNodesLabel(int index); /* Gets the label of a node indexed by 'index' */
     double getNodesX(int index); /* Gets the x coordinate of a node indexed by 'index' */
@@ -47,36 +49,41 @@ class Instance {
     Node getBaseStation(); /* Gets the representation of the base station */
 
     /* Setters */
-
+    /* Sets number of possible speeds to be used */
     void setSpeedNumber(int speeds_count);
+    /* Sets number of total original nodes - including the BS */
     void setOriginalNodesNumber(int orig_nodes_n);
+    /* Sets number of total nodes - after pre-processing */
     void setTotalNodesNumber(int total_nodes);
     /* Sets the properties of the node indexed by 'index' */
     void setNode(int index, double x, double y, double c_range, double t_rate, double demmand);
     /* Sets the value of the i-th possible speed */
     void setSpeed(int i, double x);
+    /* Sets the x axis of the node indexd by 'index' */
     void setNodeX(int index, double x);
+    /* Sets the y axis of the node indexd by 'index' */
     void setNodeY(int index, double y);
+    /* Sets the communication range of the node indexd by 'index' */
     void setNodeCRange(int index, double c_range);
+    /* Sets the transmission rate of the node indexd by 'index' */
     void setNodeTRate(int index, double t_rate);
+    /* Sets the demmand of the node indexd by 'index' */
     void setNodeDemmand(int index, double demmand);
     /* Sets up information associated to a pair of nodes in the file - [int main_node_id, int pair_node_id, double distance, int artificial_edges_between] */
     void setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, bool &done);
+    /* Sets up the meta-information associated to a pair of nodes */
     void setNodePairEdgeData(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, int &nodes_can_be_served_counter);
+    /* Used in pre-processing to reset structures of edges between pairs of nodes */
     void resetEdgesBetweenInfo(int main_node_index, int pair_node_index, int value);
+    /* Used in pre-processing to reset structures of ids served in artificial edges between pairs of nodes */
     void resetIdsCanbeServed(int main_node_index, int pair_node_index, int value, int artificial_edge_pointer_index_counter);
 
-    /* Helpers */
-
-    /* Prints the informations of a node indexed by 'index' */
-    void printNode(int index);
-    /* Prints the allowed speed's values */
-    void printSpeeds(void);
-    /* Prints all the metadata associated with the graph */
-    void printInstanceMetadata(void);
-    /* Pauses the execution of the program for debbuging purposes */
-    void pauseExecution(int line, string str);
-    void printPairsRelatedInfo(void);
+    /* Helpers */    
+    void printNode(int index); /* Prints the informations of a node indexed by 'index' */    
+    void printSpeeds(void); /* Prints the allowed speed's values */    
+    void printInstanceMetadata(void); /* Prints all the metadata associated with the graph */    
+    void pauseExecution(int line, string str); /* Pauses the execution of the program for debbuging purposes */    
+    void printPairsRelatedInfo(void); /* Prints all the metadata associated all pairs of original nodes */
 
   private:
     int original_nodes_n; /* Number of nodes in the original graph */
