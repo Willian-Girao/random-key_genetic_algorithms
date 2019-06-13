@@ -12,15 +12,12 @@ using namespace std;
 Instance::Instance() {}
 
 Instance::~Instance() {
-  cout << "asdsds\n";
-  delete []speeds;  
-  cout << "end\n";
+  delete []speeds;
+  delete []original_nodes->paired_with_nodes_info->edges_between_info->ids_nodes_can_serve;
+  delete []original_nodes->paired_with_nodes_info->edges_between_info;
+  delete []original_nodes->paired_with_nodes_info;
   delete []original_nodes;
-  cout << "end2\n";
-  // delete []original_nodes->paired_with_nodes_info->edges_between_info;
-  // delete []original_nodes->paired_with_nodes_info;
-  // delete []original_nodes;  
-  cout << "end\n";
+  cout << "\n> Instance object terminated" << endl;;
 }
 
 void Instance::setTotalNodesNumber(int total_nodes) {
@@ -364,13 +361,11 @@ void Instance::setNodePair(int value_index, double value, int &main_node_index, 
       /* Number of artificial edges (segments of the original edge) between the two nodes */
       original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].n_edges_between = int(value); // Setting number of artificial edges (segmentation of an original edge)
       
-      // original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info = new EdgeData[int(value)]; // Initializing data struct to hold information regarding to artificial edges (segmented due to the presence of an artidial vertex)
-      resetEdgesBetweenInfo(main_node_index, pair_node_index, int(value));
+      resetEdgesBetweenInfo(main_node_index, pair_node_index, int(value)); // Initializing data struct to hold information regarding to artificial edges (segmented due to the presence of an artidial vertex)
 
       if (int(value) > 0) // There is information regarding the artificial edges to be processed
       {
-        is_parsing_artificial_info = true;
-        artifial_edge_info_counter = int(value); // Value will be decreased while parsing artificial info in order to know the list positioning of the i-th artificial edge data
+        is_parsing_artificial_info = true;        
       } else 
       {
         // There is no artificial edge information -> no change in the line controlling parameters required
@@ -379,6 +374,7 @@ void Instance::setNodePair(int value_index, double value, int &main_node_index, 
       {
         done = true;        
       }
+      artifial_edge_info_counter = int(value); // Value will be decreased while parsing artificial info in order to know the list positioning of the i-th artificial edge data
       break;
     default :
       pauseExecution(288,"WARNING - Uncaught case in 'instance_class.cpp'.");
@@ -445,6 +441,8 @@ void Instance::setNodePairEdgeData(int value_index, double value, int &main_node
           /* This is the last artificial edge to be processed and the next line regards to node->pair information */
           is_parsing_artificial_info = false;
         }
+
+        artifial_edge_info_counter--; // Go to net artificial edge
       }
 
       nodes_can_be_served_counter = int(value); // Counter will be decreased in order to calculate the index of the processed "served node id" within the list of ids that can be served while passing through this edge
@@ -479,12 +477,13 @@ void Instance::setNodePairEdgeData(int value_index, double value, int &main_node
         //    1 - current artificial edge being processed can't serve no original node
         //    2 - i have already processed all the ids of the nodes that can be served in this edge
         if ((nodes_can_be_served_counter == 0) && is_last_artificial_edge)
-        {          
+        {       
           /* Not parsing segmented edge information anymore */
           is_parsing_artificial_info = false;
         } else if (nodes_can_be_served_counter == 0)
         {
           /* There are no nodes that can be served while in this edge - just go to the next line in the file */
+          artifial_edge_info_counter--; // Go to net artificial edge
         } else
         {
           /* There are still ids of nodes that can be served to be parsed - do nothing here */
@@ -502,10 +501,35 @@ void Instance::pauseExecution(int line, string str) { /* Pauses the execution of
   return;
 }
 
-void Instance::printPairsFromMainNode(int main_node_index, int pair_index) {
-  cout << main_node_index << " ";
-  cout << original_nodes[main_node_index].paired_with_nodes_info[pair_index].pair_id << " ";
-  cout << original_nodes[main_node_index].paired_with_nodes_info[pair_index].distance << " ";
-  cout << original_nodes[main_node_index].paired_with_nodes_info[pair_index].n_edges_between << endl;
+void Instance::printPairsRelatedInfo(void) {
+  for (int i = 0; i < original_nodes_n; ++i)
+  {
+    for (int j = 0; j < original_nodes_n; ++j)
+    {
+      cout << i << "  ";
+      cout << original_nodes[i].paired_with_nodes_info[j].pair_id << "  ";
+      cout << original_nodes[i].paired_with_nodes_info[j].distance << "  ";
+      cout << original_nodes[i].paired_with_nodes_info[j].n_edges_between << endl;
+
+      for (int k = 0; k < original_nodes[i].paired_with_nodes_info[j].n_edges_between; ++k)
+      {
+        cout << original_nodes[i].paired_with_nodes_info[j].edges_between_info[k].edge_label << "  ";
+        cout << original_nodes[i].paired_with_nodes_info[j].edges_between_info[k].start_x_axis << "  ";
+        cout << original_nodes[i].paired_with_nodes_info[j].edges_between_info[k].start_y_axis << "  ";
+        cout << original_nodes[i].paired_with_nodes_info[j].edges_between_info[k].end_x_axis << "  ";
+        cout << original_nodes[i].paired_with_nodes_info[j].edges_between_info[k].end_y_axis << "  ";
+        cout << original_nodes[i].paired_with_nodes_info[j].edges_between_info[k].length << "  ";
+        cout << original_nodes[i].paired_with_nodes_info[j].edges_between_info[k].n_nodes_can_serve << "  ";
+
+        for (int l = 0; l < original_nodes[i].paired_with_nodes_info[j].edges_between_info[k].n_nodes_can_serve; ++l)
+        {
+          cout << original_nodes[i].paired_with_nodes_info[j].edges_between_info[k].ids_nodes_can_serve[l] << "  ";
+        }
+        cout << endl;
+      }
+      cout << endl;
+    }
+    cout << endl;
+  }
 }
  

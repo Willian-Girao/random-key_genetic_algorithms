@@ -76,7 +76,7 @@ class Instance {
     void printInstanceMetadata(void);
     /* Pauses the execution of the program for debbuging purposes */
     void pauseExecution(int line, string str);
-    void printPairsFromMainNode(int main_node_index, int pair_index);
+    void printPairsRelatedInfo(void);
 
   private:
     int original_nodes_n; /* Number of nodes in the original graph */
