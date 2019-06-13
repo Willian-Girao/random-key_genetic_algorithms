@@ -11,6 +11,18 @@ using namespace std;
 /* Public methods */
 Instance::Instance() {}
 
+Instance::~Instance() {
+  cout << "asdsds\n";
+  delete []speeds;  
+  cout << "end\n";
+  delete []original_nodes;
+  cout << "end2\n";
+  // delete []original_nodes->paired_with_nodes_info->edges_between_info;
+  // delete []original_nodes->paired_with_nodes_info;
+  // delete []original_nodes;  
+  cout << "end\n";
+}
+
 void Instance::setTotalNodesNumber(int total_nodes) {
   total_nodes_n = total_nodes;
   return;
@@ -255,29 +267,25 @@ int Instance::getNumberOfOriginalNodes(void) { /* Gets the number of original no
 }
 
 /* Sets up information associated to a pair of nodes in the file - [int main_node_id, int pair_node_id, double distance, int artificial_edges_between] */
-void Instance::setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter) {
-  /* 
-      ERROR - When starting to parse pair 1 0, the pair 0 4 is being reset with these line values
-    this means that 'main_node_index' is being set to '0' and 'pair_node_index' to '4'.
-  */
+void Instance::setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, bool &done) {  
   switch(value_index) {
     case 0 :
-      /* ID of the current main node of the pair - should be equal to 'main_node_index' */
+      /* ID of the current main node of the pair - should be equal to 'main_node_index' */      
       main_node_index = int(value);      
       break;
     case 1 :
       /* ID of the node being paired with the main node - should be equal to 'pair_node_index' */
       pair_node_index = int(value);
-      ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->pair_id = int(value);
+      (*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)).pair_id = int(value);
       break;
     case 2 :
       /* Distance between the two nodes */
-      ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->distance = value;
+      (*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)).distance = value;
       break;
     case 3 :
       /* Number of artificial edges (segments of the original edge) between the two nodes */            
-      ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->n_edges_between = int(value); // Setting number of artificial edges (segmentation of an original edge)
-      ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->edges_between_info = new EdgeData; // Initializing data struct to hold information regarding to artificial edges (segmented due to the presence of an artidial vertex)      
+      (*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)).n_edges_between = int(value); // Setting number of artificial edges (segmentation of an original edge)
+      (*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)).edges_between_info = new EdgeData[int(value)]; // Initializing data struct to hold information regarding to artificial edges (segmented due to the presence of an artidial vertex)      
 
       if (int(value) > 0) // There is information regarding the artificial edges to be processed
       {
@@ -287,6 +295,21 @@ void Instance::setNodePair(int value_index, double value, int &main_node_index, 
       {
         // There is no artificial edge information -> no change in the line controlling parameters required
       }
+      // cout << "main: " << main_node_index << " pair: " << pair_node_index << endl;
+      cout << "node pair info just set: " << main_node_index << " ";
+      cout << ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->pair_id << " ";
+      cout << ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->distance << " ";
+      cout << ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->n_edges_between << endl;
+      // cout << "\n----------------------------------------------------------------------------" << endl;
+      // cout << ((*(original_nodes + 0)).paired_with_nodes_info + 5)->pair_id << " ";
+      // cout << ((*(original_nodes + 0)).paired_with_nodes_info + 5)->distance << " ";
+      // cout << ((*(original_nodes + 0)).paired_with_nodes_info + 5)->n_edges_between << endl;
+      // cout << "----------------------------------------------------------------------------" << endl;
+      // pauseExecution(5,"PAIR LINE HAS JUST BEEN PARSED");
+      if (main_node_index == (getNumberOfOriginalNodes()-1) && pair_node_index == (getNumberOfOriginalNodes()-1))
+      {
+        done = true;        
+      }
       break;
     default :
       pauseExecution(288,"WARNING - Uncaught case in 'instance_class.cpp'.");
@@ -295,8 +318,12 @@ void Instance::setNodePair(int value_index, double value, int &main_node_index, 
 }
 
 void Instance::setNodePairEdgeData(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, int &nodes_can_be_served_counter) {
+  if (main_node_index == (getNumberOfOriginalNodes()-1) && pair_node_index == (getNumberOfOriginalNodes()-1))
+  {
+    return;
+  }
   int total_artificial_edges = ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->n_edges_between;
-  int artificial_edge_pointer_index_counter = (total_artificial_edges - artifial_edge_info_counter); // Value starts as '0' and increases until it reaches...
+  int artificial_edge_pointer_index_counter = (total_artificial_edges - artifial_edge_info_counter); // Value starts as '0' and increases until it reaches...  
   switch(value_index) {
     case 0 :
       /* Artificial edge "label" */
@@ -332,16 +359,45 @@ void Instance::setNodePairEdgeData(int value_index, double value, int &main_node
         ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)).edges_between_info + artificial_edge_pointer_index_counter)->ids_nodes_can_serve = new int[int(value) - 1];        
       } else
       {
-        /* There are no nodes that can be served */
-        ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)).edges_between_info + artificial_edge_pointer_index_counter)->ids_nodes_can_serve = new int[1];        
+        /* There are no nodes that can be served */        
+        ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)).edges_between_info + artificial_edge_pointer_index_counter)->ids_nodes_can_serve = new int[1];
+
+        // "Label" of the current artificial edge being processed
+        int current_artificial_edge_label = ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)).edges_between_info + artificial_edge_pointer_index_counter)->edge_label;
+        // Total of artificial edges that must be processed
+        int number_of_artificial_edges_to_process = ((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->n_edges_between;
+        // Tells me if the current line being processd is the last artificial edge to be processed for now
+        bool is_last_artificial_edge = (current_artificial_edge_label == number_of_artificial_edges_to_process);
+
+        if (is_last_artificial_edge)
+        {
+          /* This is the last artificial edge to be processed and the next line regards to node->pair information */
+          is_parsing_artificial_info = false;
+        }
       }
 
       nodes_can_be_served_counter = int(value); // Counter will be decreased in order to calculate the index of the processed "served node id" within the list of ids that can be served while passing through this edge
+      // if (((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->distance == 989)
+      // {
+      //   cout << "\n----------------------------------------------------------------------------" << endl;
+      //   cout << ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)).edges_between_info + artificial_edge_pointer_index_counter)->length << endl;
+      //   cout << "----------------------------------------------------------------------------" << endl;
+      //   pauseExecution(int(value),"HERE");
+      // }
       break;
     default :
       if (value_index > 6)
       {
         int number_nodes_can_be_served = ((*((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)).edges_between_info + artificial_edge_pointer_index_counter)->n_nodes_can_serve;
+        // if (((*(original_nodes + main_node_index)).paired_with_nodes_info + pair_node_index)->distance == 989)
+        // {
+        //   cout << "\n----------------------------------------------------------------------------" << endl;
+        //   cout << ((*(original_nodes + 1)).paired_with_nodes_info + 0)->pair_id << " ";
+        //   cout << ((*(original_nodes + 1)).paired_with_nodes_info + 0)->distance << " ";
+        //   cout << ((*(original_nodes + 1)).paired_with_nodes_info + 0)->n_edges_between << endl;
+        //   cout << "----------------------------------------------------------------------------" << endl;
+        //   pauseExecution(int(value),"HERE");
+        // }
 
         // 'index_id_node_can_be_served' is the value that will be added to the pointer that points to the ids that can be served while in this edge
         int index_id_node_can_be_served = number_nodes_can_be_served - nodes_can_be_served_counter; // Value starts as '0' and increases until it is equal to the number of ids i can serve
@@ -367,7 +423,7 @@ void Instance::setNodePairEdgeData(int value_index, double value, int &main_node
         //    1 - current artificial edge being processed can't serve no original node
         //    2 - i have already processed all the ids of the nodes that can be served in this edge
         if ((nodes_can_be_served_counter == 0) && is_last_artificial_edge)
-        {
+        {          
           /* Not parsing segmented edge information anymore */
           is_parsing_artificial_info = false;
         } else if (nodes_can_be_served_counter == 0)

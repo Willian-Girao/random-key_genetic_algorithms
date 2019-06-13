@@ -34,6 +34,7 @@ struct Node { /* Data associated to a node */
 class Instance {
   public:
     Instance();
+    ~Instance();
     /* Getters */
     int getNodesLabel(int index); /* Gets the label of a node indexed by 'index' */
     double getNodesX(int index); /* Gets the x coordinate of a node indexed by 'index' */
@@ -60,7 +61,7 @@ class Instance {
     void setNodeTRate(int index, double t_rate);
     void setNodeDemmand(int index, double demmand);
     /* Sets up information associated to a pair of nodes in the file - [int main_node_id, int pair_node_id, double distance, int artificial_edges_between] */
-    void setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter);
+    void setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, bool &done);
     void setNodePairEdgeData(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, int &nodes_can_be_served_counter);
 
     /* Helpers */
