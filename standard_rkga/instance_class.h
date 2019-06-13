@@ -38,15 +38,26 @@ class Instance {
     ~Instance();
 
     /* Getters */
+    int getNumberOfOriginalNodes(void); /* Gets the number of original nodes in the graph */
     int getNodesLabel(int index); /* Gets the label of a node indexed by 'index' */
     double getNodesX(int index); /* Gets the x coordinate of a node indexed by 'index' */
     double getNodesY(int index); /* Gets the y coordinate of a node indexed by 'index' */
     double getNodesCRange(int index); /* Gets the communication rang of a node indexed by 'index' */
     double getNodesTRate(int index); /* Gets the transmition rate of a node indexed by 'index' */
-    double getNodesDemmand(int index); /* Gets the demmand of a node indexed by 'index' */
-    int getNumberOfOriginalNodes(void); /* Gets the number of original nodes in the graph */
+    double getNodesDemmand(int index); /* Gets the demmand of a node indexed by 'index' */    
     Node getNode(int index); /* Gets the representation of a node indexed by 'index' */
     Node getBaseStation(); /* Gets the representation of the base station */
+    
+    /* Getters - Objective function evaluation helpers | AE - Artificial Edge | BP - Between Pairs' | Values regarding metadata between two consecutive nodes */
+    int getNumberOfAEBP(int main_node_index, int pair_node_index); /* Returns the number of artificial edges */
+    int getAENumberNodeCanBeServed(int main_node_index, int pair_node_index, int ae_index); /* Returns the number of nodes that can be served in 'ed_index' */    
+    double getDistanceBP(int main_node_index, int pair_node_index); /* Returns the distance */    
+    double getAExStartAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the x starting coordinate of 'ed_index' */
+    double getAEyStartAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the y starting coordinate of 'ed_index' */
+    double getAExEndAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the x ending coordinate of 'ed_index' */
+    double getAEyEndAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the y ending coordinate of 'ed_index' */
+    double getAELength(int main_node_index, int pair_node_index, int ae_index); /* Returns the length of 'ed_index' */
+    bool canXbeServedInAE(int main_node_index, int pair_node_index, int ae_index, int x); /* Returns true if 'x' can be served in 'ed_index' - false otherwise */
 
     /* Setters */
     /* Sets number of possible speeds to be used */

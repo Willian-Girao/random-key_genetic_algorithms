@@ -550,4 +550,61 @@ void Instance::printPairsRelatedInfo(void) {
     cout << endl;
   }
 }
+
+
+/* Getters - Objective function evaluation helpers | AE - Artificial Edge | BP - Between Pairs' | Values regarding metadata between two consecutive nodes */
+
+/* Returns the number of artificial edges */
+int Instance::getNumberOfAEBP(int main_node_index, int pair_node_index) {
+  return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].n_edges_between;
+};
+
+/* Returns the number of nodes that can be served in 'ed_index' */
+int Instance::getAENumberNodeCanBeServed(int main_node_index, int pair_node_index, int ae_index) {
+  return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].n_nodes_can_serve;
+};
+
+/* Returns the distance */    
+double Instance::getDistanceBP(int main_node_index, int pair_node_index) {
+  return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].distance;
+};
+
+/* Returns the x starting coordinate of 'ed_index' */
+double Instance::getAExStartAxis(int main_node_index, int pair_node_index, int ae_index) {
+  return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].start_x_axis;
+}; 
+
+/* Returns the y starting coordinate of 'ed_index' */
+double Instance::getAEyStartAxis(int main_node_index, int pair_node_index, int ae_index) {
+  return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].start_y_axis;
+}; 
+
+/* Returns the x ending coordinate of 'ed_index' */
+double Instance::getAExEndAxis(int main_node_index, int pair_node_index, int ae_index) {
+  return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].end_x_axis;
+}; 
+
+/* Returns the y ending coordinate of 'ed_index' */
+double Instance::getAEyEndAxis(int main_node_index, int pair_node_index, int ae_index) {
+  return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].end_y_axis;
+}; 
+
+/* Returns the length of 'ed_index' */
+double Instance::getAELength(int main_node_index, int pair_node_index, int ae_index) {
+  return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].length;
+}; 
+
+/* Returns true if 'x' can be served in 'ed_index' - false otherwise */
+bool Instance::canXbeServedInAE(int main_node_index, int pair_node_index, int ae_index, int x) {
+  bool canBeServed = false;
+  int n_nodes_can_be_served = original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].n_nodes_can_serve;
+  for (int i = 0; i < n_nodes_can_be_served; ++i)
+  {
+    if (original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].ids_nodes_can_serve[i] == x)
+    {
+      canBeServed = true;
+    }
+  }
+  return canBeServed;
+};
  
