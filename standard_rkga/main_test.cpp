@@ -29,20 +29,37 @@ int main() {
 
   inst.printPairsRelatedInfo();
 
-  cout << "\n> " << inst.getNumberOfAEBP(5,3) << endl;
-  cout << "\n> " << inst.getDistanceBP(5,3) << endl;
-  cout << "\n> " << inst.getAExStartAxis(5,3,4) << endl;
-  cout << "\n> " << inst.getAEyStartAxis(5,3,4) << endl;
-  cout << "\n> " << inst.getAExEndAxis(5,3,4) << endl;
-  cout << "\n> " << inst.getAEyEndAxis(5,3,4) << endl;
-  cout << "\n> " << inst.getAELength(5,3,4) << endl;
-  cout << "\n> " << inst.getAENumberNodeCanBeServed(5,3,4) << endl;
-  if (inst.canXbeServedInAE(5,3,4,3))
+  // cout << "\n> " << inst.getNumberOfAEBP(5,3) << endl;
+  // cout << "\n> " << inst.getDistanceBP(5,3) << endl;
+  // cout << "\n> " << inst.getAExStartAxis(5,3,4) << endl;
+  // cout << "\n> " << inst.getAEyStartAxis(5,3,4) << endl;
+  // cout << "\n> " << inst.getAExEndAxis(5,3,4) << endl;
+  // cout << "\n> " << inst.getAEyEndAxis(5,3,4) << endl;
+  // cout << "\n> " << inst.getAELength(5,3,4) << endl;
+  // cout << "\n> " << inst.getAENumberNodeCanBeServed(5,3,4) << endl;
+  // if (inst.canXbeServedInAE(5,3,4,3))
+  // {
+  // 	cout << "\n> True" << endl;
+  // } else {
+  // 	cout << "\n> False" << endl;
+  // }
+
+  SolutionStruct *solution;
+
+  for (int i = 0; i < 6; ++i)
   {
-  	cout << "\n> True" << endl;
-  } else {
-  	cout << "\n> False" << endl;
+    SolutionStruct newSol;
+
+    newSol.node = i;
+    newSol.demand = inst.getNodesDemmand(i);
+
+    solution[i] = newSol;
   }
+
+  // cout << solution[0].node << endl;
+  // cout << solution[1].node << endl;
+
+  inst.evaluateSolution(solution, 1.0);
 
   return 0;
 }

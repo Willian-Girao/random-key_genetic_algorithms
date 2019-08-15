@@ -3,6 +3,11 @@
 
 using namespace std;
 
+struct SolutionStruct {
+    int node;
+    double demand;
+};
+
 struct EdgeData { /* Holds the information assiciated to 'w' edges - created due to presence of artificial node */
     int edge_label; /* Edge identifier */
     double start_x_axis; /* X-start coordiante in the plane */
@@ -26,7 +31,7 @@ struct Node { /* Data associated to a node */
     double x_axis; /* X coordiante in the plane */
     double y_axis; /* Y coordiante in the plane */
     double c_range; /* Communication range */
-    double t_rate; /* Transmition rate */
+    double t_rate; /* Transmition rate - amount of data it transfers per unit of time */
     double demmand; /* Information menaging demand */
     NodePairInfo *paired_with_nodes_info; /* Information regarding this node being connected to another node 'x' */
 };
@@ -58,6 +63,8 @@ class Instance {
     double getAEyEndAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the y ending coordinate of 'ed_index' */
     double getAELength(int main_node_index, int pair_node_index, int ae_index); /* Returns the length of 'ed_index' */
     bool canXbeServedInAE(int main_node_index, int pair_node_index, int ae_index, int x); /* Returns true if 'x' can be served in 'ed_index' - false otherwise */
+
+    double evaluateSolution(SolutionStruct *solution, double muleVelocity);
 
     /* Setters */
     /* Sets number of possible speeds to be used */

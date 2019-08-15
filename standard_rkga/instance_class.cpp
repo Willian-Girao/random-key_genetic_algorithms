@@ -607,4 +607,93 @@ bool Instance::canXbeServedInAE(int main_node_index, int pair_node_index, int ae
   }
   return canBeServed;
 };
- 
+
+// 'ae' stands for Artificial Edge.
+double Instance::evaluateSolution(SolutionStruct *solution, double muleVelocity) {
+  //TODO where there is a '6' put the actual number of nodes in G + 1 (solution vector size).
+  double totalTimeElapsed = 0.0;
+  double timeElapsedServing = 0.0;
+  double demandMet = 0.0;
+  double totalDemand = 0.0;
+
+  for (int i = 0; i < 6; ++i)
+  {
+    cout << solution[i].demand << endl;
+  }
+
+  // Calculating total demand.
+  for (int i = 0; i < 6; ++i)
+  {
+    totalDemand += getNodesDemmand(i);    
+  }
+
+  for (int i = 0; i < 6; ++i)
+  {
+    if (i < (6-1))
+    {
+      int nodeA = solution[i].node;
+      int nodeB = solution[i+1].node;
+      int aeBetween = getNumberOfAEBP(nodeA, nodeB);      
+
+      // Acounting time to cross edge between main nodes under consideration.
+      totalTimeElapsed += getDistanceBP(nodeA, nodeB) / muleVelocity;
+
+      // Going through the artificial edges metadata ('j' is an artificial node "id").
+      for (int j = (aeBetween-1); j >= 0; --j)
+      {
+        int countAux = 0;        
+        int numNodesCanServe = getAENumberNodeCanBeServed(nodeA, nodeB, j);
+        double aeLength = getAELength(nodeA, nodeB, j);
+        double timeInJ = aeLength / muleVelocity;
+        double timeLeftInJ = timeInJ;
+
+        // Getting G's nodes that can be served in 'j'.
+        for (int k = 0; k < 6; ++k)
+        {
+          // Processing information regarding each node that can be served by 'j'.
+          if (canXbeServedInAE(nodeA, nodeB, j, k) && (timeLeftInJ > 0) && (solution[k].demand > 0))
+          {
+            double timeRequired = solution[k].demand / getNodesTRate(k); // Amount of time the node requires to transmit its data.
+            double timeUnitsLeft = timeLeftInJ - timeRequired;            
+
+            if (timeUnitsLeft > 0)
+            {
+              // There is still time left in 'j' to serve another node.
+              demandMet += solution[k].demand; // Accounting demand attended.              
+              timeLeftInJ -= timeRequired;
+              timeElapsedServing += timeRequired;
+
+              // cout << solution[k].demand << " (" << k << ")" << endl;
+              solution[k].demand -= solution[k].demand;              
+            } else {
+              // Time in 'j' not enought to serve the whole demand of 'k'.
+              double timeUsedUpPositive = timeRequired - timeLeftInJ;
+
+              demandMet += timeUsedUpPositive * solution[k].demand; // Accounting demand attended.              
+              timeLeftInJ -= timeUsedUpPositive;
+              timeElapsedServing += timeInJ - timeLeftInJ;
+
+              // cout << (timeUsedUpPositive * solution[k].demand) << " (" << k << ")" << endl;
+              solution[k].demand -= (timeUsedUpPositive * solution[k].demand);           
+            }
+          }
+        }
+
+        // Finished parsing artificial edge metadata.
+      }
+    }
+  }
+
+  cout << "Total demand: " + std::to_string(totalDemand) << endl;
+  cout << "Total demand met: " + std::to_string(demandMet) << endl;
+
+  cout << "\nTotal time: " + std::to_string(totalTimeElapsed) << endl;
+  cout << "Total time serving: " + std::to_string(timeElapsedServing) << endl;  
+
+  for (int i = 0; i < 6; ++i)
+  {
+    cout << solution[i].demand << endl;
+  }
+  
+  return 1.2;
+};
