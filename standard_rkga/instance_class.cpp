@@ -616,24 +616,26 @@ double Instance::evaluateSolution(SolutionStruct *solution, double muleVelocity)
   double demandMet = 0.0;
   double totalDemand = 0.0;
 
-  for (int i = 0; i < 6; ++i)
+  for (int i = 0; i < 7; ++i)
   {
     cout << solution[i].demand << endl;
   }
 
   // Calculating total demand.
-  for (int i = 0; i < 6; ++i)
+  for (int i = 0; i < 7; ++i)
   {
     totalDemand += getNodesDemmand(i);    
   }
 
-  for (int i = 0; i < 6; ++i)
+  for (int i = 0; i < 7; ++i)
   {
-    if (i < (6-1))
+    if (i < (7-1))
     {
       int nodeA = solution[i].node;
       int nodeB = solution[i+1].node;
-      int aeBetween = getNumberOfAEBP(nodeA, nodeB);      
+      int aeBetween = getNumberOfAEBP(nodeA, nodeB);
+
+      cout << "(" << nodeA << ", " << nodeB << ")" << endl;
 
       // Acounting time to cross edge between main nodes under consideration.
       totalTimeElapsed += getDistanceBP(nodeA, nodeB) / muleVelocity;
@@ -648,7 +650,7 @@ double Instance::evaluateSolution(SolutionStruct *solution, double muleVelocity)
         double timeLeftInJ = timeInJ;
 
         // Getting G's nodes that can be served in 'j'.
-        for (int k = 0; k < 6; ++k)
+        for (int k = 0; k < 7; ++k)
         {
           // Processing information regarding each node that can be served by 'j'.
           if (canXbeServedInAE(nodeA, nodeB, j, k) && (timeLeftInJ > 0) && (solution[k].demand > 0))
@@ -669,9 +671,9 @@ double Instance::evaluateSolution(SolutionStruct *solution, double muleVelocity)
               // Time in 'j' not enought to serve the whole demand of 'k'.
               double timeUsedUpPositive = timeRequired - timeLeftInJ;
 
+              timeElapsedServing += timeUsedUpPositive;
               demandMet += timeUsedUpPositive * solution[k].demand; // Accounting demand attended.              
-              timeLeftInJ -= timeUsedUpPositive;
-              timeElapsedServing += timeInJ - timeLeftInJ;
+              timeLeftInJ -= timeUsedUpPositive;              
 
               // cout << (timeUsedUpPositive * solution[k].demand) << " (" << k << ")" << endl;
               solution[k].demand -= (timeUsedUpPositive * solution[k].demand);           

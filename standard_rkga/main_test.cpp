@@ -7,6 +7,7 @@
 #include <array>
 #include <stdlib.h>
 #include <time.h>
+#include <bits/stdc++.h> 
 
 
 #include "helper.cpp"
@@ -20,6 +21,9 @@
 using namespace std;
 
 int main() {
+  time_t start, end;
+  time(&start);
+
   ifstream instance_file("instance_001.txt");
   Instance inst;
 
@@ -56,10 +60,47 @@ int main() {
     solution[i] = newSol;
   }
 
-  // cout << solution[0].node << endl;
-  // cout << solution[1].node << endl;
+  SolutionStruct newSol;
+
+  newSol.node = 0;
+  newSol.demand = 0;
+
+  solution[6] = newSol;
+
+  // newSol.node = 2;
+  // newSol.demand = inst.getNodesDemmand(2);
+
+  // solution[1] = newSol;
+
+  // newSol.node = 5;
+  // newSol.demand = inst.getNodesDemmand(5);
+
+  // solution[2] = newSol;
+
+  // newSol.node = 1;
+  // newSol.demand = inst.getNodesDemmand(1);
+
+  // solution[5] = newSol;
+
+  // newSol.node = 3;
+  // newSol.demand = inst.getNodesDemmand(3);
+
+  // solution[4] = newSol;
+
+  // newSol.node = 4;
+  // newSol.demand = inst.getNodesDemmand(4);
+
+  // solution[3] = newSol;
 
   inst.evaluateSolution(solution, 1.0);
+
+  time(&end);
+
+  // Calculating total time taken by the program. 
+  double time_taken = double(end - start); 
+  cout << "Time taken by program is : " << fixed 
+       << time_taken << setprecision(5); 
+  cout << " sec " << endl; 
 
   return 0;
 }
