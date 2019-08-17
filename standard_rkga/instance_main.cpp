@@ -50,11 +50,26 @@ int main() {
 
   SolutionStruct *solution;
 
+
+  for (size_t i = 0; i < genes.size(); i++) {
+    double key = ((double) rand() / RAND_MAX);
+    while (key == 1.0) {
+      key = ((double) rand() / RAND_MAX);
+    }
+    genes[i] = key;
+  }
+
   for (int i = 0; i < 6; ++i)
   {
     SolutionStruct newSol;
 
-    newSol.node = i;
+    double key = ((double) rand() / RAND_MAX);
+    
+    while (key == 1.0) {
+      key = ((double) rand() / RAND_MAX);
+    }
+
+    newSol.node = key;
     newSol.demand = inst.getNodesDemmand(i);
 
     solution[i] = newSol;
