@@ -14,6 +14,11 @@ class Population {
     void printPopulation(void); /* Prints each vector of the current population. */
     void printFitness(void); /* Prints each vector's fitness value of the current population. */
     void initializePopulation(int popSize, int chromSize);
+
+    void swap(Chromosome *a, Chromosome *b);
+    int partition(Chromosome *array, int low, int high);
+    void quickSort(Chromosome *array, int low, int high);
+    void sortByFitness(void);
     // void evolve(); /* Some of the above functions should be private. The evolve method will use 'em to manipulate the vectors. */
 
   private:

@@ -22,6 +22,10 @@ int main() {
   pop.initializePopulation(3, 2);
 
   pop.printPopulation();
+
+  pop.sortByFitness();
+
+  pop.printPopulation();
   
   // Chromosome *elite;
   // Chromosome *pair;

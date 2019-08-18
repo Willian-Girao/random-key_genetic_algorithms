@@ -7,6 +7,7 @@
 using namespace std;
 
 Chromosome::Chromosome() {
+  fitness = ((double) rand() / RAND_MAX);
 }
 
 // /* Private methods */

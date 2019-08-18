@@ -23,6 +23,46 @@ void Population::initializePopulation(int popSize, int chromSize) {
   }
 }
 
+/* Swapts to elements */
+void Population::swap(Chromosome *a, Chromosome *b) {
+	Chromosome temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+int Population::partition(Chromosome *array, int low, int high) {
+	double pivot = array[high].getFitness();
+	int sml = (low - 1); // Smalest emelent's index.
+
+	for (int i = low; i <= (high - 1); ++i)
+	{
+		if (array[i].getFitness() <= pivot)
+		{			
+			sml++;
+			swap(&array[sml], &array[i]);
+		}
+	}
+
+	swap(&array[sml + 1], &array[high]);
+	return (sml + 1);
+}
+
+void Population::quickSort(Chromosome *array, int low, int high) {
+	if (low < high)
+	{
+		// 'pi' is 'partitioning index', array[p] is now at the right position.
+		int pi = partition(array, low, high);
+
+		quickSort(array, low, (pi - 1));
+		quickSort(array, (pi + 1), high);
+	}
+}
+
+
+void Population::sortByFitness(void) {
+  quickSort(population, 0, size - 1);
+}
+
 // Chromosome * Population::getElite(void) {
 //   static Chromosome elite[2];
 
@@ -79,7 +119,7 @@ void Population::initializePopulation(int popSize, int chromSize) {
 
 void Population::printPopulation(void) {
   for (int i = 0; i < size; i++) {
-    cout << "Vector " << i << endl;
+    cout << "Vector " << i << " (" << population[i].getFitness() << ")" << endl;
     population[i].printGenes();
     cout << endl;
   }
