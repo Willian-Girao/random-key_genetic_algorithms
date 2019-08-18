@@ -37,6 +37,8 @@ void Chromosome::updateGene(int i, double key) {
 
 Chromosome::Chromosome(int chromosomeSize) {
   length = chromosomeSize;
+  genes = new Hallele[length];
+  cout << "here4.1" << endl;
   generateGenes(chromosomeSize);
 }
 

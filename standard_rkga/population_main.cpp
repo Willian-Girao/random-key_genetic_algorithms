@@ -17,40 +17,42 @@ using namespace std;
 int main() {
   srand (time(NULL));
 
-  Population pop;
-  Chromosome *elite;
-  Chromosome *pair;
+  Population pop(4, 3);
+  cout << "here2" << endl;
+  pop.printPopulation();
+  // Chromosome *elite;
+  // Chromosome *pair;
 
-  elite = pop.getElite();
-  pair = pop.getRandomPair();
+  // elite = pop.getElite();
+  // pair = pop.getRandomPair();
 
-  cout << endl;
+  // cout << endl;
 
-  cout << "Elite 0: " << (*(elite)).getFitness() << endl;
-  cout << "Elite 1: " << (*(elite + 1)).getFitness() << endl;
+  // cout << "Elite 0: " << (*(elite)).getFitness() << endl;
+  // cout << "Elite 1: " << (*(elite + 1)).getFitness() << endl;
 
-  cout << endl;
+  // cout << endl;
 
-  cout << "Pair a: " << (*(pair)).getFitness() << endl;
-  cout << "Pair b: " << (*(pair + 1)).getFitness() << endl;
+  // cout << "Pair a: " << (*(pair)).getFitness() << endl;
+  // cout << "Pair b: " << (*(pair + 1)).getFitness() << endl;
 
-  Chromosome offspring = pop.matePair((*(pair)), (*(pair + 1)));
+  // Chromosome offspring = pop.matePair((*(pair)), (*(pair + 1)));
 
-  cout << endl;
+  // cout << endl;
 
-  cout << "a: " << endl;
-  (*(pair)).printGenes();
+  // cout << "a: " << endl;
+  // (*(pair)).printGenes();
 
-  cout << endl;
+  // cout << endl;
 
-  cout << "b: " << endl;
-  (*(pair + 1)).printGenes();
+  // cout << "b: " << endl;
+  // (*(pair + 1)).printGenes();
 
-  cout << endl;
+  // cout << endl;
 
-  cout << "offspring: " << endl;
+  // cout << "offspring: " << endl;
 
-  offspring.printGenes();
+  // offspring.printGenes();
 
   return 0;
 }

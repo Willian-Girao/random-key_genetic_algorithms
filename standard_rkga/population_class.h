@@ -7,7 +7,7 @@ using namespace std;
 
 class Population {
   public:
-    Population();
+    Population(int popSize, int chromSize);
     Chromosome * getElite(void); /* Returns an array containing the top two vectors. */
     Chromosome * getRandomPair(void); /* Returns an array containing two random vectors. */
     Chromosome matePair(Chromosome a, Chromosome b); /* Returns the offspring of a pair of chromosomes. */
@@ -16,7 +16,8 @@ class Population {
     // void evolve(); /* Some of the above functions should be private. The evolve method will use 'em to manipulate the vectors. */
 
   private:
-    array<Chromosome,6> population;
+    int size;
+    Chromosome *population;
 };
 
 #endif
