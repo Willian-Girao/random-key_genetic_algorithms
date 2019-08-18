@@ -6,53 +6,50 @@
 
 using namespace std;
 
-/* Private methods */
+// /* Private methods */
 
 void Chromosome::setFitness(double fit) {
   fitness = fit;
 }
 
-void Chromosome::generateGenes(void) {
-  for (size_t i = 0; i < genes.size(); i++) {
+void Chromosome::generateGenes(int chromosomeSize) {
+  for (int i = 0; i < chromosomeSize; i++) {    
     double key = ((double) rand() / RAND_MAX);
+
     while (key == 1.0) {
       key = ((double) rand() / RAND_MAX);
     }
-    genes[i] = key;
+
+    Hallele h;
+
+    h.key = key;
+    h.index = i;
+
+    genes[i] = h;
   }
 }
 
 void Chromosome::updateGene(int i, double key) {
-  genes[i] = key;
+  genes[i].key = key;
 }
 
-/* Public methods */
+// /* Public methods */
 
-Chromosome::Chromosome() {
-  // fitness = 0.0;
-  fitness = ((double) rand() / RAND_MAX);
-  generateGenes();
+Chromosome::Chromosome(int chromosomeSize) {
+  length = chromosomeSize;
+  generateGenes(chromosomeSize);
 }
 
 double Chromosome::getFitness(void) {
   return fitness;
 }
 
-void Chromosome::calculateFitness(void) {
-  double updatedFitness = 0.0;
-  // get chromosome genes here and evaluate the objective funtion (that should be passed as argument)
-  // for (size_t i = 0; i < count; i++) {
-  //   /* code */
-  // }
-  setFitness(updatedFitness);
-}
-
 double Chromosome::getGene(int index) {
-  return genes[index];
+  return genes[index].key;
 }
 
 void Chromosome::printGenes(void) {
-  for (size_t i = 0; i < genes.size(); i++) {
-    cout << genes[i] << endl;
+  for (int i = 0; i < length; i++) {
+    cout << genes[i].key << endl;
   }
 }

@@ -46,7 +46,7 @@ void quickSort(Hallele *array, int low, int high) {
 void printArray(Hallele *array, int size) {
 	for (int i = 0; i < size; ++i)
 	{
-		cout << array[i].key << " ";
+		cout << array[i].key << " (" << array[i].index << ") ";
 	}
 	cout << endl;
 }
