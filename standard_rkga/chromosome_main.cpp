@@ -13,7 +13,21 @@
 using namespace std;
 
 int main() {
-  Chromosome chrom(6);
+  Chromosome *list;
+
+  list = new Chromosome[6];
+
+  for (int i = 0; i < 6; ++i)
+  {
+  	Chromosome chrom;
+  	list[i] = chrom;
+  }
+
+  // chrom.generateGenes(6);
+
+  // chrom.printGenes();
+
+  cout << " - " << endl;
 
   return 0;
 }

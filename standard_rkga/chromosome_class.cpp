@@ -6,6 +6,9 @@
 
 using namespace std;
 
+Chromosome::Chromosome() {
+}
+
 // /* Private methods */
 
 void Chromosome::setFitness(double fit) {
@@ -13,6 +16,9 @@ void Chromosome::setFitness(double fit) {
 }
 
 void Chromosome::generateGenes(int chromosomeSize) {
+  length = chromosomeSize;
+  genes = new Hallele[length];
+
   for (int i = 0; i < chromosomeSize; i++) {    
     double key = ((double) rand() / RAND_MAX);
 
@@ -35,12 +41,6 @@ void Chromosome::updateGene(int i, double key) {
 
 // /* Public methods */
 
-Chromosome::Chromosome(int chromosomeSize) {
-  length = chromosomeSize;
-  genes = new Hallele[length];
-  cout << "here4.1" << endl;
-  generateGenes(chromosomeSize);
-}
 
 double Chromosome::getFitness(void) {
   return fitness;

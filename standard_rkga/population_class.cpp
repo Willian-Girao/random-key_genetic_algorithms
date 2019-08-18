@@ -8,14 +8,18 @@ using namespace std;
 
 /* Public methods */
 
-Population::Population(int popSize, int chromSize) {
+Population::Population() {
+}
+
+void Population::initializePopulation(int popSize, int chromSize) {
   size = popSize;
+  population = new Chromosome[popSize];
 
   for (int i = 0; i < popSize; i++) {
-    cout << "here4" << endl;
-    Chromosome chromosome(chromSize);
-    cout << "here5" << endl;
-    population[i] = chromosome;
+    Chromosome chrom;
+    chrom.generateGenes(chromSize);
+
+    population[i] = chrom;
   }
 }
 
@@ -74,7 +78,6 @@ Population::Population(int popSize, int chromSize) {
 // }
 
 void Population::printPopulation(void) {
-  cout << "here" << endl;
   for (int i = 0; i < size; i++) {
     cout << "Vector " << i << endl;
     population[i].printGenes();

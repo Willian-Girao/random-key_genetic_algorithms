@@ -17,9 +17,12 @@ using namespace std;
 int main() {
   srand (time(NULL));
 
-  Population pop(4, 3);
-  cout << "here2" << endl;
+  Population pop;
+
+  pop.initializePopulation(3, 2);
+
   pop.printPopulation();
+  
   // Chromosome *elite;
   // Chromosome *pair;
 
