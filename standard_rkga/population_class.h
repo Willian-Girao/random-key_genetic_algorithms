@@ -15,6 +15,9 @@ class Population {
     void printFitness(void); /* Prints each vector's fitness value of the current population. */
     void initializePopulation(int popSize, int chromSize);
 
+    Hallele * getSolutionAsArray(int solIndex);
+    // bool initializeUpdateDemand(int ind, double demand);
+
     void swap(Chromosome *a, Chromosome *b);
     int partition(Chromosome *array, int low, int high);
     void quickSort(Chromosome *array, int low, int high);

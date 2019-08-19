@@ -5,6 +5,7 @@
 #include <string>
 
 #include "instance_class.h"
+#include "quicksort.cpp"
 
 using namespace std;
 
@@ -609,30 +610,36 @@ bool Instance::canXbeServedInAE(int main_node_index, int pair_node_index, int ae
 };
 
 // 'ae' stands for Artificial Edge.
-double Instance::evaluateSolution(SolutionStruct *solution, double muleVelocity) {
+double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   //TODO where there is a '6' put the actual number of nodes in G + 1 (solution vector size).
-  // double totalTimeElapsed = 0.0;
-  // double timeElapsedServing = 0.0;
-  // double demandMet = 0.0;
-  // double totalDemand = 0.0;
+  double totalTimeElapsed = 0.0;
+  double timeElapsedServing = 0.0;
+  double demandMet = 0.0;
+  double totalDemand = 0.0;
+  int sizeC = original_nodes_n + 1;
 
-  // for (int i = 0; i < 7; ++i)
+  sortHalleleDecoder(chromosome, sizeC);
+
+  for (int i = 0; i < sizeC; ++i)
+  {
+    cout << chromosome[i].key << " (" << chromosome[i].index << ")" << endl;
+  }
+
+  //TODO - JUST SORT THE CHROMOSOME HERE AND USE IT BELLOW.
+
+  // Calculating total demand.
+  // for (int i = 0; i < sizeC; ++i)
   // {
-  //   cout << solution[i].demand << endl;
+  //   //TODO - TOTAL DEMAND SHOULD BE A PROPERTY OF INSTANCE CLASS.
+  //   totalDemand += getNodesDemmand(i);
   // }
 
-  // // Calculating total demand.
-  // for (int i = 0; i < 7; ++i)
+  // for (int i = 0; i < sizeC; ++i)
   // {
-  //   totalDemand += getNodesDemmand(i);    
-  // }
-
-  // for (int i = 0; i < 7; ++i)
-  // {
-  //   if (i < (7-1))
+  //   if (i < (sizeC-1))
   //   {
-  //     int nodeA = solution[i].node;
-  //     int nodeB = solution[i+1].node;
+  //     int nodeA = chromosome[i].index;
+  //     int nodeB = chromosome[i+1].index;
   //     int aeBetween = getNumberOfAEBP(nodeA, nodeB);
 
   //     cout << "(" << nodeA << ", " << nodeB << ")" << endl;
@@ -650,7 +657,7 @@ double Instance::evaluateSolution(SolutionStruct *solution, double muleVelocity)
   //       double timeLeftInJ = timeInJ;
 
   //       // Getting G's nodes that can be served in 'j'.
-  //       for (int k = 0; k < 7; ++k)
+  //       for (int k = 0; k < sizeC; ++k)
   //       {
   //         // Processing information regarding each node that can be served by 'j'.
   //         if (canXbeServedInAE(nodeA, nodeB, j, k) && (timeLeftInJ > 0) && (solution[k].demand > 0))
@@ -697,5 +704,5 @@ double Instance::evaluateSolution(SolutionStruct *solution, double muleVelocity)
   //   cout << solution[i].demand << endl;
   // }
   
-  return 1.2;
+  return demandMet;
 };

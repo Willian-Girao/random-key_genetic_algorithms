@@ -2,12 +2,6 @@
 
 using namespace std;
 
-struct Hallele {
-	double key;
-	int index;
-};
-
-
 /* Swapts to elements */
 void swap(Hallele *a, Hallele *b) {
 	Hallele temp = *a;
@@ -51,38 +45,6 @@ void printArray(Hallele *array, int size) {
 	cout << endl;
 }
 
-int main()  
-{  
-	Hallele h1;
-	h1.key = 9.2;
-	h1.index = 0;
-
-	Hallele h2;
-	h2.key = 1.3;
-	h2.index = 1;
-
-	Hallele h3;
-	h3.key = 3.2;
-	h3.index = 2;
-
-    Hallele *chromosome;
-    chromosome[0] = h1;
-    chromosome[1] = h2;
-    chromosome[2] = h3;
-
-    for (int i = 0; i < 3; ++i)
-    {
-    	cout << chromosome[i].key << " ";
-    }
-    cout << endl;
-    
-    int n = 3;
-
+void sortHalleleDecoder(Hallele *chromosome, int n) {
     quickSort(chromosome, 0, n - 1);
-
-    cout << "Sorted array: \n";
-
-    printArray(chromosome, n);
-
-    return 0;  
 }

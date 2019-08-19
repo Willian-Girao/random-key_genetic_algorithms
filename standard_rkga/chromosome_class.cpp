@@ -17,7 +17,7 @@ void Chromosome::setFitness(double fit) {
 }
 
 void Chromosome::generateGenes(int chromosomeSize) {
-  length = chromosomeSize;
+  length = chromosomeSize + 1;
   genes = new Hallele[length];
 
   for (int i = 0; i < chromosomeSize; i++) {    
@@ -31,9 +31,18 @@ void Chromosome::generateGenes(int chromosomeSize) {
 
     h.key = key;
     h.index = i;
+    // h.demand = 0.0;
 
     genes[i] = h;
   }
+
+  Hallele bs; // Base Station.
+
+  bs.key = 1.0;
+  bs.index = 0;
+  // bs.demand = 0.0;
+
+  genes[chromosomeSize] = bs;
 }
 
 void Chromosome::updateGene(int i, double key) {
@@ -53,6 +62,25 @@ double Chromosome::getGene(int index) {
 
 void Chromosome::printGenes(void) {
   for (int i = 0; i < length; i++) {
-    cout << genes[i].key << endl;
+    cout << genes[i].key << " (" << genes[i].index << ")" << endl;
   }
 }
+
+Hallele * Chromosome::getChromosomeAsArray(void) {
+  return genes;
+}
+
+// bool Chromosome::updateDemand(int ind, double demand) {
+//   bool updated = false;
+
+//   for (int i = 0; i < length; ++i)
+//   {
+//     if (genes[i].index == ind)
+//     {
+//       genes[i].demand = demand;
+//       updated = true;
+//     }
+//   }
+
+//   return updated;
+// }

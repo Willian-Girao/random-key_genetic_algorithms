@@ -7,16 +7,20 @@
 #include <array>
 #include <stdlib.h>
 #include <time.h>
-#include <bits/stdc++.h> 
+#include <bits/stdc++.h>
 
 
 #include "helper.cpp"
 
 /* Headers containing classes definitions */
 #include "instance_class.h"
+#include "chromosome_class.h"
+#include "population_class.h"
 
 /* Cpp files containing classes implementations */
 #include "instance_class.cpp"
+#include "chromosome_class.cpp"
+#include "population_class.cpp"
 
 using namespace std;
 
@@ -31,7 +35,17 @@ int main() {
 
   cout << "\n> Finished processing .txt file\n\n";
 
-  inst.printPairsRelatedInfo();
+  Population pop;
+
+  pop.initializePopulation(2, inst.getNumberOfOriginalNodes());
+
+  // inst.getNodesDemmand(i)
+
+  inst.evaluateSolution(pop.getSolutionAsArray(0), 1.0);
+
+  // pop.sortByFitness();
+
+  // pop.printPopulation();
 
   // cout << "\n> " << inst.getNumberOfAEBP(5,3) << endl;
   // cout << "\n> " << inst.getDistanceBP(5,3) << endl;
@@ -48,74 +62,49 @@ int main() {
   // 	cout << "\n> False" << endl;
   // }
 
-  SolutionStruct *solution;
+  // SolutionStruct *solution;
 
 
-  for (size_t i = 0; i < genes.size(); i++) {
-    double key = ((double) rand() / RAND_MAX);
-    while (key == 1.0) {
-      key = ((double) rand() / RAND_MAX);
-    }
-    genes[i] = key;
-  }
+  // for (size_t i = 0; i < genes.size(); i++) {
+  //   double key = ((double) rand() / RAND_MAX);
+  //   while (key == 1.0) {
+  //     key = ((double) rand() / RAND_MAX);
+  //   }
+  //   genes[i] = key;
+  // }
 
-  for (int i = 0; i < 6; ++i)
-  {
-    SolutionStruct newSol;
+  // for (int i = 0; i < 6; ++i)
+  // {
+  //   SolutionStruct newSol;
 
-    double key = ((double) rand() / RAND_MAX);
+  //   double key = ((double) rand() / RAND_MAX);
     
-    while (key == 1.0) {
-      key = ((double) rand() / RAND_MAX);
-    }
+  //   while (key == 1.0) {
+  //     key = ((double) rand() / RAND_MAX);
+  //   }
 
-    newSol.node = key;
-    newSol.demand = inst.getNodesDemmand(i);
+  //   newSol.node = key;
+  //   newSol.demand = inst.getNodesDemmand(i);
 
-    solution[i] = newSol;
-  }
+  //   solution[i] = newSol;
+  // }
 
-  SolutionStruct newSol;
+  // SolutionStruct newSol;
 
-  newSol.node = 0;
-  newSol.demand = 0;
+  // newSol.node = 0;
+  // newSol.demand = 0;
 
-  solution[6] = newSol;
+  // solution[6] = newSol;
 
-  // newSol.node = 2;
-  // newSol.demand = inst.getNodesDemmand(2);
+  // inst.evaluateSolution(solution, 1.0);
 
-  // solution[1] = newSol;
+  // time(&end);
 
-  // newSol.node = 5;
-  // newSol.demand = inst.getNodesDemmand(5);
-
-  // solution[2] = newSol;
-
-  // newSol.node = 1;
-  // newSol.demand = inst.getNodesDemmand(1);
-
-  // solution[5] = newSol;
-
-  // newSol.node = 3;
-  // newSol.demand = inst.getNodesDemmand(3);
-
-  // solution[4] = newSol;
-
-  // newSol.node = 4;
-  // newSol.demand = inst.getNodesDemmand(4);
-
-  // solution[3] = newSol;
-
-  inst.evaluateSolution(solution, 1.0);
-
-  time(&end);
-
-  // Calculating total time taken by the program. 
-  double time_taken = double(end - start); 
-  cout << "Time taken by program is : " << fixed 
-       << time_taken << setprecision(5); 
-  cout << " sec " << endl; 
+  // // Calculating total time taken by the program. 
+  // double time_taken = double(end - start); 
+  // cout << "Time taken by program is : " << fixed 
+  //      << time_taken << setprecision(5); 
+  // cout << " sec " << endl; 
 
   return 0;
 }

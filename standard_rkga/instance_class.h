@@ -1,6 +1,8 @@
 #ifndef INSTANCE_H
 #define INSTANCE_H
 
+#include "chromosome_class.h"
+
 using namespace std;
 
 struct SolutionStruct {
@@ -64,7 +66,7 @@ class Instance {
     double getAELength(int main_node_index, int pair_node_index, int ae_index); /* Returns the length of 'ed_index' */
     bool canXbeServedInAE(int main_node_index, int pair_node_index, int ae_index, int x); /* Returns true if 'x' can be served in 'ed_index' - false otherwise */
 
-    double evaluateSolution(SolutionStruct *solution, double muleVelocity);
+    double evaluateSolution(Hallele *solution, double muleVelocity);
 
     /* Setters */
     /* Sets number of possible speeds to be used */

@@ -7,16 +7,17 @@
 /* Headers containing classes definitions */
 #include "chromosome_class.h"
 #include "population_class.h"
+#include "instance_class.h"
 
 /* Cpp files containing classes implementations */
 #include "chromosome_class.cpp"
 #include "population_class.cpp"
+#include "instance_class.cpp"
+#include "helper.cpp"
 
 using namespace std;
 
 int main() {
-  srand (time(NULL));
-
   Population pop;
 
   pop.initializePopulation(3, 2);

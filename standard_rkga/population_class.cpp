@@ -18,7 +18,6 @@ void Population::initializePopulation(int popSize, int chromSize) {
   for (int i = 0; i < popSize; i++) {
     Chromosome chrom;
     chrom.generateGenes(chromSize);
-
     population[i] = chrom;
   }
 }
@@ -133,3 +132,15 @@ void Population::printPopulation(void) {
 // }
 
 /* Private methods */
+
+Hallele * Population::getSolutionAsArray(int solIndex) {
+	return population[solIndex].getChromosomeAsArray();
+}
+
+//TODO - BEST WOULD BE TO HAVE THE DEMAND WORKED OUT ONLY WHEN EVALUATING THE OBJ FUNCTION
+// bool population::initializeUpdateDemand(int solInd, double demand) {
+// 	for (int i = 0; i < count; ++i)
+// 	{
+// 		population[solInd].updateDemand(chronInd, demand);
+// 	}
+// }

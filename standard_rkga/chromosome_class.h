@@ -6,6 +6,7 @@ using namespace std;
 struct Hallele {
   double key;
   int index;
+  // double demand;
 };
 
 class Chromosome {
@@ -19,6 +20,8 @@ class Chromosome {
     void printGenes(void); /* Prints the vector to the screen. */
     void calculateFitness(void); /* Evaluate the vector on the objective function. */
     void generateGenes(int chromosomeSize); /* Initializes the random keys of the chromosome. */
+    // bool updateDemand(int ind, double demand);
+    Hallele * getChromosomeAsArray(void);
 
   private:
     void setFitness(double fit); /* Updates a chromosome fitness value. */    

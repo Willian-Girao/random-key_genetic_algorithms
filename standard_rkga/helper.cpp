@@ -8,6 +8,7 @@
 #include <time.h>
 
 #include "instance_class.h"
+#include "chromosome_class.h"
 
 using namespace std;
 
