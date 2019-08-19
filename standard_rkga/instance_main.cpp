@@ -29,14 +29,13 @@ int main() {
   time_t start, end;
   time(&start);
 
-  int popSize = 2;
+  int popSize = 4; //Must be at least 4.
   int muleSpeed = 1.0;
 
   ifstream instance_file("instance_001.txt");
   Instance inst;
   consumeInstance(instance_file, &inst);
   cout << "\n> Finished processing .txt file\n\n";
-
 
   Population pop;
 
@@ -49,11 +48,26 @@ int main() {
     pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed));
   }
 
-  pop.printPopulation();
-
+  //Sorting by fitness.
   pop.sortByFitness();
 
   pop.printPopulation();
+
+  cout << "\n*************************\n" << endl;
+
+  //Introduce mutants.
+  pop.introduceMutants(popSize);
+
+  pop.printPopulation();
+
+  //Complete with offspring.
+
+
+
+
+
+
+  // pop.printPopulation();
 
   // cout << "\n> " << inst.getNumberOfAEBP(5,3) << endl;
   // cout << "\n> " << inst.getDistanceBP(5,3) << endl;

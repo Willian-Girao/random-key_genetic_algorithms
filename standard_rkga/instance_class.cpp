@@ -724,19 +724,7 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
       }
     }
   }
-
-  // cout << "Total demand: " + std::to_string(totalDemand) << endl;
-  // cout << "Total demand met: " + std::to_string(demandMet) << endl;
-
-  // cout << "\nTotal time: " + std::to_string(totalTimeElapsed) << endl;
-  // cout << "Total time serving: " + std::to_string(timeElapsedServing) << endl;  
-
-  // for (int i = 0; i < 6; ++i)
-  // {
-  //   cout << solution[i].demand << endl;
-  // }
-
-  // cout << "Fitness: " << (demandMet / totalTimeElapsed) << endl;
   
+  //TODO - DEMAND NOT MET MUST HAVE MORE SEVERE PUNISHMENT.
   return demandMet / totalTimeElapsed;
 };

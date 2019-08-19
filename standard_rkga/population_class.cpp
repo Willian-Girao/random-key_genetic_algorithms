@@ -1,6 +1,7 @@
 #include <iostream>
 #include <array>
 #include <stdlib.h>
+#include <math.h>
 
 #include "population_class.h"
 
@@ -141,10 +142,12 @@ void Population::updateFitness(int index, double fitness) {
 	population[index].setFitness(fitness);
 }
 
-//TODO - BEST WOULD BE TO HAVE THE DEMAND WORKED OUT ONLY WHEN EVALUATING THE OBJ FUNCTION
-// bool population::initializeUpdateDemand(int solInd, double demand) {
-// 	for (int i = 0; i < count; ++i)
-// 	{
-// 		population[solInd].updateDemand(chronInd, demand);
-// 	}
-// }
+void Population::introduceMutants(int popSize) {
+	int endIndex = floor((popSize / 4)); //End index when introducing mutants.
+
+	//Reseting 25% of the population (introducing mutants).
+	for (int i = 0; i < endIndex; ++i)
+	{
+		population[i].resetChromosome();
+	}
+}

@@ -7,13 +7,28 @@
 using namespace std;
 
 Chromosome::Chromosome() {
-  fitness = ((double) rand() / RAND_MAX);
+  fitness = 0.0;
 }
 
 // /* Private methods */
 
 void Chromosome::setFitness(double fit) {
   fitness = fit;
+}
+
+/* Whipe cleans a chromosome - reset */
+void Chromosome::resetChromosome(void) {
+  for (int i = 1; i < length - 1; ++i)
+  {
+    double key = ((double) rand() / RAND_MAX);
+
+    while (key == 1.0) {
+      key = ((double) rand() / RAND_MAX);
+    }
+
+    genes[i].key = key;
+    genes[i].index = i;
+  }
 }
 
 void Chromosome::generateGenes(int chromosomeSize) {

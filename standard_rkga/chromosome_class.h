@@ -21,7 +21,9 @@ class Chromosome {
     void calculateFitness(void); /* Evaluate the vector on the objective function. */
     void generateGenes(int chromosomeSize); /* Initializes the random keys of the chromosome. */
     // bool updateDemand(int ind, double demand);
+    
     Hallele * getChromosomeAsArray(void);
+    void resetChromosome(void); /* Whipe cleans a chromosome - reset */
 
   private:
     void setFitness(double fit); /* Updates a chromosome fitness value. */    
