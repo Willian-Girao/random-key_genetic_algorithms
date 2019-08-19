@@ -609,6 +609,22 @@ bool Instance::canXbeServedInAE(int main_node_index, int pair_node_index, int ae
   return canBeServed;
 };
 
+SolutionStruct * Instance::buildSolutionStructure(Hallele *chromosome) {
+  SolutionStruct *solution = new SolutionStruct[original_nodes_n + 1];
+  cout << "Sol struct [n]: n = " << (original_nodes_n + 1) << endl;
+
+  for (int i = 0; i < (original_nodes_n + 1); ++i)
+  {
+    SolutionStruct sl;
+    sl.node = chromosome[i].index;
+    sl.demand = getNodesDemmand(chromosome[i].index); // Get demand here.
+
+    solution[i] = sl;
+  }
+
+  return solution;
+}
+
 // 'ae' stands for Artificial Edge.
 double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   //TODO where there is a '6' put the actual number of nodes in G + 1 (solution vector size).
@@ -618,14 +634,24 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   double totalDemand = 0.0;
   int sizeC = original_nodes_n + 1;
 
+  //Decoder.
   sortHalleleDecoder(chromosome, sizeC);
+
+  //Building solution structure array.
+  SolutionStruct *solution = buildSolutionStructure(chromosome);
+
 
   for (int i = 0; i < sizeC; ++i)
   {
     cout << chromosome[i].key << " (" << chromosome[i].index << ")" << endl;
   }
 
-  //TODO - JUST SORT THE CHROMOSOME HERE AND USE IT BELLOW.
+  cout << "\n\n*****\n\n";
+
+  for (int i = 0; i < sizeC; ++i)
+  {
+    cout << solution[i].node << " (" << solution[i].demand << ")" << endl;
+  }
 
   // Calculating total demand.
   // for (int i = 0; i < sizeC; ++i)

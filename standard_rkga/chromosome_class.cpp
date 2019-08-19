@@ -38,6 +38,8 @@ void Chromosome::generateGenes(int chromosomeSize) {
 
   Hallele bs; // Base Station.
 
+  // The random key of the last index in the array is set to 1.0 as to always be 
+  //at the end of the array during sorting from 1 to size.
   bs.key = 1.0;
   bs.index = 0;
   // bs.demand = 0.0;

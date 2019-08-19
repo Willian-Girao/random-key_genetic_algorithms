@@ -45,6 +45,11 @@ void printArray(Hallele *array, int size) {
 	cout << endl;
 }
 
+/*
+	DECODER - sorts the alleles as to have the key's indexes representing the final solution.
+	Observation: sorting is only considering array from '1' to 'size - 2' (index '0' and 'size' must 
+	always be base station for the DMSP - always generates valid solutions).
+*/
 void sortHalleleDecoder(Hallele *chromosome, int n) {
-    quickSort(chromosome, 0, n - 1);
+    quickSort(chromosome, 1, n - 2);
 }

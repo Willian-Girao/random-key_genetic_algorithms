@@ -67,6 +67,7 @@ class Instance {
     bool canXbeServedInAE(int main_node_index, int pair_node_index, int ae_index, int x); /* Returns true if 'x' can be served in 'ed_index' - false otherwise */
 
     double evaluateSolution(Hallele *solution, double muleVelocity);
+    SolutionStruct * buildSolutionStructure(Hallele *chromosome);
 
     /* Setters */
     /* Sets number of possible speeds to be used */
