@@ -25,27 +25,35 @@
 using namespace std;
 
 int main() {
+  srand(time(0));
   time_t start, end;
   time(&start);
 
+  int popSize = 2;
+  int muleSpeed = 1.0;
+
   ifstream instance_file("instance_001.txt");
   Instance inst;
-
   consumeInstance(instance_file, &inst);
-
   cout << "\n> Finished processing .txt file\n\n";
+
 
   Population pop;
 
-  pop.initializePopulation(2, inst.getNumberOfOriginalNodes());
+  //Initializing the initial population.
+  pop.initializePopulation(popSize, inst.getNumberOfOriginalNodes());
 
-  // inst.getNodesDemmand(i)
+  //Updating fitness.
+  for (int i = 0; i < popSize; ++i)
+  {
+    pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed));
+  }
 
-  inst.evaluateSolution(pop.getSolutionAsArray(0), 1.0);
+  pop.printPopulation();
 
-  // pop.sortByFitness();
+  pop.sortByFitness();
 
-  // pop.printPopulation();
+  pop.printPopulation();
 
   // cout << "\n> " << inst.getNumberOfAEBP(5,3) << endl;
   // cout << "\n> " << inst.getDistanceBP(5,3) << endl;

@@ -137,6 +137,10 @@ Hallele * Population::getSolutionAsArray(int solIndex) {
 	return population[solIndex].getChromosomeAsArray();
 }
 
+void Population::updateFitness(int index, double fitness) {
+	population[index].setFitness(fitness);
+}
+
 //TODO - BEST WOULD BE TO HAVE THE DEMAND WORKED OUT ONLY WHEN EVALUATING THE OBJ FUNCTION
 // bool population::initializeUpdateDemand(int solInd, double demand) {
 // 	for (int i = 0; i < count; ++i)

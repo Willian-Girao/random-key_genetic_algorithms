@@ -611,11 +611,12 @@ bool Instance::canXbeServedInAE(int main_node_index, int pair_node_index, int ae
 
 SolutionStruct * Instance::buildSolutionStructure(Hallele *chromosome) {
   SolutionStruct *solution = new SolutionStruct[original_nodes_n + 1];
-  cout << "Sol struct [n]: n = " << (original_nodes_n + 1) << endl;
+  // cout << "Sol struct [n]: n = " << (original_nodes_n + 1) << endl;
 
   for (int i = 0; i < (original_nodes_n + 1); ++i)
   {
     SolutionStruct sl;
+
     sl.node = chromosome[i].index;
     sl.demand = getNodesDemmand(chromosome[i].index); // Get demand here.
 
@@ -641,83 +642,88 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   SolutionStruct *solution = buildSolutionStructure(chromosome);
 
 
-  for (int i = 0; i < sizeC; ++i)
-  {
-    cout << chromosome[i].key << " (" << chromosome[i].index << ")" << endl;
-  }
+  // for (int i = 0; i < sizeC; ++i)
+  // {
+  //   cout << chromosome[i].key << " (" << chromosome[i].index << ")" << endl;
+  // }
 
-  cout << "\n\n*****\n\n";
+  // cout << "\n\n*****\n\n";
 
-  for (int i = 0; i < sizeC; ++i)
-  {
-    cout << solution[i].node << " (" << solution[i].demand << ")" << endl;
-  }
+  // for (int i = 0; i < sizeC; ++i)
+  // {
+  //   cout << solution[i].node << " (" << solution[i].demand << ")" << endl;
+  // }
 
+  //TODO - THIS MUST BE A CLASS PROPERTY.
   // Calculating total demand.
-  // for (int i = 0; i < sizeC; ++i)
-  // {
-  //   //TODO - TOTAL DEMAND SHOULD BE A PROPERTY OF INSTANCE CLASS.
-  //   totalDemand += getNodesDemmand(i);
-  // }
+  for (int i = 0; i < sizeC; ++i)
+  {
+    //TODO - TOTAL DEMAND SHOULD BE A PROPERTY OF INSTANCE CLASS.
+    totalDemand += getNodesDemmand(i);
+  }
 
-  // for (int i = 0; i < sizeC; ++i)
-  // {
-  //   if (i < (sizeC-1))
-  //   {
-  //     int nodeA = chromosome[i].index;
-  //     int nodeB = chromosome[i+1].index;
-  //     int aeBetween = getNumberOfAEBP(nodeA, nodeB);
+  for (int i = 0; i < sizeC; ++i)
+  {
+    if (i < (sizeC-1))
+    {
+      int nodeA = solution[i].node;
+      int nodeB = solution[i+1].node;
+      int aeBetween = getNumberOfAEBP(nodeA, nodeB);
 
-  //     cout << "(" << nodeA << ", " << nodeB << ")" << endl;
+      // cout << "(" << nodeA << ", " << nodeB << ")" << endl;
 
-  //     // Acounting time to cross edge between main nodes under consideration.
-  //     totalTimeElapsed += getDistanceBP(nodeA, nodeB) / muleVelocity;
+      // Acounting time to cross edge between main nodes under consideration.
+      totalTimeElapsed += getDistanceBP(nodeA, nodeB) / muleVelocity;
 
-  //     // Going through the artificial edges metadata ('j' is an artificial node "id").
-  //     for (int j = (aeBetween-1); j >= 0; --j)
-  //     {
-  //       int countAux = 0;        
-  //       int numNodesCanServe = getAENumberNodeCanBeServed(nodeA, nodeB, j);
-  //       double aeLength = getAELength(nodeA, nodeB, j);
-  //       double timeInJ = aeLength / muleVelocity;
-  //       double timeLeftInJ = timeInJ;
+      // Going through the artificial edges metadata ('j' is an artificial edge "id").
+      for (int j = (aeBetween-1); j >= 0; --j)
+      {
+        int countAux = 0;        
+        int numNodesCanServe = getAENumberNodeCanBeServed(nodeA, nodeB, j);
+        double aeLength = getAELength(nodeA, nodeB, j);
+        double timeInJ = aeLength / muleVelocity;
+        double timeLeftInJ = timeInJ; //"Workble time" left while in 'j'.
 
-  //       // Getting G's nodes that can be served in 'j'.
-  //       for (int k = 0; k < sizeC; ++k)
-  //       {
-  //         // Processing information regarding each node that can be served by 'j'.
-  //         if (canXbeServedInAE(nodeA, nodeB, j, k) && (timeLeftInJ > 0) && (solution[k].demand > 0))
-  //         {
-  //           double timeRequired = solution[k].demand / getNodesTRate(k); // Amount of time the node requires to transmit its data.
-  //           double timeUnitsLeft = timeLeftInJ - timeRequired;            
+        // Getting G's nodes that can be served in 'j'.
+        for (int k = 0; k < sizeC; ++k)
+        {
+          // Processing information regarding each node that can be served by 'j'.
+          if (canXbeServedInAE(nodeA, nodeB, j, k) && (timeLeftInJ > 0) && (solution[k].demand > 0))
+          {
+            double timeRequired = solution[k].demand / getNodesTRate(k); // Amount of time the node requires to transmit its data (all of it).
+            double timeUnitsLeft = timeLeftInJ - timeRequired;            
 
-  //           if (timeUnitsLeft > 0)
-  //           {
-  //             // There is still time left in 'j' to serve another node.
-  //             demandMet += solution[k].demand; // Accounting demand attended.              
-  //             timeLeftInJ -= timeRequired;
-  //             timeElapsedServing += timeRequired;
+            if (timeUnitsLeft > 0)
+            {
+              // There is still time left in 'j' to serve another node.
+              demandMet += solution[k].demand; // Accounting demand attended.              
+              timeLeftInJ -= timeRequired;
+              timeElapsedServing += timeRequired;
 
-  //             // cout << solution[k].demand << " (" << k << ")" << endl;
-  //             solution[k].demand -= solution[k].demand;              
-  //           } else {
-  //             // Time in 'j' not enought to serve the whole demand of 'k'.
-  //             double timeUsedUpPositive = timeRequired - timeLeftInJ;
+              // cout << solution[k].demand << " (" << k << ")" << endl;
+              solution[k].demand -= solution[k].demand;
+            } else {
+              // Time in 'j' not enought to serve the whole demand of 'k'.
+              double timeUsedUpPositive = timeRequired - timeLeftInJ;
 
-  //             timeElapsedServing += timeUsedUpPositive;
-  //             demandMet += timeUsedUpPositive * solution[k].demand; // Accounting demand attended.              
-  //             timeLeftInJ -= timeUsedUpPositive;              
+              timeElapsedServing += timeUsedUpPositive;
 
-  //             // cout << (timeUsedUpPositive * solution[k].demand) << " (" << k << ")" << endl;
-  //             solution[k].demand -= (timeUsedUpPositive * solution[k].demand);           
-  //           }
-  //         }
-  //       }
+              //TODO - The bellow code should be the transmition rate, not the demand.
+              // demandMet += timeUsedUpPositive * solution[k].demand; // Accounting demand attended.
+              demandMet += timeUsedUpPositive * getNodesTRate(solution[k].node);
 
-  //       // Finished parsing artificial edge metadata.
-  //     }
-  //   }
-  // }
+              timeLeftInJ -= timeUsedUpPositive;              
+
+              // cout << (timeUsedUpPositive * solution[k].demand) << " (" << k << ")" << endl;
+              solution[k].demand -= (timeUsedUpPositive * getNodesTRate(solution[k].node));           
+            }
+          }
+        }
+
+        // Finished parsing artificial edge metadata.
+      }
+    }
+  }
 
   // cout << "Total demand: " + std::to_string(totalDemand) << endl;
   // cout << "Total demand met: " + std::to_string(demandMet) << endl;
@@ -729,6 +735,8 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   // {
   //   cout << solution[i].demand << endl;
   // }
+
+  // cout << "Fitness: " << (demandMet / totalTimeElapsed) << endl;
   
-  return demandMet;
+  return demandMet / totalTimeElapsed;
 };
