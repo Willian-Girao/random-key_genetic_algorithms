@@ -22,13 +22,14 @@ class Chromosome {
     void printGenes(void); /* Prints the vector to the screen. */
     void calculateFitness(void); /* Evaluate the vector on the objective function. */
     void generateGenes(int chromosomeSize); /* Initializes the random keys of the chromosome. */
+    void setResetGenes(Hallele * newGenes);
+    void setFitness(double fit); /* Updates a chromosome fitness value. */ 
     // bool updateDemand(int ind, double demand);
     
     Hallele * getChromosomeAsArray(void);
     void resetChromosome(void); /* Whipe cleans a chromosome - reset */
 
-  private:
-    void setFitness(double fit); /* Updates a chromosome fitness value. */    
+  private:   
     void updateGene(int i, double key); /* Updates the key 'i' of the vector with the value 'key'. */
     double fitness;
     int length;

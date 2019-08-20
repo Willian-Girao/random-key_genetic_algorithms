@@ -110,7 +110,7 @@ Hallele * Population::matePair(Hallele *a, Hallele *b) {
   offspring[population[0].getLength()-1].key = 1.0;
   offspring[population[0].getLength()-1].index = 0;
 
-  cout << "here: " << population[0].getLength() << endl;
+  // cout << "here: " << population[0].getLength() << endl;
 
   //TODO - it should alter the keys (not their associated index).
   int countHelper = 0;
@@ -203,26 +203,26 @@ Hallele * Population::matePair(Hallele *a, Hallele *b) {
     countHelper++;
   }
 
-  for (int i = 0; i < population[0].getLength(); ++i)
-  {
-  	// cout << a[i].key << " (" << a[i].index <<  ") ";
-  	cout << a[i].index << " ";
-  }
-  cout << endl;
+  // for (int i = 0; i < population[0].getLength(); ++i)
+  // {
+  // 	// cout << a[i].key << " (" << a[i].index <<  ") ";
+  // 	cout << a[i].index << " ";
+  // }
+  // cout << endl;
 
-  for (int i = 0; i < population[0].getLength(); ++i)
-  {
-  	// cout << b[i].key << " (" << b[i].index <<  ") ";
-  	cout << b[i].index << " ";
-  }
-  cout << endl;
+  // for (int i = 0; i < population[0].getLength(); ++i)
+  // {
+  // 	// cout << b[i].key << " (" << b[i].index <<  ") ";
+  // 	cout << b[i].index << " ";
+  // }
+  // cout << endl;
 
-  for (int i = 0; i < population[0].getLength(); ++i)
-  {
-  	// cout << offspring[i].key << " (" << offspring[i].index <<  ") ";
-  	cout << offspring[i].index << " ";
-  }
-  cout << endl;
+  // for (int i = 0; i < population[0].getLength(); ++i)
+  // {
+  // 	// cout << offspring[i].key << " (" << offspring[i].index <<  ") ";
+  // 	cout << offspring[i].index << " ";
+  // }
+  // cout << endl;
 
   return offspring;
 }
@@ -249,19 +249,27 @@ Hallele * Population::getSolutionAsArray(int solIndex) {
 }
 
 void Population::updateFitness(int index, double fitness) {
-	population[index].setFitness(fitness);
+	if (population[index].getFitness() == 0.0)
+	{
+		population[index].setFitness(fitness);
+	}
 }
 
 void Population::introduceMutants(void) {
 	int endIndex = floor((size / 4.0)); //End index when introducing mutants.
 
 	//Reseting 25% of the population (introducing mutants).
-	cout << "Mutant individuals: " << endIndex << endl;
+	// cout << "Mutant individuals: " << endIndex << endl;
 	for (int i = 0; i < endIndex; ++i)
 	{
-		cout << i << endl;
+		// cout << i << endl;
 		population[i].resetChromosome();
+		population[i].setFitness(0.0);
 	}
+}
+
+Chromosome Population::getSingleChromosome(int index) {
+	return population[index];
 }
 
 void Population::mateIndividuals(void) {
@@ -269,21 +277,28 @@ void Population::mateIndividuals(void) {
 	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
 
 	//Indexes of chromosomes from the elit group.
-	cout << "Mating candidates: " << ceil((size / 2.0)) << endl;
-	for (int i = size - ceil((size / 2.0)); i < size; ++i)
-	{
-		cout << i << endl;
-	}
+	// cout << "Mating candidates: " << ceil((size / 2.0)) << endl;
+	// for (int i = size - ceil((size / 2.0)); i < size; ++i)
+	// {
+	// 	cout << i << endl;
+	// }
+
+	int indexStartRand = size - ceil((size / 2.0));
+	int indexEndRand = size - 1;
 
 	//Indexes of chromosomes to be overrided by mating result.
-	cout << "Offspring placeholder indexes: " << x << endl;
+	// cout << "Offspring placeholder indexes: " << x << endl;
 	for (int i = numMutants; i < (size - ceil((size / 2.0))); ++i)
 	{
-		cout << i << endl;
+		// cout << i << endl;
+		int parentAIndex = rand() % ((size) - indexStartRand) + indexStartRand;
+		int parentBIndex = rand() % ((size) - indexStartRand) + indexStartRand;
+
+		while(parentBIndex == parentAIndex) {
+			parentBIndex = rand() % ((size) - indexStartRand) + indexStartRand;
+		}
+
+		population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentBIndex].getChromosomeAsArray()));
 		//Chromosome 'i' must be replaced by a mating result.
 	}
-
-	matePair(population[2].getChromosomeAsArray(), population[3].getChromosomeAsArray());
-
-	int p_a = rand() % 6;
 }

@@ -14,6 +14,10 @@ int Chromosome::getLength(void) {
   return length;
 }
 
+void Chromosome::setResetGenes(Hallele * newGenes) {
+  genes = newGenes;
+  fitness = 0.0;
+}
 // /* Private methods */
 
 void Chromosome::setFitness(double fit) {
@@ -39,7 +43,7 @@ void Chromosome::generateGenes(int chromosomeSize) {
   length = chromosomeSize + 1;
   genes = new Hallele[length];
 
-  for (int i = 0; i < chromosomeSize; i++) {    
+  for (int i = 1; i < chromosomeSize; i++) {    
     double key = ((double) rand() / RAND_MAX);
 
     while (key == 1.0) {
@@ -64,6 +68,13 @@ void Chromosome::generateGenes(int chromosomeSize) {
   // bs.demand = 0.0;
 
   genes[chromosomeSize] = bs;
+
+  Hallele h;
+  h.key = 0.0;
+  h.index = 0;
+  // h.demand = 0.0;
+
+  genes[0] = h;
 }
 
 void Chromosome::updateGene(int i, double key) {

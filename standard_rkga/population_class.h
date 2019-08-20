@@ -20,6 +20,7 @@ class Population {
     void introduceMutants(); /* Replaces 25% of the 'non-elit' halfh with mutant individuals. */
     Hallele * getSolutionAsArray(int solIndex);
     // bool initializeUpdateDemand(int ind, double demand);
+    Chromosome getSingleChromosome(int index);
 
     void swap(Chromosome *a, Chromosome *b);
     int partition(Chromosome *array, int low, int high);
