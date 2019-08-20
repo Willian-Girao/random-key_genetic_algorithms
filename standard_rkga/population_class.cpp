@@ -142,12 +142,32 @@ void Population::updateFitness(int index, double fitness) {
 	population[index].setFitness(fitness);
 }
 
-void Population::introduceMutants(int popSize) {
-	int endIndex = floor((popSize / 4)); //End index when introducing mutants.
+void Population::introduceMutants(void) {
+	int endIndex = floor((size / 4)); //End index when introducing mutants.
 
 	//Reseting 25% of the population (introducing mutants).
+	// cout << "Mutant individuals" << endl;
 	for (int i = 0; i < endIndex; ++i)
 	{
+		// cout << i << endl;
 		population[i].resetChromosome();
 	}
+}
+
+void Population::mateIndividuals(void) {
+	//Indexes of chromosomes from the elit group.
+	cout << "Mating candidates: " << endl;
+	for (int i = (size - 1); i >= ceil((size / 2)); --i)
+	{
+		cout << i << endl;
+	}
+
+	cout << "Offspring placeholder indexes: " << endl;
+	int mutantEndIndex = floor((size / 4));
+	for (int i = mutantEndIndex; i < ceil((size / 2)); ++i)
+	{
+		cout << i << endl;
+	}
+
+	int p_a = rand() % 6;
 }

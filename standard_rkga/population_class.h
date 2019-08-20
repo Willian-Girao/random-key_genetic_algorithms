@@ -16,7 +16,8 @@ class Population {
     void initializePopulation(int popSize, int chromSize);
     void updateFitness(int index, double fitness); /* Updates the fitness of a solution indexed by 'index'. */
 
-    void introduceMutants(int popSize); /* Replaces 25% of the 'non-elit' halfh with mutant individuals. */
+    void mateIndividuals(void);
+    void introduceMutants(); /* Replaces 25% of the 'non-elit' halfh with mutant individuals. */
     Hallele * getSolutionAsArray(int solIndex);
     // bool initializeUpdateDemand(int ind, double demand);
 

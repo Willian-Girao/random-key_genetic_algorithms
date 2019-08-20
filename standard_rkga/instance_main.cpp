@@ -29,7 +29,7 @@ int main() {
   time_t start, end;
   time(&start);
 
-  int popSize = 4; //Must be at least 4.
+  int popSize = 9; //Must be at least 4.
   int muleSpeed = 1.0;
 
   ifstream instance_file("instance_001.txt");
@@ -51,16 +51,21 @@ int main() {
   //Sorting by fitness.
   pop.sortByFitness();
 
-  pop.printPopulation();
-
-  cout << "\n*************************\n" << endl;
-
   //Introduce mutants.
-  pop.introduceMutants(popSize);
-
-  pop.printPopulation();
+  pop.introduceMutants();
 
   //Complete with offspring.
+  pop.mateIndividuals();
+
+
+
+  // pop.printPopulation();
+
+
+
+  // pop.printPopulation();
+
+  // cout << "\n*************************\n" << endl;
 
 
 
