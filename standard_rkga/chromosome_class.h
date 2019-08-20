@@ -15,8 +15,10 @@ class Chromosome {
 
   public:
     Chromosome();
+    int getLength(void);
     double getFitness(void); /* Returns the fiteness value of a chromosome. */
     double getGene(int index); /* Returns the gene (random key) in the position 'index'. */
+    int getIndex(int index);
     void printGenes(void); /* Prints the vector to the screen. */
     void calculateFitness(void); /* Evaluate the vector on the objective function. */
     void generateGenes(int chromosomeSize); /* Initializes the random keys of the chromosome. */

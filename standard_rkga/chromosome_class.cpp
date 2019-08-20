@@ -10,6 +10,10 @@ Chromosome::Chromosome() {
   fitness = 0.0;
 }
 
+int Chromosome::getLength(void) {
+  return length;
+}
+
 // /* Private methods */
 
 void Chromosome::setFitness(double fit) {
@@ -75,6 +79,10 @@ double Chromosome::getFitness(void) {
 
 double Chromosome::getGene(int index) {
   return genes[index].key;
+}
+
+int Chromosome::getIndex(int index) {
+  return genes[index].index;
 }
 
 void Chromosome::printGenes(void) {

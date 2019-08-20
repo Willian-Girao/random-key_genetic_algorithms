@@ -89,7 +89,7 @@ void Population::sortByFitness(void) {
 
 //   int p_a = rand() % 6;
 //   int p_b = rand() % 6;
-
+ 
 //   while (p_a == p_b) {
 //     p_b = rand() % 6;
 //   }
@@ -100,22 +100,132 @@ void Population::sortByFitness(void) {
 //   return pair;
 // }
 
-// Chromosome Population::matePair(Chromosome a, Chromosome b) {
-//   double prob;
-//   Chromosome offspring;
+Hallele * Population::matePair(Hallele *a, Hallele *b) {
+  double prob;
+  Hallele *offspring = new Hallele[population[0].getLength()];
 
-//   for (size_t i = 0; i < 5; i++) {
-//     prob = ((double) rand() / RAND_MAX); /* TODO - this probability should be proportional to the vectors fitness value */
+  offspring[0].key = 0.0;
+  offspring[0].index = 0;
 
-//     if (prob >= 0.5) {
-//       offspring.genes[i] = a.getGene(i);
-//     } else {
-//       offspring.genes[i] = b.getGene(i);
-//     }
-//   }
+  offspring[population[0].getLength()-1].key = 1.0;
+  offspring[population[0].getLength()-1].index = 0;
 
-//   return offspring;
-// }
+  cout << "here: " << population[0].getLength() << endl;
+
+  //TODO - it should alter the keys (not their associated index).
+  int countHelper = 0;
+  for (int i = 1; i < (population[0].getLength() - 1); i++) {
+    prob = ((double) rand() / RAND_MAX); /* TODO - this probability should be proportional to the vectors fitness value */
+    double present = false;
+  	 //TODO - must add a correction code to correct duplicated indexes.
+    if (prob >= 0.5) {
+      offspring[i].key = a[i].key;      
+      for (int j = 1; j < countHelper+1; ++j)
+	  {
+		if (offspring[j].index == a[i].index)
+      	{
+      		present = true;
+      	}
+	  }
+
+      if (!present)
+      {
+      	offspring[i].index = a[i].index;
+      } else {
+      	present = false;      	
+
+      	for (int j = 1; j < countHelper+1; ++j)
+		{
+			if (offspring[j].index == b[i].index)
+	      	{
+	      		present = true;
+	      	}
+		}
+
+		if (!present)
+		{
+			offspring[i].index = b[i].index;
+		} else {
+			//Se what can came here (what number).
+			int outHelp = 1;
+			for (int x = 1; x < countHelper+1; ++x)
+			{
+			  	if (offspring[x].index == outHelp)
+			  	{
+			  		outHelp = offspring[x].index + 1;
+			  	}
+			}
+			offspring[i].index = outHelp;
+		}	
+      }
+    } else {
+	    offspring[i].key = b[i].key;
+	    for (int j = 1; j < countHelper+1; ++j)
+    	{
+    		if (offspring[j].index == b[i].index)
+	      	{
+	      		present = true;
+	      	}
+    	}
+
+		if (!present)
+	    {
+      		offspring[i].index = b[i].index;
+      	} else {
+      		present = false;      	
+
+	      	for (int j = 1; j < countHelper+1; ++j)
+			{
+				if (offspring[j].index == a[i].index)
+		      	{
+		      		present = true;
+		      	}
+			}
+
+			if (!present)
+			{
+				offspring[i].index = a[i].index;
+			} else {
+				//Se what can came here (what number).
+				int outHelp = 1;
+				for (int x = 1; x < countHelper+1; ++x)
+				{
+				  	if (offspring[x].index == outHelp)
+				  	{
+				  		outHelp = offspring[x].index + 1;
+				  	}
+				}
+				offspring[i].index = outHelp;
+			}
+      	}
+    }
+
+    countHelper++;
+  }
+
+  for (int i = 0; i < population[0].getLength(); ++i)
+  {
+  	// cout << a[i].key << " (" << a[i].index <<  ") ";
+  	cout << a[i].index << " ";
+  }
+  cout << endl;
+
+  for (int i = 0; i < population[0].getLength(); ++i)
+  {
+  	// cout << b[i].key << " (" << b[i].index <<  ") ";
+  	cout << b[i].index << " ";
+  }
+  cout << endl;
+
+  for (int i = 0; i < population[0].getLength(); ++i)
+  {
+  	// cout << offspring[i].key << " (" << offspring[i].index <<  ") ";
+  	cout << offspring[i].index << " ";
+  }
+  cout << endl;
+
+  return offspring;
+}
 
 void Population::printPopulation(void) {
   for (int i = 0; i < size; i++) {
@@ -155,35 +265,25 @@ void Population::introduceMutants(void) {
 }
 
 void Population::mateIndividuals(void) {
+	int numMutants = floor((size / 4.0));
+	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
+
 	//Indexes of chromosomes from the elit group.
-	// double b = (size / 2.0); 
 	cout << "Mating candidates: " << ceil((size / 2.0)) << endl;
 	for (int i = size - ceil((size / 2.0)); i < size; ++i)
 	{
 		cout << i << endl;
 	}
-	// if ((size % 2) > 0.0)
-	// {
-	// 	for (int i = ceil((size / 2.0)) - 1; ((i < size) && (i <= ceil((size / 2.0)) + 1)); ++i)
-	// 	{
-	// 		cout << i << endl;
-	// 	}
-	// } else {
-	// 	for (int i = ceil((size / 2.0)); ((i < size) && (i <= ceil((size / 2.0)) + 1)); ++i)
-	// 	{
-	// 		cout << i << endl;
-	// 	}
-	// }
 
-	int numMutants = floor((size / 4.0));
-	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
+	//Indexes of chromosomes to be overrided by mating result.
 	cout << "Offspring placeholder indexes: " << x << endl;
-
 	for (int i = numMutants; i < (size - ceil((size / 2.0))); ++i)
 	{
 		cout << i << endl;
 		//Chromosome 'i' must be replaced by a mating result.
 	}
+
+	matePair(population[2].getChromosomeAsArray(), population[3].getChromosomeAsArray());
 
 	int p_a = rand() % 6;
 }
