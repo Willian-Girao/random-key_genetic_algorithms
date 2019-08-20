@@ -143,30 +143,46 @@ void Population::updateFitness(int index, double fitness) {
 }
 
 void Population::introduceMutants(void) {
-	int endIndex = floor((size / 4)); //End index when introducing mutants.
+	int endIndex = floor((size / 4.0)); //End index when introducing mutants.
 
 	//Reseting 25% of the population (introducing mutants).
-	// cout << "Mutant individuals" << endl;
+	cout << "Mutant individuals: " << endIndex << endl;
 	for (int i = 0; i < endIndex; ++i)
 	{
-		// cout << i << endl;
+		cout << i << endl;
 		population[i].resetChromosome();
 	}
 }
 
 void Population::mateIndividuals(void) {
 	//Indexes of chromosomes from the elit group.
-	cout << "Mating candidates: " << endl;
-	for (int i = (size - 1); i >= ceil((size / 2)); --i)
+	// double b = (size / 2.0); 
+	cout << "Mating candidates: " << ceil((size / 2.0)) << endl;
+	for (int i = size - ceil((size / 2.0)); i < size; ++i)
 	{
 		cout << i << endl;
 	}
+	// if ((size % 2) > 0.0)
+	// {
+	// 	for (int i = ceil((size / 2.0)) - 1; ((i < size) && (i <= ceil((size / 2.0)) + 1)); ++i)
+	// 	{
+	// 		cout << i << endl;
+	// 	}
+	// } else {
+	// 	for (int i = ceil((size / 2.0)); ((i < size) && (i <= ceil((size / 2.0)) + 1)); ++i)
+	// 	{
+	// 		cout << i << endl;
+	// 	}
+	// }
 
-	cout << "Offspring placeholder indexes: " << endl;
-	int mutantEndIndex = floor((size / 4));
-	for (int i = mutantEndIndex; i < ceil((size / 2)); ++i)
+	int numMutants = floor((size / 4.0));
+	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
+	cout << "Offspring placeholder indexes: " << x << endl;
+
+	for (int i = numMutants; i < (size - ceil((size / 2.0))); ++i)
 	{
 		cout << i << endl;
+		//Chromosome 'i' must be replaced by a mating result.
 	}
 
 	int p_a = rand() % 6;

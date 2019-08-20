@@ -29,7 +29,7 @@ int main() {
   time_t start, end;
   time(&start);
 
-  int popSize = 9; //Must be at least 4.
+  int popSize = 15; //Must be at least 4.
   int muleSpeed = 1.0;
 
   ifstream instance_file("instance_001.txt");
