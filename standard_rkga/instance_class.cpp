@@ -688,43 +688,59 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
         for (int k = 0; k < sizeC; ++k)
         {
           // Processing information regarding each node that can be served by 'j'.
-          if (canXbeServedInAE(nodeA, nodeB, j, k) && (timeLeftInJ > 0) && (solution[k].demand > 0))
+          if (canXbeServedInAE(nodeA, nodeB, j, solution[k].node) && (timeLeftInJ > 0) && (solution[k].demand > 0))
           {
-            double timeRequired = floor(solution[k].demand / getNodesTRate(k)); //.
-            double timeUnitsLeft = timeLeftInJ - timeRequired;
+            double timeRequired = solution[k].demand / getNodesTRate(solution[k].node);
 
             if (timeRequired <= timeLeftInJ)
             {
-              if (timeUnitsLeft > 0)
+              timeLeftInJ -= timeRequired;
+              timeElapsedServing += timeRequired;
+
+              solution[k].demand -= solution[k].demand;
+
+              if (solution[k].demand < 0)
               {
-                // There is still time left in 'j' to serve another node.
-                // demandMet += solution[k].demand; // Accounting demand attended.
-                // cout << "Added1: " << solution[k].demand << endl;
-                timeLeftInJ -= timeRequired;
-                timeElapsedServing += timeRequired;
-
-                // cout << solution[k].demand << " (" << k << ")" << endl;
-                solution[k].demand -= solution[k].demand;
-                // cout << ": " << solution[k].demand << endl;
-              } else {
-                // Time in 'j' not enought to serve the whole demand of 'k'.
-                double timeUsedUpPositive = timeRequired - (timeRequired - timeLeftInJ);
-
-                // timeElapsedServing += floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) / getNodesTRate(solution[k].node);
-                timeElapsedServing += timeUsedUpPositive;
-
-                //TODO - The bellow code should be the transmition rate, not the demand.
-                // demandMet += timeUsedUpPositive * solution[k].demand; // Accounting demand attended.
-                // demandMet += floor(timeUsedUpPositive * getNodesTRate(solution[k].node));
-                // cout << "Added2: " << floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) << endl;
-
-                // timeLeftInJ -= floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) / getNodesTRate(solution[k].node);
-                timeLeftInJ -= timeUsedUpPositive;
-
-                // cout << (timeUsedUpPositive * solution[k].demand) << " (" << k << ")" << endl;
-                solution[k].demand -= floor(timeUsedUpPositive * getNodesTRate(solution[k].node));
-                // cout << ". " << floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) << endl;
+                cout << " - WARNING 2 -\n";
               }
+
+
+
+
+              // if (timeUnitsLeft > 0)
+              // {
+              //   // There is still time left in 'j' to serve another node.
+              //   // demandMet += solution[k].demand; // Accounting demand attended.
+              //   // cout << "Added1: " << solution[k].demand << endl;
+              //   timeLeftInJ -= timeRequired;
+              //   timeElapsedServing += timeRequired;
+
+              //   // cout << solution[k].demand << " (" << k << ")" << endl;
+              //   solution[k].demand -= solution[k].demand;
+              //   // cout << ": " << solution[k].demand << endl;
+              // } else {
+              //   // Time in 'j' not enought to serve the whole demand of 'k'.
+              //   double timeUsedUpPositive = timeRequired - (timeRequired - timeLeftInJ);
+
+              //   // timeElapsedServing += floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) / getNodesTRate(solution[k].node);
+              //   timeElapsedServing += timeUsedUpPositive;
+
+              //   //TODO - The bellow code should be the transmition rate, not the demand.
+              //   // demandMet += timeUsedUpPositive * solution[k].demand; // Accounting demand attended.
+              //   // demandMet += floor(timeUsedUpPositive * getNodesTRate(solution[k].node));
+              //   // cout << "Added2: " << floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) << endl;
+
+              //   // timeLeftInJ -= floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) / getNodesTRate(solution[k].node);
+              //   timeLeftInJ -= timeUsedUpPositive;
+
+              //   // cout << (timeUsedUpPositive * solution[k].demand) << " (" << k << ")" << endl;
+              //   solution[k].demand -= floor(timeUsedUpPositive * getNodesTRate(solution[k].node));
+              //   // cout << ". " << floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) << endl;
+              //   if (solution[k].demand < 0)
+              //   {
+              //     cout << " - WARNING 2 - " << "( " << floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) << ", " << solution[k].demand << ")\n";
+              //   }
+              // }
             }
           }
         }
@@ -740,13 +756,17 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
 
   if (demandMet > 46)
   {
-    cout << " - WARNING -\n";
+    cout << " - WARNING 1 -\n";
   }
 
   double demandLeft = 0.0;
   for (int i = 0; i < sizeC; ++i)
   {
     demandLeft += solution[i].demand;
+    if (solution[i].demand < 0)
+    {
+      cout << " - WARNING 2 -\n";
+    }
   }
   
   //TODO - DEMAND NOT MET MUST HAVE MORE SEVERE PUNISHMENT.
@@ -814,43 +834,59 @@ double Instance::evaluateSolutionFinal(Hallele *chromosome, double muleVelocity)
         for (int k = 0; k < sizeC; ++k)
         {
           // Processing information regarding each node that can be served by 'j'.
-          if (canXbeServedInAE(nodeA, nodeB, j, k) && (timeLeftInJ > 0) && (solution[k].demand > 0))
+          if (canXbeServedInAE(nodeA, nodeB, j, solution[k].node) && (timeLeftInJ > 0) && (solution[k].demand > 0))
           {
-            double timeRequired = floor(solution[k].demand / getNodesTRate(k)); //.
-            double timeUnitsLeft = timeLeftInJ - timeRequired;
+            double timeRequired = solution[k].demand / getNodesTRate(solution[k].node);
 
             if (timeRequired <= timeLeftInJ)
             {
-              if (timeUnitsLeft > 0)
+              timeLeftInJ -= timeRequired;
+              timeElapsedServing += timeRequired;
+
+              solution[k].demand -= solution[k].demand;
+
+              if (solution[k].demand < 0)
               {
-                // There is still time left in 'j' to serve another node.
-                // demandMet += solution[k].demand; // Accounting demand attended.
-                // cout << "Added1: " << solution[k].demand << endl;
-                timeLeftInJ -= timeRequired;
-                timeElapsedServing += timeRequired;
-
-                // cout << solution[k].demand << " (" << k << ")" << endl;
-                solution[k].demand -= solution[k].demand;
-                // cout << ": " << solution[k].demand << endl;
-              } else {
-                // Time in 'j' not enought to serve the whole demand of 'k'.
-                double timeUsedUpPositive = timeRequired - (timeRequired - timeLeftInJ);
-
-                // timeElapsedServing += floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) / getNodesTRate(solution[k].node);
-                timeElapsedServing += timeUsedUpPositive;
-
-                //TODO - The bellow code should be the transmition rate, not the demand.
-                // demandMet += timeUsedUpPositive * solution[k].demand; // Accounting demand attended.
-                // demandMet += floor(timeUsedUpPositive * getNodesTRate(solution[k].node));
-                // cout << "Added2: " << floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) << endl;
-
-                // timeLeftInJ -= floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) / getNodesTRate(solution[k].node);
-                timeLeftInJ -= timeUsedUpPositive;
-
-                // cout << (timeUsedUpPositive * solution[k].demand) << " (" << k << ")" << endl;
-                solution[k].demand -= floor(timeUsedUpPositive * getNodesTRate(solution[k].node));
-                // cout << ". " << floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) << endl;
+                cout << " - WARNING 2 -\n";
               }
+
+
+
+
+              // if (timeUnitsLeft > 0)
+              // {
+              //   // There is still time left in 'j' to serve another node.
+              //   // demandMet += solution[k].demand; // Accounting demand attended.
+              //   // cout << "Added1: " << solution[k].demand << endl;
+              //   timeLeftInJ -= timeRequired;
+              //   timeElapsedServing += timeRequired;
+
+              //   // cout << solution[k].demand << " (" << k << ")" << endl;
+              //   solution[k].demand -= solution[k].demand;
+              //   // cout << ": " << solution[k].demand << endl;
+              // } else {
+              //   // Time in 'j' not enought to serve the whole demand of 'k'.
+              //   double timeUsedUpPositive = timeRequired - (timeRequired - timeLeftInJ);
+
+              //   // timeElapsedServing += floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) / getNodesTRate(solution[k].node);
+              //   timeElapsedServing += timeUsedUpPositive;
+
+              //   //TODO - The bellow code should be the transmition rate, not the demand.
+              //   // demandMet += timeUsedUpPositive * solution[k].demand; // Accounting demand attended.
+              //   // demandMet += floor(timeUsedUpPositive * getNodesTRate(solution[k].node));
+              //   // cout << "Added2: " << floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) << endl;
+
+              //   // timeLeftInJ -= floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) / getNodesTRate(solution[k].node);
+              //   timeLeftInJ -= timeUsedUpPositive;
+
+              //   // cout << (timeUsedUpPositive * solution[k].demand) << " (" << k << ")" << endl;
+              //   solution[k].demand -= floor(timeUsedUpPositive * getNodesTRate(solution[k].node));
+              //   // cout << ". " << floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) << endl;
+              //   if (solution[k].demand < 0)
+              //   {
+              //     cout << " - WARNING 2 - " << "( " << floor(timeUsedUpPositive * getNodesTRate(solution[k].node)) << ", " << solution[k].demand << ")\n";
+              //   }
+              // }
             }
           }
         }

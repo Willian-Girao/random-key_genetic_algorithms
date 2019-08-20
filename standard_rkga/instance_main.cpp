@@ -30,11 +30,11 @@ int main() {
   time_t start, end;
   time(&start);
 
-  int popSize = 1000; //Must be at least 4.
+  int popSize = 20; //Must be at least 4.
   int muleSpeed = 1.0;
-  int maxInt = 100;
+  int maxInt = 50;
 
-  ifstream instance_file("instance_001.txt");
+  ifstream instance_file("instance_002.txt");
 
   Instance inst;
   consumeInstance(instance_file, &inst);
