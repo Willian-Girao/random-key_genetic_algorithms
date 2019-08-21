@@ -5,9 +5,9 @@
 
 using namespace std;
 
-struct SolutionStruct {
-    int node;
-    double demand;
+struct SolutionStruct { /* Structure used to evaluate the solution for the DMSP - Mr. Pablo's graph instance's structure based. */
+    int node; //Node id.
+    double demand; //Node demand to be served.
 };
 
 struct EdgeData { /* Holds the information assiciated to 'w' edges - created due to presence of artificial node */
@@ -52,8 +52,11 @@ class Instance {
     double getNodesCRange(int index); /* Gets the communication rang of a node indexed by 'index' */
     double getNodesTRate(int index); /* Gets the transmition rate of a node indexed by 'index' */
     double getNodesDemmand(int index); /* Gets the demmand of a node indexed by 'index' */    
+    double evaluateSolution(Hallele *solution, double muleVelocity); /* Set and returns the fitness value of a solution - evaluate on the problem. */
+    void printFinalSolution(Hallele *chromosome, double muleVelocity); /*  */
     Node getNode(int index); /* Gets the representation of a node indexed by 'index' */
     Node getBaseStation(); /* Gets the representation of the base station */
+    SolutionStruct * buildSolutionStructure(Hallele *chromosome); /* Interface between RKGA solution vector and DMSP structure - Mr. Pablo's modeling based. */
     
     /* Getters - Objective function evaluation helpers | AE - Artificial Edge | BP - Between Pairs' | Values regarding metadata between two consecutive nodes */
     int getNumberOfAEBP(int main_node_index, int pair_node_index); /* Returns the number of artificial edges */
@@ -65,10 +68,6 @@ class Instance {
     double getAEyEndAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the y ending coordinate of 'ed_index' */
     double getAELength(int main_node_index, int pair_node_index, int ae_index); /* Returns the length of 'ed_index' */
     bool canXbeServedInAE(int main_node_index, int pair_node_index, int ae_index, int x); /* Returns true if 'x' can be served in 'ed_index' - false otherwise */
-
-    double evaluateSolution(Hallele *solution, double muleVelocity);
-    double evaluateSolutionFinal(Hallele *chromosome, double muleVelocity);
-    SolutionStruct * buildSolutionStructure(Hallele *chromosome);
 
     /* Setters */
     /* Sets number of possible speeds to be used */

@@ -79,7 +79,7 @@ int main() {
 
   time(&end);
 
-  inst.evaluateSolutionFinal(pop.getSingleChromosome((popSize - 1)).getChromosomeAsArray(), muleSpeed);
+  inst.printFinalSolution(pop.getSingleChromosome((popSize - 1)).getChromosomeAsArray(), muleSpeed);
 
   // Calculating total time taken by the program. 
   double time_taken = double(end - start); 
