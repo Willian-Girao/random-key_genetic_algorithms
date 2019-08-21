@@ -627,10 +627,9 @@ SolutionStruct * Instance::buildSolutionStructure(Hallele *chromosome) {
 
 // 'ae' stands for Artificial Edge.
 double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
-  double totalTimeElapsed = 0.0;
+  double totalDistance = 0.0;
   double timeElapsedServing = 0.0;
   double demandMet = 0.0;
-  double totalDemand = 0.0;
   int sizeC = original_nodes_n + 1;
 
   //Decoder.
@@ -638,13 +637,6 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
 
   //Building solution structure array.
   SolutionStruct *solution = buildSolutionStructure(chromosome);
-
-  //TODO - THIS MUST BE A CLASS PROPERTY.
-  // Calculating total demand.
-  for (int i = 0; i < sizeC; ++i)
-  {
-    totalDemand += getNodesDemmand(i);
-  }
 
   for (int i = 0; i < sizeC; ++i)
   {
@@ -655,7 +647,7 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
       int aeBetween = getNumberOfAEBP(nodeA, nodeB);
 
       // Acounting time to cross edge between main nodes under consideration.
-      totalTimeElapsed += getDistanceBP(nodeA, nodeB) / muleVelocity;
+      totalDistance += getDistanceBP(nodeA, nodeB);
 
       // Going through the artificial edges metadata ('j' is an artificial edge "id").
       for (int j = (aeBetween-1); j >= 0; --j)
@@ -691,11 +683,6 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
         // Finished parsing artificial edge metadata.
       }
     }
-  }
-
-  if (demandMet > 46)
-  {
-    cout << " - WARNING 1 -\n";
   }
 
   double demandLeft = 0.0;
@@ -707,16 +694,19 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
       cout << " - WARNING 2 -\n";
     }
   }
+
+  if ((total_demand - demandLeft) < total_demand) {
+    totalDistance = totalDistance * (-1.0);
+  }
   
   //TODO - DEMAND NOT MET MUST HAVE MORE SEVERE PUNISHMENT.
-  return (totalDemand - demandLeft);
+  return (totalDistance / muleVelocity);
 };
 
 void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
-  double totalTimeElapsed = 0.0;
+  double totalDistance = 0.0;
   double timeElapsedServing = 0.0;
   double demandMet = 0.0;
-  double totalDemand = 0.0;
   int sizeC = original_nodes_n + 1;
 
   //Decoder.
@@ -724,13 +714,6 @@ void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
 
   //Building solution structure array.
   SolutionStruct *solution = buildSolutionStructure(chromosome);
-
-  //TODO - THIS MUST BE A CLASS PROPERTY.
-  // Calculating total demand.
-  for (int i = 0; i < sizeC; ++i)
-  {
-    totalDemand += getNodesDemmand(i);
-  }
 
   for (int i = 0; i < sizeC; ++i)
   {
@@ -741,7 +724,7 @@ void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
       int aeBetween = getNumberOfAEBP(nodeA, nodeB);
 
       // Acounting time to cross edge between main nodes under consideration.
-      totalTimeElapsed += getDistanceBP(nodeA, nodeB) / muleVelocity;
+      totalDistance += getDistanceBP(nodeA, nodeB);
 
       // Going through the artificial edges metadata ('j' is an artificial edge "id").
       for (int j = (aeBetween-1); j >= 0; --j)
@@ -783,14 +766,30 @@ void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
   for (int i = 0; i < sizeC; ++i)
   {
     demandLeft += solution[i].demand;
+    if (solution[i].demand < 0)
+    {
+      cout << " - WARNING 2 -\n";
+    }
   }
 
-  cout << "Total demand required: " << totalDemand << endl;
-  cout << "Total demand met: " << (totalDemand - demandLeft) << endl;
+  if ((total_demand - demandLeft) < total_demand) {
+    totalDistance = totalDistance * (-1.0);
+  }
+
+  cout << "\n> Solution found\n\n";
+  cout << "Demand missed: " << demandLeft << endl;
   cout << "Time to serve all: " << timeElapsedServing << endl;
-
-  if (demandMet > 46)
-  {
-    cout << " - WARNING -\n";
-  }
+  cout << "Fitness: " << (totalDistance / muleVelocity) << endl;
 };
+
+void Instance::setTotalDemand() {
+  int sizeC = original_nodes_n + 1;
+  int totalDemand = 0.0;
+
+  for (int i = 0; i < sizeC; ++i)
+  {
+    totalDemand += getNodesDemmand(i);
+  }
+
+  total_demand = totalDemand;
+}

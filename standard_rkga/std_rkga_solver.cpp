@@ -22,25 +22,26 @@
 #include "chromosome_class.cpp"
 #include "population_class.cpp"
 
-using namespace std;
-
-int main() {
+//Use a standar Random Key Genetic Algorithm to solve a Data Mule Scheduling Problem Instance.
+// 'popSize': size of the population.
+// 'maxInt': maximum number of iterations.
+// 'muleSpeed': speed utilized by the mule.
+// 'instanceFileName': name of the .txt file containing the graph instance.
+void solveDMSP_RKGA(int popSize, int maxInt, int muleSpeed, string instanceFileName, string timeFormat) {
   srand(time(0));
-
-  time_t start, end;
-  time(&start);
-
-  int popSize = 20; //Must be at least 4.
-  int muleSpeed = 1.0;
-  int maxInt = 50;
-
-  ifstream instance_file("instance_002.txt");
+  
+  clock_t time;
+  time = clock();
 
   Instance inst;
-  consumeInstance(instance_file, &inst);
-  // cout << "\n> Finished processing .txt file\n\n";
-
   Population pop;
+
+  ifstream instance_file(instanceFileName);
+
+  consumeInstance(instance_file, &inst);
+
+  //Calculating instance demand.
+  inst.setTotalDemand();
 
   //Initializing the initial population.
   pop.initializePopulation(popSize, inst.getNumberOfOriginalNodes());
@@ -62,8 +63,6 @@ int main() {
 
     //Complete with offspring.
     pop.mateIndividuals();
-
-    // cout << x << endl;
   }
 
   //Updating fitness.
@@ -77,15 +76,19 @@ int main() {
 
   // pop.printPopulation();
 
-  time(&end);
+  time = clock() - time;
 
+  //Printing best solution to screem.
   inst.printFinalSolution(pop.getSingleChromosome((popSize - 1)).getChromosomeAsArray(), muleSpeed);
 
-  // Calculating total time taken by the program. 
-  double time_taken = double(end - start); 
-  cout << "Time taken by program is : " << fixed 
-       << time_taken << setprecision(5); 
-  cout << " sec " << endl; 
+  //Calculating total time taken by the program. 
+  double elapsed = 0.0;
 
-  return 0;
+  if (timeFormat == "ms") {
+    elapsed = time;
+    cout << "Execution time (ms): " << elapsed << endl;
+  } else if (timeFormat == "s") {
+    elapsed = (time * 1.0) / CLOCKS_PER_SEC;
+    cout << "Execution time (s): " << elapsed << endl;
+  }
 }

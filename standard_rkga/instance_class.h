@@ -98,6 +98,7 @@ class Instance {
     void resetEdgesBetweenInfo(int main_node_index, int pair_node_index, int value);
     /* Used in pre-processing to reset structures of ids served in artificial edges between pairs of nodes */
     void resetIdsCanbeServed(int main_node_index, int pair_node_index, int value, int artificial_edge_pointer_index_counter);
+    void setTotalDemand();
 
     /* Helpers */    
     void printNode(int index); /* Prints the informations of a node indexed by 'index' */    
@@ -110,6 +111,7 @@ class Instance {
     int original_nodes_n; /* Number of nodes in the original graph */
     int total_nodes_n; /* Number of nodes in the original alterated graph (original nodes + fictious ones) */
     int speeds_n; /* Number of nodes in the original graph */
+    int total_demand; /* Total demand to be met. */
     double *speeds; /* 'List' of 'doubles' Values of the possible speeds */
     Node *original_nodes; /* 'List' of 'Nodes' with the descriptions of the nodes */
 };
