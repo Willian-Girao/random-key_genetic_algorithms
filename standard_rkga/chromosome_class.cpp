@@ -6,6 +6,8 @@
 
 using namespace std;
 
+// /* Public methods */
+
 Chromosome::Chromosome() {
   fitness = 0.0;
 }
@@ -18,13 +20,11 @@ void Chromosome::setResetGenes(Hallele * newGenes) {
   genes = newGenes;
   fitness = 0.0;
 }
-// /* Private methods */
 
 void Chromosome::setFitness(double fit) {
   fitness = fit;
 }
 
-/* Whipe cleans a chromosome - reset */
 void Chromosome::resetChromosome(void) {
   for (int i = 1; i < length - 1; ++i)
   {
@@ -54,7 +54,6 @@ void Chromosome::generateGenes(int chromosomeSize) {
 
     h.key = key;
     h.index = i;
-    // h.demand = 0.0;
 
     genes[i] = h;
   }
@@ -65,24 +64,15 @@ void Chromosome::generateGenes(int chromosomeSize) {
   //at the end of the array during sorting from 1 to size.
   bs.key = 1.0;
   bs.index = 0;
-  // bs.demand = 0.0;
 
   genes[chromosomeSize] = bs;
 
   Hallele h;
   h.key = 0.0;
   h.index = 0;
-  // h.demand = 0.0;
 
   genes[0] = h;
 }
-
-void Chromosome::updateGene(int i, double key) {
-  genes[i].key = key;
-}
-
-// /* Public methods */
-
 
 double Chromosome::getFitness(void) {
   return fitness;
@@ -106,17 +96,8 @@ Hallele * Chromosome::getChromosomeAsArray(void) {
   return genes;
 }
 
-// bool Chromosome::updateDemand(int ind, double demand) {
-//   bool updated = false;
+// /* Private methods */
 
-//   for (int i = 0; i < length; ++i)
-//   {
-//     if (genes[i].index == ind)
-//     {
-//       genes[i].demand = demand;
-//       updated = true;
-//     }
-//   }
-
-//   return updated;
-// }
+void Chromosome::updateGene(int i, double key) {
+  genes[i].key = key;
+}
