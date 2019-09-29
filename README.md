@@ -39,9 +39,6 @@ Thus, a random-key GA searches the solution space indirectly by searching the sp
 
 # Data Mule Scheduling Problem
 
-https://pdfs.semanticscholar.org/f339/7ec243dce5fd5869cf523a3ee1a77c54957a.pdf
-https://link.springer.com/referenceworkentry/10.1007%2F978-3-319-07153-4_30-1
-
 ## Introduction
 
 A usual way to collect data in a Wireless Sensor Network (WSN) is by the support of a special agent, called data mule, that moves among sensors nodes and performs all communication between them. A data mule is a mobile node that moves inside the field (network) and collects data from sensors within the network. The Data Mule Scheduling Problem (DMSP) consists in planning the route of the data mule, the order of attendence of the sensors, and also plan the velocity it will use to move. The idea os that each sensor in the network generates some amount of information per unit of time and it has a limited amount of memory to retain this information generated, and when the amount of information generated exceeds the memory capacity, information is lost. The data mule work is to prevent information loss by visiting and retreaving the sensors information to free its memory, preventing the information losss.
@@ -64,3 +61,5 @@ Once we have a time-speed profile, we have a mapping from each location to time 
 1. J. C. Bean. Genetic algorithms and random keys for sequencing and optimization. ORSA J. on Computing, 6:154–160, 1994
 2. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.567.6832&rep=rep1&type=pdf
 3. http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0101-74382017000200387
+4. https://pdfs.semanticscholar.org/f339/7ec243dce5fd5869cf523a3ee1a77c54957a.pdf
+5. https://link.springer.com/referenceworkentry/10.1007%2F978-3-319-07153-4_30-1
