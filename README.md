@@ -62,3 +62,7 @@ Once the path is chosen, 2-D/3-D data mule scheduling problems are reduced to 1-
 Once we have a time-speed profile, we have a mapping from each location to time point. Thus we get a scheduling problem by regarding data collection from each sensor as a job. Each job has one or more intervals in which it can be executed. **Job scheduling** is to determine the allocation of time slots to jobs so that all jobs can be completed.
 
 ![alt text](https://github.com/Willian-Girao/random-key_genetic_algorithms/blob/master/substeps_dmsp.png)
+
+# References
+
+1. http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0101-74382017000200387
