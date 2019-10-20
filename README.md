@@ -60,7 +60,7 @@ Once we have a time-speed profile, we have a mapping from each location to time 
 
 The problem instances used in this work are representations of networks with different configurations, with the (original) node count varying from *X* to *Y*. Bellow we show a graphical representation of such an instance, followed by its description in a textual format.
 
-![](C:\Users\willi\Repositories\random-key_genetic_algorithms\testGraph1.png)
+![](https://github.com/Willian-Girao/random-key_genetic_algorithms/blob/master/testGraph1.png)
 
 The textual description of the network contains all information regarding the original nodes within the network (sensors), such as position, demand and communication range, as well meta-data regarding the artificial nodes and edges created after pre-processing and the network as a whole.
 
