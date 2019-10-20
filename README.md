@@ -86,10 +86,10 @@ The textual description of the network contains all information regarding the or
 
 The whole file can be divided into two main parts, based on the first blank line: before it there are only information regarding the the entire network and its original nodes; after it we have all the data associated with each and every pair of original nodes and the artificial data introduced after pre-processing. Following is a detailed listening of the values in each of the tagged lines.
 
-- **1st** line - Original Nodes Count, Total Nodes Count, Number of Allowed Velocities, List of Allowed Velocities.
-- **2nd** line - Sensor *X* Coordinate, Sensor *Y* Coordinate, Communication Range, Transmission Rate, Demand.
-- **3rd** line - Sensor *A*, Sensor *B*, Distance Between Sensors, Artificial Edges Count (between *A* and *B*).
-- **4th** line - Artificial Edge *a*, "Start" *X* Coordinate, "Start" *Y* Coordinate, "End" *X* Coordinate, "End" *Y* Coordinate, Edge Length, Sensors that Can be Served While in *a*, Sensor that Can be Served IDs List.
+- **1st** - Original Nodes Count, Total Nodes Count, Number of Allowed Velocities, List of Allowed Velocities.
+- **2nd** - Sensor *X* Coordinate, Sensor *Y* Coordinate, Communication Range, Transmission Rate, Demand.
+- **3rd** - Sensor *A*, Sensor *B*, Distance Between Sensors, Artificial Edges Count (between *A* and *B*).
+- **4th** - Artificial Edge *a*, "Start" *X* Coordinate, "Start" *Y* Coordinate, "End" *X* Coordinate, "End" *Y* Coordinate, Edge Length, Sensors that Can be Served While in *a*, Sensor that Can be Served IDs List.
 
 #### Solution Format
 
