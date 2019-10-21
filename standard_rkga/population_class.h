@@ -20,6 +20,7 @@ class Population {
     void mateIndividuals(void); /* Produces offsprings of solutions - 'popSize' even 25% of population | 'popSize' odd 20% of population */
     void introduceMutants(); /* Replaces 25% of the 'non-elit' halfh with mutant individuals. */
     void sortByFitness(void); /* Sorts the population in descending ascending order based on the fitness values. */
+    void resetInvalidSolutions(void);
 
     /* Utils */
     void printPopulation(void); /* Prints each vector of the current population. */

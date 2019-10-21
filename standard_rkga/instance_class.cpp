@@ -638,6 +638,13 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   //Building solution structure array.
   SolutionStruct *solution = buildSolutionStructure(chromosome);
 
+  // cout << "[ ";
+  // for (int i = 0; i < (original_nodes_n + 1); ++i)
+  // {
+  //   cout << solution[i].node << " (" << solution[i].demand << "), ";
+  // }
+  // cout << " ]\n\n";
+
   for (int i = 0; i < sizeC; ++i)
   {
     if (i < (sizeC-1))
@@ -658,6 +665,13 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
         double timeInJ = aeLength / muleVelocity;
         double timeLeftInJ = timeInJ; //"Workble time" left while in 'j'.
 
+        // cout << "Pair: " << nodeA << ", " << nodeB << endl;
+        // cout << "A.E. ID: " << j+1 << endl;
+        // cout << "A.E. length: " << aeLength << endl;
+        // cout << "Time in A.E.: " << timeInJ << endl;
+        // cout << "Time left in A.E.: " << timeLeftInJ << endl;
+        // cout << "Mule velocity: " << muleVelocity << endl << endl;
+
         // Getting G's nodes that can be served in 'j'.
         for (int k = 0; k < sizeC; ++k)
         {
@@ -665,6 +679,8 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
           if (canXbeServedInAE(nodeA, nodeB, j, solution[k].node) && (timeLeftInJ > 0) && (solution[k].demand > 0))
           {
             double timeRequired = solution[k].demand / getNodesTRate(solution[k].node);
+            // cout << "Node being served: " << solution[k].node << endl;
+            // cout << "Time required to serve it: " << timeRequired << endl;
 
             if (timeRequired <= timeLeftInJ)
             {
@@ -677,6 +693,12 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
               {
                 cout << " - WARNING 2 -\n";
               }
+
+              // cout << "Time left in A.E.: " << timeLeftInJ << endl;
+              // cout << "Sensor " << solution[k].node << " updated demand: " << solution[k].demand << endl << endl;
+
+              int pause = 0;
+              // cin >> pause;
             }
           }
         }
@@ -701,6 +723,7 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   
   //TODO - DEMAND NOT MET MUST HAVE MORE SEVERE PUNISHMENT.
   return (totalDistance / muleVelocity);
+  // return (totalDistance / timeElapsedServing);
 };
 
 void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
@@ -778,8 +801,10 @@ void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
 
   cout << "\n> Solution found\n\n";
   cout << "Demand missed: " << demandLeft << endl;
-  cout << "Time to serve all: " << timeElapsedServing << endl;
-  cout << "Fitness: " << (totalDistance / muleVelocity) << endl;
+  cout << "Route length: " << totalDistance << endl;
+  cout << "Time Serving: " << timeElapsedServing << endl;
+  // cout << "Fitness (totalDistance/timeElapsedServing): " << (totalDistance / timeElapsedServing) << endl;
+  cout << "Fitness (totalDistance/muleVelocity): " << (totalDistance / muleVelocity) << endl;
 };
 
 void Instance::setTotalDemand() {

@@ -27,7 +27,7 @@
 // 'maxInt': maximum number of iterations.
 // 'muleSpeed': speed utilized by the mule.
 // 'instanceFileName': name of the .txt file containing the graph instance.
-void solveDMSP_RKGA(int popSize, int maxInt, int muleSpeed, string instanceFileName, string timeFormat) {
+void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFileName, string timeFormat, bool debbug, int debbugLevel) {
   srand(time(0));
   
   clock_t time;
@@ -57,12 +57,17 @@ void solveDMSP_RKGA(int popSize, int maxInt, int muleSpeed, string instanceFileN
 
     //Sorting by fitness.
     pop.sortByFitness();
+    int pause = 0;
+    // cin >> pause;
 
     //Introduce mutants.
     pop.introduceMutants();
 
     //Complete with offspring.
     pop.mateIndividuals();
+
+    //Reseting invalid solutions (negative fitness)
+    pop.resetInvalidSolutions();
   }
 
   //Updating fitness.
@@ -74,12 +79,11 @@ void solveDMSP_RKGA(int popSize, int maxInt, int muleSpeed, string instanceFileN
   //Sorting by fitness.
   pop.sortByFitness();
 
-  // pop.printPopulation();
-
   time = clock() - time;
 
   //Printing best solution to screem.
-  inst.printFinalSolution(pop.getSingleChromosome((popSize - 1)).getChromosomeAsArray(), muleSpeed);
+  inst.printFinalSolution(pop.getSingleChromosome(0).getChromosomeAsArray(), muleSpeed);
+  // pop.printPopulation();
 
   //Calculating total time taken by the program. 
   double elapsed = 0.0;

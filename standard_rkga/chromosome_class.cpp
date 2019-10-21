@@ -101,3 +101,16 @@ Hallele * Chromosome::getChromosomeAsArray(void) {
 void Chromosome::updateGene(int i, double key) {
   genes[i].key = key;
 }
+
+void Chromosome::resetGenes() {
+  for (int i = 1; i < (length - 1); i++) {    
+    double key = ((double) rand() / RAND_MAX);
+
+    while (key == 1.0) {
+      key = ((double) rand() / RAND_MAX);
+    }
+
+    genes[i].key = key;
+    genes[i].index = i;
+  }
+}

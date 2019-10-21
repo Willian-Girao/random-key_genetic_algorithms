@@ -26,6 +26,7 @@ class Chromosome {
     /* Setters */
     void generateGenes(int chromosomeSize); /* Initializes the random keys of the chromosome. */
     void setResetGenes(Hallele * newGenes); /* Change the current hallele sequency for 'newGenes'. */
+    void resetGenes(void); /* Change the current hallele sequency for 'newGenes'. */
     void setFitness(double fit); /* Updates a chromosome fitness value. */ 
     void resetChromosome(void); /* Whipe cleans a chromosome - reset */
 

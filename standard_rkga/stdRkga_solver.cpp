@@ -16,12 +16,14 @@ using namespace std;
 int main() {
 
   int popSize = 20;
-  int maxInt = 100;
-  int muleSpeed = 1;
-  string instanceFileName = "instance_002.txt";
+  int maxInt = 200;
+  double muleSpeed = 0.001;
+  int debuggLevel = 1;
+  bool debbug = true;
+  string instanceFileName = "instance_dmsp_c_n7_r50_0.txt";
   string timeFormat = "s";
 
-  solveDMSP_RKGA(popSize, maxInt, muleSpeed, instanceFileName, timeFormat);
+  solveDMSP_RKGA(popSize, maxInt, muleSpeed, instanceFileName, timeFormat, debbug, debuggLevel);
 
   return 0;
 }

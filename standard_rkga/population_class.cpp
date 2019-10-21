@@ -185,12 +185,17 @@ void Population::updateFitness(int index, double fitness) {
 
 void Population::introduceMutants(void) {
 	int endIndex = floor((size / 4.0)); //End index when introducing mutants.
+	int index = size - 1;
 
 	//Reseting 25% of the population (introducing mutants).
-	for (int i = 0; i < endIndex; ++i)
+	while(endIndex > 0)
 	{
-		population[i].resetChromosome();
-		population[i].setFitness(0.0);
+		// cout << "Solution " << index << " became a mutant.\n";
+		population[index].resetChromosome();
+		population[index].setFitness(0.0);
+
+		index--;
+		endIndex--;
 	}
 }
 
@@ -205,17 +210,39 @@ void Population::mateIndividuals(void) {
 	int indexStartRand = size - ceil((size / 2.0));
 	int indexEndRand = size - 1;
 
+	// cout << "numMutants: " << numMutants << endl;
+	// cout << "q: " << (size - ceil((size / 2.0))) << endl;
+
 	//Indexes of chromosomes to be overrided by mating result.
-	for (int i = numMutants; i < (size - ceil((size / 2.0))); ++i)
+	for (int i = (size - numMutants - 1); i >= (size - ceil((size / 2.0))); --i)
 	{
-		int parentAIndex = rand() % ((size) - indexStartRand) + indexStartRand;
-		int parentBIndex = rand() % ((size) - indexStartRand) + indexStartRand;
+		// int parentAIndex = rand() % (size - indexStartRand) + indexStartRand;
+		// int parentBIndex = rand() % (size - indexStartRand) + indexStartRand;
+		int parentAIndex = rand() % (size / 2);
+		int parentBIndex = rand() % (size / 2);
 
 		while(parentBIndex == parentAIndex) {
-			parentBIndex = rand() % ((size) - indexStartRand) + indexStartRand;
+			parentBIndex = rand() % (size / 2);
 		}
 
+		// cout << "Parent A: " << parentAIndex << endl;
+		// cout << "Parent B: " << parentBIndex << endl;
+		// cout << "Individual " << i << " became offspring\n";
+
 		population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentBIndex].getChromosomeAsArray()));
+	}
+
+	// int a;
+	// cin >> a;
+}
+
+void Population::resetInvalidSolutions(void) {
+	for (int i = 0; i < size; ++i)
+	{
+	    if (population[i].getFitness() < 0.0)
+		{
+			population[i].resetGenes();
+		}
 	}
 }
 
