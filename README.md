@@ -93,11 +93,15 @@ The whole file can be divided into two main parts, based on the first blank line
 
 #### Solution Format
 
-While using RKGAs to solve the problem, the solution consists of an array of length *n* + 1, given that the mule must return to the base station at the end of the process. The array consists of the sequence of sensors visited by the mule (final solution).
+The solution is represented as an array of length at most *n* **+ 1** (number of sensors), which is the case where the mule passes by all of the sensors before returning to the base station, and at least *3*, when visiting only one sensor is enough to serve all the others. The solution represents the sequence of sensors visited by the mule.
 
 ```cpp
-[0, 1, 2, 3, 4, 0]
+[0, 2, 0, 1, 3, 4] // Sensors 1, 3 and 4 are not used
+[0, 1, 2, 0, 3, 4] // Sensors 3 and 4 are not used
+[0, 1, 2, 3, 4, 0] // All sensors are used
 ```
+
+The attendence service ends with the mule returning to the base station, where it departed from. Thus, sensors appearing after the base station ID (always 0) in the solution are the ones that were not used in the solution.
 
 
 # References
