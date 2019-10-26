@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include <string>
+#include <limits>
 
 #include "instance_class.h"
 #include "quicksort.cpp"
@@ -641,9 +642,10 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   // cout << "[ ";
   // for (int i = 0; i < (original_nodes_n + 1); ++i)
   // {
-  //   cout << solution[i].node << " (" << solution[i].demand << "), ";
+  //   // cout << solution[i].node << " (" << solution[i].demand << "), ";
+  //   cout << solution[i].node << " ";
   // }
-  // cout << " ]\n\n";
+  // cout << " ] ";
 
   for (int i = 0; i < sizeC; ++i)
   {
@@ -705,25 +707,34 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
         // Finished parsing artificial edge metadata.
       }
     }
+
+    if (solution[i+1].node == 0)
+    {
+      break;
+    }
   }
 
   double demandLeft = 0.0;
   for (int i = 0; i < sizeC; ++i)
   {
     demandLeft += solution[i].demand;
+
     if (solution[i].demand < 0)
     {
       cout << " - WARNING 2 -\n";
     }
   }
 
-  if ((total_demand - demandLeft) < total_demand) {
-    totalDistance = totalDistance * (-1.0);
-  }
+  double fit = (totalDistance / muleVelocity);
   
-  //TODO - DEMAND NOT MET MUST HAVE MORE SEVERE PUNISHMENT.
-  return (totalDistance / muleVelocity);
-  // return (totalDistance / timeElapsedServing);
+  if ((total_demand - demandLeft) < total_demand) {
+    // cout << numeric_limits<double>::max() << "\n\n";
+    return numeric_limits<double>::max();
+  }
+
+  // cout << fit << "\n\n";
+
+  return fit;
 };
 
 void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
@@ -783,6 +794,11 @@ void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
         // Finished parsing artificial edge metadata.
       }
     }
+
+    if (solution[i+1].node == 0)
+    {
+      break;
+    }
   }
 
   double demandLeft = 0.0;
@@ -796,7 +812,7 @@ void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
   }
 
   if ((total_demand - demandLeft) < total_demand) {
-    totalDistance = totalDistance * (-1.0);
+    totalDistance = -1.0;
   }
 
   cout << "\n> Solution found\n\n";
@@ -804,7 +820,18 @@ void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
   cout << "Route length: " << totalDistance << endl;
   cout << "Time Serving: " << timeElapsedServing << endl;
   // cout << "Fitness (totalDistance/timeElapsedServing): " << (totalDistance / timeElapsedServing) << endl;
-  cout << "Fitness (totalDistance/muleVelocity): " << (totalDistance / muleVelocity) << endl;
+  cout << "\n\nFitness: " << (totalDistance / muleVelocity) << endl;
+  cout << "Path: ";
+  for (int i = 0; i < (original_nodes_n + 1); ++i)
+  {
+    if (i < original_nodes_n)
+    {
+      cout << solution[i].node << " [" << solution[i].demand << "], ";
+    } else {
+      cout << solution[i].node << " [" << solution[i].demand << "]";
+    }
+  }
+  cout << "\n\n";
 };
 
 void Instance::setTotalDemand() {

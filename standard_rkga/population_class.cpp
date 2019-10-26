@@ -69,15 +69,17 @@ Hallele * Population::matePair(Hallele *a, Hallele *b) {
   offspring[0].key = 0.0;
   offspring[0].index = 0;
 
-  offspring[population[0].getLength()-1].key = 1.0;
-  offspring[population[0].getLength()-1].index = 0;
-
   int countHelper = 0;
-  for (int i = 1; i < (population[0].getLength() - 1); i++) {
+  int aBSfIndex = -1; // Sol. 'a' index of "final BS"
+  int bBSfIndex = -1; // Sol. 'a' index of "final BS"
+
+  for (int i = 1; i < population[0].getLength(); i++) {
     prob = ((double) rand() / RAND_MAX); /* TODO - this probability should be proportional to the vectors fitness value */
-    double present = false;
+    bool present = false;
+
     if (prob >= 0.5) {
-      offspring[i].key = a[i].key;      
+      offspring[i].key = a[i].key;
+
       for (int j = 1; j < countHelper+1; ++j)
 	  {
 		if (offspring[j].index == a[i].index)
@@ -89,6 +91,10 @@ Hallele * Population::matePair(Hallele *a, Hallele *b) {
       if (!present)
       {
       	offspring[i].index = a[i].index;
+      	if (a[i].index == 0)
+      	{
+      		aBSfIndex = i;
+      	}
       } else {
       	present = false;      	
 
@@ -103,17 +109,34 @@ Hallele * Population::matePair(Hallele *a, Hallele *b) {
 		if (!present)
 		{
 			offspring[i].index = b[i].index;
+			if (b[i].index == 0)
+	      	{
+	      		bBSfIndex = i;
+	      	}
 		} else {
 			//See what can came here (what number).
 			int outHelp = 1;
-			for (int x = 1; x < countHelper+1; ++x)
-			{
-			  	if (offspring[x].index == outHelp)
-			  	{
-			  		outHelp = offspring[x].index + 1;
-			  	}
+
+			while (outHelp < (population[0].getLength() - 1)) {
+				bool presentH = false;
+
+				for (int x = 1; x < countHelper+1; ++x)
+				{
+				  	if (offspring[x].index == outHelp)
+				  	{
+				  		presentH = true;
+				  	}
+				}
+
+				if (presentH)
+				{
+					outHelp++;
+				} else {
+					break;
+				}
 			}
-			offspring[i].index = outHelp;
+			
+			offspring[i].index = outHelp > (population[0].getLength() - 2) ? 0 : outHelp;
 		}	
       }
     } else {
@@ -129,6 +152,10 @@ Hallele * Population::matePair(Hallele *a, Hallele *b) {
 		if (!present)
 	    {
       		offspring[i].index = b[i].index;
+      		if (b[i].index == 0)
+	      	{
+	      		bBSfIndex = i;
+	      	}
       	} else {
       		present = false;      	
 
@@ -143,22 +170,69 @@ Hallele * Population::matePair(Hallele *a, Hallele *b) {
 			if (!present)
 			{
 				offspring[i].index = a[i].index;
+				if (a[i].index == 0)
+		      	{
+		      		aBSfIndex = i;
+		      	}
 			} else {
 				//See what can came here (what number).
 				int outHelp = 1;
-				for (int x = 1; x < countHelper+1; ++x)
-				{
-				  	if (offspring[x].index == outHelp)
-				  	{
-				  		outHelp = offspring[x].index + 1;
-				  	}
+
+				while (outHelp < (population[0].getLength() - 1)) {
+					bool presentH = false;
+
+					for (int x = 1; x < countHelper+1; ++x)
+					{
+					  	if (offspring[x].index == outHelp)
+					  	{
+					  		presentH = true;
+					  	}
+					}
+
+					if (presentH)
+					{
+						outHelp++;
+					} else {
+						break;
+					}
 				}
-				offspring[i].index = outHelp;
+				
+				offspring[i].index = outHelp > (population[0].getLength() - 2) ? 0 : outHelp;
 			}
       	}
     }
 
     countHelper++;
+  }
+
+  // Validating if "final BS" has been introduced
+  if (aBSfIndex == -1 && bBSfIndex == -1)
+  {
+  	// cout << "\n\nNo final BS inserted\n\n";
+  	// int pause = 0;
+  	// cin >> pause;
+
+  	for (int i = 0; i < population[0].getLength(); i++) {
+  		if (b[i].index == 0)
+      	{
+      		bBSfIndex = i;
+      	}
+
+      	if (a[i].index == 0)
+      	{
+      		aBSfIndex = i;
+      	}
+
+      	prob = ((double) rand() / RAND_MAX);
+
+	    if (prob >= 0.5) {
+	    	offspring[aBSfIndex].index = 0;
+	    	offspring[aBSfIndex].key = a[aBSfIndex].key;
+	    } else {
+	    	offspring[bBSfIndex].index = 0;
+	    	offspring[bBSfIndex].key = b[bBSfIndex].key;
+	    }
+  	}
   }
 
   return offspring;

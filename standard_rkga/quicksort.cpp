@@ -51,5 +51,5 @@ void printArray(Hallele *array, int size) {
 	always be base station for the DMSP - always generates valid solutions).
 */
 void sortHalleleDecoder(Hallele *chromosome, int n) {
-    quickSort(chromosome, 1, n - 2);
+    quickSort(chromosome, 0, n - 1);
 }

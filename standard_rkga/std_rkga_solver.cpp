@@ -55,9 +55,12 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed));
     }
 
+    // cout << "WIllian\n";
+
     //Sorting by fitness.
     pop.sortByFitness();
-    int pause = 0;
+    
+    // int pause = 0;
     // cin >> pause;
 
     //Introduce mutants.
@@ -67,7 +70,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     pop.mateIndividuals();
 
     //Reseting invalid solutions (negative fitness)
-    pop.resetInvalidSolutions();
+    // pop.resetInvalidSolutions();
   }
 
   //Updating fitness.
@@ -83,7 +86,6 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
   //Printing best solution to screem.
   inst.printFinalSolution(pop.getSingleChromosome(0).getChromosomeAsArray(), muleSpeed);
-  // pop.printPopulation();
 
   //Calculating total time taken by the program. 
   double elapsed = 0.0;

@@ -20,7 +20,7 @@ int main() {
   double muleSpeed = 0.001;
   int debuggLevel = 1;
   bool debbug = true;
-  string instanceFileName = "instance_dmsp_c_n7_r50_0.txt";
+  string instanceFileName = "instance_000.txt";
   string timeFormat = "s";
 
   solveDMSP_RKGA(popSize, maxInt, muleSpeed, instanceFileName, timeFormat, debbug, debuggLevel);

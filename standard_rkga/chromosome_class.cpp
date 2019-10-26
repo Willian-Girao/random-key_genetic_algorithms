@@ -37,6 +37,21 @@ void Chromosome::resetChromosome(void) {
     genes[i].key = key;
     genes[i].index = i;
   }
+
+  double key = ((double) rand() / RAND_MAX);
+
+  while (key == 1.0) {
+    key = ((double) rand() / RAND_MAX);
+  }
+
+  genes[length - 1].key = key;
+  genes[length - 1].index = 0;
+
+  // for (int i = 0; i < length; ++i)
+  // {
+  //   cout << genes[i].index << " ";
+  // }
+  // cout << endl;
 }
 
 void Chromosome::generateGenes(int chromosomeSize) {
@@ -60,9 +75,13 @@ void Chromosome::generateGenes(int chromosomeSize) {
 
   Hallele bs; // Base Station.
 
-  // The random key of the last index in the array is set to 1.0 as to always be 
-  //at the end of the array during sorting from 1 to size.
-  bs.key = 1.0;
+  double key = ((double) rand() / RAND_MAX);
+
+  while (key == 1.0) {
+    key = ((double) rand() / RAND_MAX);
+  }
+
+  bs.key = key;
   bs.index = 0;
 
   genes[chromosomeSize] = bs;
@@ -113,4 +132,13 @@ void Chromosome::resetGenes() {
     genes[i].key = key;
     genes[i].index = i;
   }
+
+  double key = ((double) rand() / RAND_MAX);
+
+  while (key == 1.0) {
+    key = ((double) rand() / RAND_MAX);
+  }
+
+  genes[length-1].key = key;
+  genes[length-1].index = 0;
 }
