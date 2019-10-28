@@ -645,7 +645,7 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   //   // cout << solution[i].node << " (" << solution[i].demand << "), ";
   //   cout << solution[i].node << " ";
   // }
-  // cout << " ] ";
+  // cout << " ]\n\n";
 
   for (int i = 0; i < sizeC; ++i)
   {
@@ -749,6 +749,18 @@ void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
   //Building solution structure array.
   SolutionStruct *solution = buildSolutionStructure(chromosome);
 
+  cout << "Path: ";
+  for (int i = 0; i < (original_nodes_n + 1); ++i)
+  {
+    if (i < original_nodes_n)
+    {
+      cout << solution[i].node << " [" << solution[i].demand << "], ";
+    } else {
+      cout << solution[i].node << " [" << solution[i].demand << "]";
+    }
+  }
+  cout << "\n\n";
+
   for (int i = 0; i < sizeC; ++i)
   {
     if (i < (sizeC-1))
@@ -819,7 +831,6 @@ void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
   cout << "Demand missed: " << demandLeft << endl;
   cout << "Route length: " << totalDistance << endl;
   cout << "Time Serving: " << timeElapsedServing << endl;
-  // cout << "Fitness (totalDistance/timeElapsedServing): " << (totalDistance / timeElapsedServing) << endl;
   cout << "\n\nFitness: " << (totalDistance / muleVelocity) << endl;
   cout << "Path: ";
   for (int i = 0; i < (original_nodes_n + 1); ++i)

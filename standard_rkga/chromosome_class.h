@@ -32,6 +32,9 @@ class Chromosome {
 
     /* Utillities */
     void printGenes(void); /* Prints the vector to the screen. */
+    bool canInsertGene(Hallele * h, int gene); /* Verifies if 'gene' is already present in 'h' */
+    void complementMissingGene(Hallele * offspring, Hallele * aux, int position); /* Finds next gene that can be inserted and inserts it into 'offspring' */
+    void removeGeneAt(Hallele * h, int gene); /* Invalidates a gene (set it to -1) */
 
   private:
     double fitness; /* Quality of the solution. */

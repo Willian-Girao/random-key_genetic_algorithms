@@ -64,140 +64,106 @@ void Population::sortByFitness(void) {
 
 Hallele * Population::matePair(Hallele *a, Hallele *b) {
   double prob;
-  Hallele *offspring = new Hallele[population[0].getLength()];
 
+  Hallele *offspring = new Hallele[population[0].getLength()];
+  Hallele *aux = new Hallele[population[0].getLength()]; //Holds 'indexes' that can still be inserted
+
+  //Initializing offspring and auxiliar struct
   offspring[0].key = 0.0;
   offspring[0].index = 0;
+  aux[0].index = 0;
+
+  for (int i = 1; i < population[0].getLength(); ++i)
+  {
+  	offspring[i].index = -1;
+  	aux[i].index = i;
+  }
+
+  aux[population[0].getLength()-1].index = 0; //Invalidating last '0'
+
+  // cout << "A: ";
+  // for (int i = 0; i < population[0].getLength(); ++i)
+  // {
+  //   cout << a[i].index << " ";
+  // }
+  // cout << "\n\n";
+
+  // cout << "B: ";
+  // for (int i = 0; i < population[0].getLength(); ++i)
+  // {
+  //   cout << b[i].index << " ";
+  // }
+  // cout << "\n\n";
+
+  // cout << "Auxiliar: ";
+  // for (int i = 0; i < population[0].getLength(); ++i)
+  // {
+  //   cout << aux[i].index << " ";
+  // }
+  // cout << "\n\n";
 
   int countHelper = 0;
   int aBSfIndex = -1; // Sol. 'a' index of "final BS"
   int bBSfIndex = -1; // Sol. 'a' index of "final BS"
 
+  //Generating offspring
   for (int i = 1; i < population[0].getLength(); i++) {
     prob = ((double) rand() / RAND_MAX); /* TODO - this probability should be proportional to the vectors fitness value */
-    bool present = false;
 
     if (prob >= 0.5) {
-      offspring[i].key = a[i].key;
+    	//Trying to populate with parent 'a'
+    	offspring[i].key = a[i].key;
 
-      for (int j = 1; j < countHelper+1; ++j)
-	  {
-		if (offspring[j].index == a[i].index)
-      	{
-      		present = true;
-      	}
-	  }
-
-      if (!present)
-      {
-      	offspring[i].index = a[i].index;
-      	if (a[i].index == 0)
-      	{
-      		aBSfIndex = i;
-      	}
+    	//Checking wheter gene can be inserted (not present yet)
+    	if (population[0].canInsertGene(offspring, a[i].index))
+    	{
+    		offspring[i].index = a[i].index;
+    		population[0].removeGeneAt(aux, a[i].index); //Invalidating gene
+    		if (a[i].index == 0)
+    		{
+    			aBSfIndex = i;
+      		}
       } else {
-      	present = false;      	
-
-      	for (int j = 1; j < countHelper+1; ++j)
-		{
-			if (offspring[j].index == b[i].index)
-	      	{
-	      		present = true;
-	      	}
-		}
-
-		if (!present)
+      	//Trying to populate with parent 'b'
+		if (population[0].canInsertGene(offspring, b[i].index))
 		{
 			offspring[i].index = b[i].index;
+			population[0].removeGeneAt(aux, b[i].index); //Invalidating gene
 			if (b[i].index == 0)
 	      	{
 	      		bBSfIndex = i;
 	      	}
 		} else {
-			//See what can came here (what number).
-			int outHelp = 1;
-
-			while (outHelp < (population[0].getLength() - 1)) {
-				bool presentH = false;
-
-				for (int x = 1; x < countHelper+1; ++x)
-				{
-				  	if (offspring[x].index == outHelp)
-				  	{
-				  		presentH = true;
-				  	}
-				}
-
-				if (presentH)
-				{
-					outHelp++;
-				} else {
-					break;
-				}
-			}
-			
-			offspring[i].index = outHelp > (population[0].getLength() - 2) ? 0 : outHelp;
+			//Patching missing gene.
+			population[0].complementMissingGene(offspring, aux, i);
 		}	
       }
     } else {
+    	//Trying to populate with parent 'b'
 	    offspring[i].key = b[i].key;
-	    for (int j = 1; j < countHelper+1; ++j)
-    	{
-    		if (offspring[j].index == b[i].index)
-	      	{
-	      		present = true;
-	      	}
-    	}
 
-		if (!present)
+	    //Checking wheter gene can be inserted (not present yet)
+		if (population[0].canInsertGene(offspring, b[i].index))
 	    {
       		offspring[i].index = b[i].index;
+      		population[0].removeGeneAt(aux, b[i].index); //Invalidating gene
       		if (b[i].index == 0)
 	      	{
 	      		bBSfIndex = i;
 	      	}
       	} else {
-      		present = false;      	
-
-	      	for (int j = 1; j < countHelper+1; ++j)
-			{
-				if (offspring[j].index == a[i].index)
-		      	{
-		      		present = true;
-		      	}
-			}
-
-			if (!present)
+      		//Trying to populate with parent 'a'
+			if (population[0].canInsertGene(offspring, a[i].index))
 			{
 				offspring[i].index = a[i].index;
+				population[0].removeGeneAt(aux, a[i].index); //Invalidating gene
 				if (a[i].index == 0)
 		      	{
 		      		aBSfIndex = i;
 		      	}
 			} else {
-				//See what can came here (what number).
-				int outHelp = 1;
-
-				while (outHelp < (population[0].getLength() - 1)) {
-					bool presentH = false;
-
-					for (int x = 1; x < countHelper+1; ++x)
-					{
-					  	if (offspring[x].index == outHelp)
-					  	{
-					  		presentH = true;
-					  	}
-					}
-
-					if (presentH)
-					{
-						outHelp++;
-					} else {
-						break;
-					}
-				}
-				
-				offspring[i].index = outHelp > (population[0].getLength() - 2) ? 0 : outHelp;
+				//Patching missing gene.
+				population[0].complementMissingGene(offspring, aux, i);
 			}
       	}
     }
@@ -205,35 +171,15 @@ Hallele * Population::matePair(Hallele *a, Hallele *b) {
     countHelper++;
   }
 
-  // Validating if "final BS" has been introduced
-  if (aBSfIndex == -1 && bBSfIndex == -1)
-  {
-  	// cout << "\n\nNo final BS inserted\n\n";
-  	// int pause = 0;
-  	// cin >> pause;
+  // cout << "Offspring: ";
+  // for (int i = 0; i < population[0].getLength(); ++i)
+  // {
+  //   cout << offspring[i].index << " ";
+  // }
+  // cout << "\n\n";
 
-  	for (int i = 0; i < population[0].getLength(); i++) {
-  		if (b[i].index == 0)
-      	{
-      		bBSfIndex = i;
-      	}
-
-      	if (a[i].index == 0)
-      	{
-      		aBSfIndex = i;
-      	}
-
-      	prob = ((double) rand() / RAND_MAX);
-
-	    if (prob >= 0.5) {
-	    	offspring[aBSfIndex].index = 0;
-	    	offspring[aBSfIndex].key = a[aBSfIndex].key;
-	    } else {
-	    	offspring[bBSfIndex].index = 0;
-	    	offspring[bBSfIndex].key = b[bBSfIndex].key;
-	    }
-  	}
-  }
+  // int asds = 0;
+  // cin >> asds;
 
   return offspring;
 }

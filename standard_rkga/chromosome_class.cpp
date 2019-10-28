@@ -93,6 +93,60 @@ void Chromosome::generateGenes(int chromosomeSize) {
   genes[0] = h;
 }
 
+bool Chromosome::canInsertGene(Hallele * h, int gene) {
+  bool allowedToInsert = true;
+
+  for (int i = 1; i < length; ++i)
+  {
+    if (h[i].index == gene)
+    {
+      allowedToInsert = false;
+    }
+  }
+
+  return allowedToInsert;
+}
+
+void Chromosome::removeGeneAt(Hallele * h, int gene) {
+  for (int i = 1; i < length; ++i)
+  {
+    if (h[i].index == gene)
+    {
+      h[i].index = -1;
+    }
+  }
+}
+
+void Chromosome::complementMissingGene(Hallele * offspring, Hallele * aux, int position) {
+  // cout << "offspring: ";
+  // for (int i = 0; i < length; ++i)
+  // {
+  //   cout << offspring[i].index << " ";
+  // }
+  // cout << endl;
+  // cout << "aux: ";
+  // for (int i = 0; i < length; ++i)
+  // {
+  //   cout << aux[i].index << " ";
+  // }
+  // cout << endl;
+  for (int i = 1; i < length; ++i)
+  {
+    if (aux[i].index != -1 && canInsertGene(offspring, aux[i].index))
+    {
+      offspring[position].index = aux[i].index;
+      aux[i].index = -1;
+      break;
+    }
+  }
+  // cout << "aux after: ";
+  // for (int i = 0; i < length; ++i)
+  // {
+  //   cout << aux[i].index << " ";
+  // }
+  // cout << endl << endl;
+}
+
 double Chromosome::getFitness(void) {
   return fitness;
 }
