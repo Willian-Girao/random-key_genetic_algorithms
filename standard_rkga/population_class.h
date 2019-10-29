@@ -10,7 +10,7 @@ class Population {
     Population();
 
     /* Getters */
-    Hallele * matePair(Hallele *a, Hallele *b); /* Returns the offspring of a pair of chromosomes. */
+    Hallele * matePair(Hallele *a, double aFitness, Hallele *b, double bFitness); /* Returns the offspring of a pair of chromosomes. */
     Hallele * getSolutionAsArray(int solIndex); /* Returns the chromosome sequence of alleles - RKGA encoding */
     Chromosome getSingleChromosome(int index); /* Returns the object instance of one of the chromosomes within the population. */
 
@@ -33,6 +33,7 @@ class Population {
 
   private:
     int size; /* Number of individuals within the population. */
+    // double peProb; /* Biased probability value towards elite solutions during crossover */
     Chromosome *population; /* Population as array of chromosomes. */
 };
 

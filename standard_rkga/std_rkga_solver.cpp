@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <bits/stdc++.h>
+#include <iomanip>
 
 #include "helper.cpp"
 
@@ -63,7 +64,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     pop.initializePopulation(popSize, inst.getNumberOfOriginalNodes());
 
     //Evolving.
-    while(genWithoutImprov < 50)
+    for (int j = 0; j < maxInt; ++j)
     {
       // cout << "0\n";
       //Updating fitness.
@@ -114,10 +115,10 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     time = clock() - time;
 
     //Printing best solution to screem.
-    inst.printFinalSolution(pop.getSingleChromosome(0).getChromosomeAsArray(), muleSpeed);
-    // cout << "\n\nFitness: " << pop.getSingleChromosome(0).getFitness() << endl;
+    // inst.printFinalSolution(pop.getSingleChromosome(0).getChromosomeAsArray(), muleSpeed);
+    cout << "\n\nFitness: " << setprecision(10) << pop.getSingleChromosome(0).getFitness() << endl;
 
-    //Calculating total time taken by the program. 
+    // //Calculating total time taken by the program. 
     double elapsed = 0.0;
 
     if (timeFormat == "ms") {
@@ -156,7 +157,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   cout << "===========================================\n\n";
   cout << "Instance: " << instanceFileName << endl;
   cout << "Total executions: " << totalExecution << endl << endl;
-  cout << "Best solution: " << overallBest << endl;
-  cout << "Avg. solution: " << avgSol << endl;
-  cout << "Avg. time: " << avgTime << endl;
+  cout << "Best solution: " << setprecision(10) << overallBest << endl;
+  cout << "Avg. solution: " << setprecision(10) << avgSol << endl;
+  cout << "Avg. time: " << setprecision(10) << avgTime << endl;
 }
