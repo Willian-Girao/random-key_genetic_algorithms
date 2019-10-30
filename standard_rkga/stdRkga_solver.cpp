@@ -16,7 +16,7 @@ using namespace std;
 int main(int argc, char* argv[]) {
 
   int popSize = 200;
-  int maxInt = 4000;
+  int maxInt = 3000;
   int debuggLevel = 1;
   int totalExecutions = 4;
 

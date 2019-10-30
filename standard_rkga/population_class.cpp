@@ -62,11 +62,16 @@ void Population::sortByFitness(void) {
   quickSort(population, 0, size - 1);
 }
 
-Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double bFitness) {
+Hallele * Population::matePair(Hallele *aA, double aFitness, Hallele *bB, double bFitness) {
   double prob;
 
   Hallele *offspring = new Hallele[population[0].getLength()];
+  Hallele *a = aA;
+  Hallele *b = bB;
   Hallele *aux = new Hallele[population[0].getLength()]; //Holds 'indexes' that can still be inserted
+
+  sortHalleleDecoder(a, population[0].getLength());
+  sortHalleleDecoder(b, population[0].getLength());
 
   //Initializing offspring and auxiliar struct
   offspring[0].key = 0.0;
@@ -84,14 +89,14 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
   // cout << "A: ";
   // for (int i = 0; i < population[0].getLength(); ++i)
   // {
-  //   cout << a[i].index << " ";
+  //   cout << a[i].index << "[" << a[i].key << "] ";
   // }
   // cout << "\n\n";
 
   // cout << "B: ";
   // for (int i = 0; i < population[0].getLength(); ++i)
   // {
-  //   cout << b[i].index << " ";
+  //   cout << b[i].index << "[" << b[i].key << "] ";
   // }
   // cout << "\n\n";
 
@@ -102,11 +107,7 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
   // }
   // cout << "\n\n";
 
-  int countHelper = 0;
-  int aBSfIndex = -1; // Sol. 'a' index of "final BS"
-  int bBSfIndex = -1; // Sol. 'a' index of "final BS"
-
-  //Generating offspring
+  //============================================
   for (int i = 1; i < population[0].getLength(); i++) {
 
   	//Crossover gives priority to the parent with the best fitness value
@@ -122,19 +123,11 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
 	    	{
 	    		offspring[i].index = a[i].index;
 	    		population[0].removeGeneAt(aux, a[i].index); //Invalidating gene
-	    		if (a[i].index == 0)
-	    		{
-	    			aBSfIndex = i;
-	      		}
 		    } else { //Can't insert a's gene (already present) - trying to insert b's gene
 				if (population[0].canInsertGene(offspring, b[i].index))
 				{
 					offspring[i].index = b[i].index;
 					population[0].removeGeneAt(aux, b[i].index); //Invalidating gene
-					if (b[i].index == 0)
-			      	{
-			      		bBSfIndex = i;
-			      	}
 				} else { //Both parent's gene in position 'i' can't be inserted - patching missing gene.
 					population[0].complementMissingGene(offspring, aux, i);
 				}	
@@ -146,19 +139,11 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
 		    {
 	      		offspring[i].index = b[i].index;
 	      		population[0].removeGeneAt(aux, b[i].index); //Invalidating gene
-	      		if (b[i].index == 0)
-		      	{
-		      		bBSfIndex = i;
-		      	}
 	      	} else { //Can't insert b's gene (already present) - trying to populate with parent 'a'
 				if (population[0].canInsertGene(offspring, a[i].index))
 				{
 					offspring[i].index = a[i].index;
 					population[0].removeGeneAt(aux, a[i].index); //Invalidating gene
-					if (a[i].index == 0)
-			      	{
-			      		aBSfIndex = i;
-			      	}
 				} else { //Both parent's gene in position 'i' can't be inserted - patching missing gene.
 					population[0].complementMissingGene(offspring, aux, i);
 				}
@@ -175,19 +160,11 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
 	    	{
 	    		offspring[i].index = b[i].index;
 	    		population[0].removeGeneAt(aux, b[i].index); //Invalidating gene
-	    		if (b[i].index == 0)
-	    		{
-	    			bBSfIndex = i;
-	      		}
 		    } else { //Can't insert b's gente (already present) - trying to insert a's gene
 				if (population[0].canInsertGene(offspring, a[i].index))
 				{
 					offspring[i].index = a[i].index;
 					population[0].removeGeneAt(aux, a[i].index); //Invalidating gene
-					if (a[i].index == 0)
-			      	{
-			      		aBSfIndex = i;
-			      	}
 				} else {
 					//Patching missing gene.
 					population[0].complementMissingGene(offspring, aux, i);
@@ -200,28 +177,29 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
 		    {
 	      		offspring[i].index = a[i].index;
 	      		population[0].removeGeneAt(aux, a[i].index); //Invalidating gene
-	      		if (a[i].index == 0)
-		      	{
-		      		aBSfIndex = i;
-		      	}
 	      	} else { //Can't insert a's gene (already present) - trying to insert b's gene
 				if (population[0].canInsertGene(offspring, b[i].index))
 				{
 					offspring[i].index = b[i].index;
 					population[0].removeGeneAt(aux, b[i].index); //Invalidating gene
-					if (b[i].index == 0)
-			      	{
-			      		bBSfIndex = i;
-			      	}
 				} else { //Both parent's gene in position 'i' can't be inserted - patching missing gene.
 					population[0].complementMissingGene(offspring, aux, i);
 				}
 	      	}
 	    }
     }
-
-    countHelper++;
   }
+  //============================================
+
+  // cout << "offspring: ";
+  // for (int i = 0; i < population[0].getLength(); ++i)
+  // {
+  //   cout << offspring[i].index << "[" << offspring[i].key << "] ";
+  // }
+  // cout << "\n\n";
+
+  // int ak = 0;
+  // cin >> ak;
 
   return offspring;
 }
