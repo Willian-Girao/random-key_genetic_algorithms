@@ -6,7 +6,6 @@ using namespace std;
 struct Hallele {
   double key;
   int index;
-  // double demand;
 };
 
 class Chromosome {
