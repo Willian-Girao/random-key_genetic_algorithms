@@ -223,6 +223,10 @@ void Population::updateFitness(int index, double fitness) {
 	}
 }
 
+void Population::updateSolutionHalleles(int index, Hallele *newHallele) {
+	population[index].setResetGenes(newHallele);
+}
+
 void Population::introduceMutants(void) {
 	int endIndex = floor((size / 4.0)); //End index when introducing mutants.
 	int index = size - 1;

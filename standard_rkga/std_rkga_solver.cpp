@@ -11,6 +11,7 @@
 #include <iomanip>
 
 #include "helper.cpp"
+#include "2opt.cpp"
 
 /* Headers containing classes definitions */
 #include "instance_class.h"
@@ -38,6 +39,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   double overallBest = -1.0;
   double averageSol = 0.0;
   double everageTime = 0.0;
+  double localSearchPercent = 5.0;
 
   int executionsCount = 0;
 
@@ -66,7 +68,6 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     //Evolving.
     for (int j = 0; j < maxInt; ++j)
     {
-      // cout << "0\n";
       //Updating fitness.
       for (int i = 0; i < popSize; ++i)
       {
@@ -84,6 +85,51 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
       //Complete with offspring.
       pop.mateIndividuals();
+
+      //Local search - provide percentage
+      int totalSol = ceil((ceil((popSize / 2.0)) * localSearchPercent) / 100.0);
+      int chromLength = pop.getSingleChromosome(0).getLength();
+
+      if (j > 5 && j < 500)
+      {
+        for (int m = 0; m < totalSol; ++m)
+        {
+          double bestFit = pop.getSingleChromosome(m).getFitness();
+          double newFit = bestFit;
+
+          bool newInprovement = true;
+
+          while (newInprovement)
+          {
+            newInprovement = false;
+
+            for (int i = 2; i < (chromLength - 1) - 1; ++i)
+            {
+              for (int k = (i + 1); k < chromLength; ++k)
+              {
+                Hallele *current = pop.getSolutionAsArray(m);
+                sortHalleleDecoder(current, chromLength);
+                Hallele *newSol = twoOptSwapInner(current, i, k, chromLength);
+                newFit = inst.evaluateSolution(newSol, muleSpeed);
+
+                if (newFit < bestFit)
+                {
+                  cout << "\n\n2-Opt improvement: " << setprecision(10) << bestFit << " -> " << setprecision(10) << newFit << " iter: " << j << "\n\n";
+                  newInprovement = true;
+                  bestFit = newFit;
+                  pop.updateSolutionHalleles(m, newSol);
+                  break;
+                }
+              }
+
+              if (newInprovement)
+              {
+                break;
+              }
+            }
+          }
+        }
+      }
 
       //Checking termination criteria
       if (firstGen)
