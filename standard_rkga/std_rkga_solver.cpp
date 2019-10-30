@@ -90,7 +90,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       int totalSol = ceil((ceil((popSize / 2.0)) * localSearchPercent) / 100.0);
       int chromLength = pop.getSingleChromosome(0).getLength();
 
-      if (j > 5 && j < 500)
+      if (j > 0 && j < 100)
       {
         for (int m = 0; m < totalSol; ++m)
         {
