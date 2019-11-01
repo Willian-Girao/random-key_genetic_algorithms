@@ -7,6 +7,7 @@ using namespace std;
 
 struct SolutionStruct { /* Structure used to evaluate the solution for the DMSP - Mr. Pablo's graph instance's structure based. */
     int node; //Node id.
+    double key;
     double demand; //Node demand to be served.
 };
 

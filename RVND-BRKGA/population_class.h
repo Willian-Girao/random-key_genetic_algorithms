@@ -23,6 +23,10 @@ class Population {
     void resetInvalidSolutions(void);
     void updateSolutionHalleles(int index, Hallele *newHallele);
 
+    void resetEvaluateFlag(int index); /* Resets 'evaluate' back to true */
+    void setEvaluateFlag(int index); /* Resets 'evaluate' back to true */
+    bool shouldCalcFitness(int index);
+
     /* Utils */
     void printPopulation(void); /* Prints each vector of the current population. */
     void printFitness(void); /* Prints each vector's fitness value of the current population. */

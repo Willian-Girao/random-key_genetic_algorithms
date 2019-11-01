@@ -28,6 +28,9 @@ class Chromosome {
     void resetGenes(void); /* Change the current hallele sequency for 'newGenes'. */
     void setFitness(double fit); /* Updates a chromosome fitness value. */ 
     void resetChromosome(void); /* Whipe cleans a chromosome - reset */
+    void resetEvaluateFlag(void); /* Resets 'evaluate' back to true */
+    void setEvaluateFlag(void); /* Resets 'evaluate' back to true */
+    bool shouldCalcFitness(void);
 
     /* Utillities */
     void printGenes(void); /* Prints the vector to the screen. */
@@ -39,6 +42,7 @@ class Chromosome {
     double fitness; /* Quality of the solution. */
     int length; /* Dimension of solution vector. */
     Hallele *genes; /* Raw array representing the solution. */
+    bool mustEvaluate; /* Flags if the fitness value for the chromosome must be calculated */
     void updateGene(int i, double key); /* Updates the key 'i' of the vector with the value 'key'. */
 };
 

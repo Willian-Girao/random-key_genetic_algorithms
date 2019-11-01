@@ -618,10 +618,14 @@ SolutionStruct * Instance::buildSolutionStructure(Hallele *chromosome) {
     SolutionStruct sl;
 
     sl.node = chromosome[i].index;
+    sl.key = chromosome[i].key;
     sl.demand = getNodesDemmand(chromosome[i].index); // Get demand here.
 
     solution[i] = sl;
   }
+
+  //Decoder.
+  sortHalleleDecoder(solution, (original_nodes_n + 1));
 
   return solution;
 }
@@ -633,19 +637,33 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   double demandMet = 0.0;
   int sizeC = original_nodes_n + 1;
 
-  //Decoder.
-  sortHalleleDecoder(chromosome, sizeC);
+  // cout << "A: ";
+  // for (int i = 0; i < sizeC; ++i)
+  // {
+  //   cout << chromosome[i].index << "[" << chromosome[i].key << "] ";
+  // }
+  // cout << "\n\n";
 
   //Building solution structure array.
   SolutionStruct *solution = buildSolutionStructure(chromosome);
 
-  // cout << "[ ";
+  // cout << "sol [ ";
   // for (int i = 0; i < (original_nodes_n + 1); ++i)
   // {
-  //   // cout << solution[i].node << " (" << solution[i].demand << "), ";
-  //   cout << solution[i].node << " ";
+  //   cout << solution[i].node << " (" << solution[i].key << ") ";
+  //   // cout << solution[i].node << " ";
   // }
   // cout << " ]\n\n";
+
+  // cout << "As: ";
+  // for (int i = 0; i < sizeC; ++i)
+  // {
+  //   cout << chromosome[i].index << "[" << chromosome[i].key << "] ";
+  // }
+  // cout << "\n\n";
+
+  // int l = 0;
+  // cin >> l;
 
   for (int i = 0; i < sizeC; ++i)
   {
@@ -742,9 +760,6 @@ void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
   double timeElapsedServing = 0.0;
   double demandMet = 0.0;
   int sizeC = original_nodes_n + 1;
-
-  //Decoder.
-  sortHalleleDecoder(chromosome, sizeC);
 
   //Building solution structure array.
   SolutionStruct *solution = buildSolutionStructure(chromosome);

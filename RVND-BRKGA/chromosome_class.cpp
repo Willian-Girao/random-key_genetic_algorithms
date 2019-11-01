@@ -117,6 +117,18 @@ void Chromosome::removeGeneAt(Hallele * h, int gene) {
   }
 }
 
+void Chromosome::resetEvaluateFlag(void) {
+  mustEvaluate = false;
+}
+
+void Chromosome::setEvaluateFlag(void) {
+  mustEvaluate = true;
+}
+
+bool Chromosome::shouldCalcFitness(void) {
+  return mustEvaluate;
+}
+
 void Chromosome::complementMissingGene(Hallele * offspring, Hallele * aux, int position) {
   // cout << "offspring: ";
   // for (int i = 0; i < length; ++i)
