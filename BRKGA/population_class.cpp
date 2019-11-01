@@ -66,59 +66,16 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
   double prob;
 
   Hallele *offspring = new Hallele[population[0].getLength()];
-  // Hallele *a = aA;
-  // Hallele *b = bB;
-  // Hallele *aux = new Hallele[population[0].getLength()]; //Holds 'indexes' that can still be inserted
 
-  // cout << "A: ";
-  // for (int i = 0; i < population[0].getLength(); ++i)
-  // {
-  //   cout << a[i].index << "[" << a[i].key << "] ";
-  // }
-  // cout << "\n\n";
-
-  // cout << "B: ";
-  // for (int i = 0; i < population[0].getLength(); ++i)
-  // {
-  //   cout << b[i].index << "[" << b[i].key << "] ";
-  // }
-  // cout << "\n\n";
-
-  // sortHalleleDecoder(a, population[0].getLength());
-  // sortHalleleDecoder(b, population[0].getLength());
-
-  // cout << "As: ";
-  // for (int i = 0; i < population[0].getLength(); ++i)
-  // {
-  //   cout << a[i].index << "[" << a[i].key << "] ";
-  // }
-  // cout << "\n\n";
-
-  // int l = 0;
-  // cin >> l;
-
-  //Initializing offspring and auxiliar struct
+  //Initializing offspring
   offspring[0].index = 0;
   offspring[0].key = 0.0;
-  // aux[0].index = 0;
-
   for (int i = 1; i < population[0].getLength(); ++i)
   {
   	offspring[i].index = i;
-  	// aux[i].index = i;
   }
   offspring[population[0].getLength()-1].index = 0;
 
-  // aux[population[0].getLength()-1].index = 0;
-
-  // cout << "Auxiliar: ";
-  // for (int i = 0; i < population[0].getLength(); ++i)
-  // {
-  //   cout << aux[i].index << " ";
-  // }
-  // cout << "\n\n";
-
-  //============================================
   for (int i = 1; i < population[0].getLength(); i++) {
 
   	//Crossover gives priority to the parent with the best fitness value
@@ -129,36 +86,8 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
     	if (prob <= 0.7) //Parent 'a' won coin toss
     	{
 	    	offspring[i].key = a[i].key;
-
-	   //  	if (population[0].canInsertGene(offspring, a[i].index)) //Checking wheter a's gene can be inserted (not present yet)
-	   //  	{
-	   //  		offspring[i].index = a[i].index;
-	   //  		population[0].removeGeneAt(aux, a[i].index); //Invalidating gene
-		  //   } else { //Can't insert a's gene (already present) - trying to insert b's gene
-				// if (population[0].canInsertGene(offspring, b[i].index))
-				// {
-				// 	offspring[i].index = b[i].index;
-				// 	population[0].removeGeneAt(aux, b[i].index); //Invalidating gene
-				// } else { //Both parent's gene in position 'i' can't be inserted - patching missing gene.
-				// 	population[0].complementMissingGene(offspring, aux, i);
-				// }	
-		  //   }
 	    } else { //Parent 'b' won coin toss
 		    offspring[i].key = b[i].key;
-
-			// if (population[0].canInsertGene(offspring, b[i].index)) //Checking wheter b's gene can be inserted (not present yet)
-		 //    {
-	  //     		offspring[i].index = b[i].index;
-	  //     		population[0].removeGeneAt(aux, b[i].index); //Invalidating gene
-	  //     	} else { //Can't insert b's gene (already present) - trying to populate with parent 'a'
-			// 	if (population[0].canInsertGene(offspring, a[i].index))
-			// 	{
-			// 		offspring[i].index = a[i].index;
-			// 		population[0].removeGeneAt(aux, a[i].index); //Invalidating gene
-			// 	} else { //Both parent's gene in position 'i' can't be inserted - patching missing gene.
-			// 		population[0].complementMissingGene(offspring, aux, i);
-			// 	}
-	  //     	}
 	    }
     } else { //Parent 'b' has better fitness - biasing coin toss towards 'b'
     	prob = ((double) rand() / RAND_MAX);
@@ -166,51 +95,11 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
     	if (prob <= 0.7) //Parent 'b' won coin toss
     	{
 	    	offspring[i].key = b[i].key;
-
-	   //  	if (population[0].canInsertGene(offspring, b[i].index)) //Checking wheter b's gene can be inserted (not present yet)
-	   //  	{
-	   //  		offspring[i].index = b[i].index;
-	   //  		population[0].removeGeneAt(aux, b[i].index); //Invalidating gene
-		  //   } else { //Can't insert b's gente (already present) - trying to insert a's gene
-				// if (population[0].canInsertGene(offspring, a[i].index))
-				// {
-				// 	offspring[i].index = a[i].index;
-				// 	population[0].removeGeneAt(aux, a[i].index); //Invalidating gene
-				// } else {
-				// 	//Patching missing gene.
-				// 	population[0].complementMissingGene(offspring, aux, i);
-				// }	
-		  //   }
 	    } else { //Parent 'a' won coin toss
 		    offspring[i].key = a[i].key;
-
-			// if (population[0].canInsertGene(offspring, a[i].index)) //Checking wheter gene can be inserted (not present yet)
-		 //    {
-	  //     		offspring[i].index = a[i].index;
-	  //     		population[0].removeGeneAt(aux, a[i].index); //Invalidating gene
-	  //     	} else { //Can't insert a's gene (already present) - trying to insert b's gene
-			// 	if (population[0].canInsertGene(offspring, b[i].index))
-			// 	{
-			// 		offspring[i].index = b[i].index;
-			// 		population[0].removeGeneAt(aux, b[i].index); //Invalidating gene
-			// 	} else { //Both parent's gene in position 'i' can't be inserted - patching missing gene.
-			// 		population[0].complementMissingGene(offspring, aux, i);
-			// 	}
-	  //     	}
 	    }
     }
   }
-  //============================================
-
-  // cout << "offspring: ";
-  // for (int i = 0; i < population[0].getLength(); ++i)
-  // {
-  //   cout << offspring[i].index << "[" << offspring[i].key << "] ";
-  // }
-  // cout << "\n\n";
-
-  // int ak = 0;
-  // cin >> ak;
 
   return offspring;
 }
