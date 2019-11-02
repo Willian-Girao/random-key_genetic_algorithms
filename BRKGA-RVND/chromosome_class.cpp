@@ -208,3 +208,14 @@ void Chromosome::resetGenes() {
   genes[length-1].key = key;
   genes[length-1].index = 0;
 }
+
+void Chromosome::updateKeysIndex(double key, int newIndex) {
+  for (int i = 0; i < length; ++i)
+  {
+    if (genes[i].key == key)
+    {
+      genes[i].index = newIndex;
+      break;
+    }
+  }
+}

@@ -755,6 +755,127 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   return fit;
 };
 
+double Instance::evaluateLocalSearchSolution(SolutionStruct *solution, double muleVelocity) {
+  double totalDistance = 0.0;
+  double timeElapsedServing = 0.0;
+  double demandMet = 0.0;
+  int sizeC = original_nodes_n + 1;
+
+  // cout << "A: ";
+  // for (int i = 0; i < sizeC; ++i)
+  // {
+  //   cout << chromosome[i].index << "[" << chromosome[i].key << "] ";
+  // }
+  // cout << "\n\n";
+
+  // cout << "sol [ ";
+  // for (int i = 0; i < (original_nodes_n + 1); ++i)
+  // {
+  //   cout << solution[i].node << " (" << solution[i].key << ") ";
+  //   // cout << solution[i].node << " ";
+  // }
+  // cout << " ]\n\n";
+
+  // cout << "As: ";
+  // for (int i = 0; i < sizeC; ++i)
+  // {
+  //   cout << chromosome[i].index << "[" << chromosome[i].key << "] ";
+  // }
+  // cout << "\n\n";
+
+  // int l = 0;
+  // cin >> l;
+
+  for (int i = 0; i < sizeC; ++i)
+  {
+    if (i < (sizeC-1))
+    {
+      int nodeA = solution[i].node;
+      int nodeB = solution[i+1].node;
+      int aeBetween = getNumberOfAEBP(nodeA, nodeB);
+
+      // Acounting time to cross edge between main nodes under consideration.
+      totalDistance += getDistanceBP(nodeA, nodeB);
+
+      // Going through the artificial edges metadata ('j' is an artificial edge "id").
+      for (int j = (aeBetween-1); j >= 0; --j)
+      {
+        int countAux = 0;        
+        int numNodesCanServe = getAENumberNodeCanBeServed(nodeA, nodeB, j);
+        double aeLength = getAELength(nodeA, nodeB, j);
+        double timeInJ = aeLength / muleVelocity;
+        double timeLeftInJ = timeInJ; //"Workble time" left while in 'j'.
+
+        // cout << "Pair: " << nodeA << ", " << nodeB << endl;
+        // cout << "A.E. ID: " << j+1 << endl;
+        // cout << "A.E. length: " << aeLength << endl;
+        // cout << "Time in A.E.: " << timeInJ << endl;
+        // cout << "Time left in A.E.: " << timeLeftInJ << endl;
+        // cout << "Mule velocity: " << muleVelocity << endl << endl;
+
+        // Getting G's nodes that can be served in 'j'.
+        for (int k = 0; k < sizeC; ++k)
+        {
+          // Processing information regarding each node that can be served by 'j'.
+          if (canXbeServedInAE(nodeA, nodeB, j, solution[k].node) && (timeLeftInJ > 0) && (solution[k].demand > 0))
+          {
+            double timeRequired = solution[k].demand / getNodesTRate(solution[k].node);
+            // cout << "Node being served: " << solution[k].node << endl;
+            // cout << "Time required to serve it: " << timeRequired << endl;
+
+            if (timeRequired <= timeLeftInJ)
+            {
+              timeLeftInJ -= timeRequired;
+              timeElapsedServing += timeRequired;
+
+              solution[k].demand -= solution[k].demand;
+
+              if (solution[k].demand < 0)
+              {
+                cout << " - WARNING 2 -\n";
+              }
+
+              // cout << "Time left in A.E.: " << timeLeftInJ << endl;
+              // cout << "Sensor " << solution[k].node << " updated demand: " << solution[k].demand << endl << endl;
+
+              int pause = 0;
+              // cin >> pause;
+            }
+          }
+        }
+        // Finished parsing artificial edge metadata.
+      }
+    }
+
+    if (solution[i+1].node == 0)
+    {
+      break;
+    }
+  }
+
+  double demandLeft = 0.0;
+  for (int i = 0; i < sizeC; ++i)
+  {
+    demandLeft += solution[i].demand;
+
+    if (solution[i].demand < 0)
+    {
+      cout << " - WARNING 2 -\n";
+    }
+  }
+
+  double fit = (totalDistance / muleVelocity);
+  
+  if ((total_demand - demandLeft) < total_demand) {
+    // cout << numeric_limits<double>::max() << "\n\n";
+    return numeric_limits<double>::max();
+  }
+
+  // cout << fit << "\n\n";
+
+  return fit;
+};
+
 void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
   double totalDistance = 0.0;
   double timeElapsedServing = 0.0;

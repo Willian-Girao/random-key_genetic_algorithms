@@ -4,6 +4,9 @@
 #include <math.h>
 
 #include "population_class.h"
+#include "instance_class.h"
+
+#include "neighborhood_structures.cpp"
 
 using namespace std;
 
@@ -205,3 +208,76 @@ void Population::resetInvalidSolutions(void) {
 }
 
 /* Private methods */
+
+void Population::localSearch(int index, double muleVelocity, Instance *inst) {
+	SolutionStruct *solutionAux = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+	
+	double inputSolFitness = population[index].getFitness();
+	double newSolFitness = -1.0;
+	double auxSolFitness = -1.0;
+	
+	int solLenghth = population[index].getLength();
+	int Kmax = 3;
+	int neighborhoodStructure = -1; /* Randomly selects what neighborhood structure to use */
+
+	bool keepVnd = true;
+
+	/* VND */
+	while (keepVnd)
+	{
+		// neighborhoodStructure = rand() % 3;
+		neighborhoodStructure = 0;
+		auxSolFitness = newSolFitness;
+
+		for (int i = 0; i < Kmax; ++i)
+		{
+			if (neighborhoodStructure == 0) 		/* N-Swap */
+			{
+				nSwap(solutionAux, solLenghth);
+			} else {
+				nSwap21(solutionAux, solLenghth);
+			}
+
+			// else if (neighborhoodStructure == 1) 	/* N-Shift */
+			// {
+			// 	// cout << "> b-1\n";
+			// 	// nShift(solutionAux, solLenghth);
+			// 	// cout << "> b-1.1\n";
+			// } else { 								/* N-Swap(2,1) */
+			// 	nSwap21(solutionAux, solLenghth);
+			// }
+
+			newSolFitness = inst->evaluateLocalSearchSolution(solutionAux, muleVelocity);
+
+			if (newSolFitness >= inputSolFitness)
+			{
+				solutionAux = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+				// neighborhoodStructure = rand() % 3;
+				neighborhoodStructure += 1;
+			} 
+		}
+
+		if (newSolFitness > auxSolFitness)
+		{
+			break;
+		}
+	}
+
+	// cout << "\na";
+	if (newSolFitness < inputSolFitness)
+	{
+		// cout << "\nb";
+		// cout << "\n\n";
+		// population[index].printGenes();
+		// cout << "\n\n";
+		for (int i = 0; i < solLenghth; ++i)
+		{
+			population[index].updateKeysIndex(solutionAux[i].key, solutionAux[i].node);
+		}
+		// population[index].printGenes();
+		// cout << "\n\n";
+
+		// int a = 0;
+		// cin >> a;
+	}
+}

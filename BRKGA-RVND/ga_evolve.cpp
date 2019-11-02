@@ -81,6 +81,12 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       //Sorting by fitness.
       pop.sortByFitness();
 
+      //Local Search
+      for (int l = 0; l < 5; ++l)
+      {
+        pop.localSearch(l, muleSpeed, &inst);
+      }
+
       //Save best sol. thus far
       bestSolution = pop.getSingleChromosome(0).getFitness();
 

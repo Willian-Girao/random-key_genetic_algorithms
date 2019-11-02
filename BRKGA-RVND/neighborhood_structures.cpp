@@ -6,11 +6,11 @@
 
 using namespace std;
 
-struct SolutionStruct { /* Structure used to evaluate the solution for the DMSP - Mr. Pablo's graph instance's structure based. */
-    int node; //Node id.
-    double key;
-    double demand; //Node demand to be served.
-};
+// struct SolutionStruct {  Structure used to evaluate the solution for the DMSP - Mr. Pablo's graph instance's structure based. 
+//     int node; //Node id.
+//     double key;
+//     double demand; //Node demand to be served.
+// };
 
 /* Swapts to sensors within the sol. vector (considering both sensors inside and outside the route) */
 void nSwap(SolutionStruct *solution, int solLength) {
@@ -38,6 +38,7 @@ void nSwap(SolutionStruct *solution, int solLength) {
 
 void nShift(SolutionStruct *solution, int solLength) {
 	int endIndex = -1;
+	// cout << "> in-0\n";
 
 	for (int i = 1; i < solLength; ++i)
 	{
@@ -48,13 +49,21 @@ void nShift(SolutionStruct *solution, int solLength) {
 		}
 	}
 
+	// cout << "> in-1\n";
+
 	int targetIndex = rand() % endIndex + 1; /* Random in [1, endIndex] */
 	int newPlaceIndex = rand() % endIndex + 1;
 
+	// cout << "> in-a\n";
+
 	while(newPlaceIndex == targetIndex)
 	{
+		// cout << "> in-1.0\n";
 		newPlaceIndex = rand() % endIndex + 1;
+		// cout << "> in-1.1\n";
 	}
+
+	// cout << "> in-2\n";
 
 	/* Shifting elements */
 	int curAuxNode = -1;
@@ -82,6 +91,7 @@ void nShift(SolutionStruct *solution, int solLength) {
 				solution[i].demand = curAuxDemand;
 			}
 		}
+		// cout << "> in-3\n";
 	} else {
 		for (int i = newPlaceIndex; i >= targetIndex; --i)
 		{
@@ -104,6 +114,7 @@ void nShift(SolutionStruct *solution, int solLength) {
 				curAuxDemand = curAuxDemandInner;
 			}
 		}
+		// cout << "> in-4\n";
 	}
 }
 
@@ -121,8 +132,8 @@ void nSwap21(SolutionStruct *solution, int solLength) {
 	swapA = 1;
 	swapB = 5;
 
-	cout << "\n\nswapA: " << swapA << endl;
-	cout << "swapB: " << swapB << endl << endl;
+	// cout << "\n\nswapA: " << swapA << endl;
+	// cout << "swapB: " << swapB << endl << endl;
 
 	int nodeTempA = solution[swapA].node;
 	double demandTempA = solution[swapA].demand;
@@ -172,53 +183,53 @@ void nSwap21(SolutionStruct *solution, int solLength) {
 	}
 }
 
-int main() {
+// int main() {
 
-	SolutionStruct *solution = new SolutionStruct[7];
+// 	SolutionStruct *solution = new SolutionStruct[7];
 
-    solution[0].node = 0;
-    solution[0].key = 0.0;
-    solution[0].demand = 0;
+//     solution[0].node = 0;
+//     solution[0].key = 0.0;
+//     solution[0].demand = 0;
 
-    solution[1].node = 2;
-    solution[1].key = 0.1;
-    solution[1].demand = 2;
+//     solution[1].node = 2;
+//     solution[1].key = 0.1;
+//     solution[1].demand = 2;
 
-    solution[2].node = 3;
-    solution[2].key = 0.2;
-    solution[2].demand = 3;
+//     solution[2].node = 3;
+//     solution[2].key = 0.2;
+//     solution[2].demand = 3;
 
-    solution[3].node = 1;
-    solution[3].key = 0.3;
-    solution[3].demand = 1;
+//     solution[3].node = 1;
+//     solution[3].key = 0.3;
+//     solution[3].demand = 1;
 
-    solution[4].node = 5;
-    solution[4].key = 0.4;
-    solution[4].demand = 5;
+//     solution[4].node = 5;
+//     solution[4].key = 0.4;
+//     solution[4].demand = 5;
 
-    solution[5].node = 0;
-    solution[5].key = 0.5;
-    solution[5].demand = 0;
+//     solution[5].node = 0;
+//     solution[5].key = 0.5;
+//     solution[5].demand = 0;
 
-    solution[6].node = 6;
-    solution[6].key = 0.6;
-    solution[6].demand = 6;
+//     solution[6].node = 6;
+//     solution[6].key = 0.6;
+//     solution[6].demand = 6;
 
-    cout << "\n\n";
-    for (int i = 0; i < 7; ++i)
-    {
-    	cout << solution[i].node << " (" << solution[i].demand << " - " << solution[i].key << " ) ";
-    }
+//     cout << "\n\n";
+//     for (int i = 0; i < 7; ++i)
+//     {
+//     	cout << solution[i].node << " (" << solution[i].demand << " - " << solution[i].key << " ) ";
+//     }
 
-    // nShift(solution, 7);
-    // nSwap(solution, 7);
-    nSwap21(solution, 7);
+//     // nShift(solution, 7);
+//     // nSwap(solution, 7);
+//     nSwap21(solution, 7);
 
-    cout << "\n\n";
-    for (int i = 0; i < 7; ++i)
-    {
-    	cout << solution[i].node << " (" << solution[i].demand << " - " << solution[i].key << " ) ";
-    }
+//     cout << "\n\n";
+//     for (int i = 0; i < 7; ++i)
+//     {
+//     	cout << solution[i].node << " (" << solution[i].demand << " - " << solution[i].key << " ) ";
+//     }
 
-	return 0;
-}
+// 	return 0;
+// }
