@@ -107,52 +107,118 @@ void nShift(SolutionStruct *solution, int solLength) {
 	}
 }
 
-// int main() {
+/* Swapts to sensors within the sol. vector (considering both sensors inside and outside the route) */
+void nSwap21(SolutionStruct *solution, int solLength) {
+	solLength = solLength - 1;
+	int swapA = rand() % (solLength - 1) + 1;
+	int swapB = rand() % solLength + 1;
 
-// 	SolutionStruct *solution = new SolutionStruct[7];
+	while(swapB == swapA || swapB == (swapA + 1))
+	{
+		swapB = rand() % solLength + 1; /* Random in [1, solLength] */
+	}
 
-//     solution[0].node = 0;
-//     solution[0].key = 0.0;
-//     solution[0].demand = 0;
+	swapA = 1;
+	swapB = 5;
 
-//     solution[1].node = 2;
-//     solution[1].key = 0.1;
-//     solution[1].demand = 2;
+	cout << "\n\nswapA: " << swapA << endl;
+	cout << "swapB: " << swapB << endl << endl;
 
-//     solution[2].node = 3;
-//     solution[2].key = 0.2;
-//     solution[2].demand = 3;
+	int nodeTempA = solution[swapA].node;
+	double demandTempA = solution[swapA].demand;
 
-//     solution[3].node = 1;
-//     solution[3].key = 0.3;
-//     solution[3].demand = 1;
+	int nodeTempB = solution[(swapA + 1)].node;
+	double demandTempB = solution[(swapA + 1)].demand;
 
-//     solution[4].node = 5;
-//     solution[4].key = 0.4;
-//     solution[4].demand = 5;
+	if (swapA < swapB)
+	{
+		int auxCounter = swapA + 1;
 
-//     solution[5].node = 0;
-//     solution[5].key = 0.5;
-//     solution[5].demand = 0;
+		solution[swapA].node = solution[swapB].node;
+		solution[swapA].demand = solution[swapB].demand;
 
-//     solution[6].node = 6;
-//     solution[6].key = 0.6;
-//     solution[6].demand = 6;
+		for (int i = (swapA + 2); i < swapB; ++i)
+		{
+			solution[auxCounter].node = solution[i].node;
+			solution[auxCounter].demand = solution[i].demand;
 
-//     cout << "\n\n";
-//     for (int i = 0; i < 7; ++i)
-//     {
-//     	cout << solution[i].node << " (" << solution[i].demand << " ) ";
-//     }
+			auxCounter++;
+		}
 
-//     // nShift(solution, 7);
-//     nSwap(solution, 7);
+		solution[(swapB - 1)].node = nodeTempA;
+		solution[(swapB - 1)].demand = demandTempA;
 
-//     cout << "\n\n";
-//     for (int i = 0; i < 7; ++i)
-//     {
-//     	cout << solution[i].node << " (" << solution[i].demand << " ) ";
-//     }
+		solution[swapB].node = nodeTempB;
+		solution[swapB].demand = demandTempB;
+	} else {
+		int auxCounter = swapA;
 
-// 	return 0;
-// }
+		solution[(swapA + 1)].node = solution[swapB].node;
+		solution[(swapA + 1)].demand = solution[swapB].demand;
+
+		for (int i = (swapA - 1); i > swapB; --i)
+		{
+			solution[auxCounter].node = solution[i].node;
+			solution[auxCounter].demand = solution[i].demand;
+
+			auxCounter--;
+		}
+
+		solution[swapB].node = nodeTempA;
+		solution[swapB].demand = demandTempA;
+
+		solution[(swapB + 1)].node = nodeTempB;
+		solution[(swapB + 1)].demand = demandTempB;
+	}
+}
+
+int main() {
+
+	SolutionStruct *solution = new SolutionStruct[7];
+
+    solution[0].node = 0;
+    solution[0].key = 0.0;
+    solution[0].demand = 0;
+
+    solution[1].node = 2;
+    solution[1].key = 0.1;
+    solution[1].demand = 2;
+
+    solution[2].node = 3;
+    solution[2].key = 0.2;
+    solution[2].demand = 3;
+
+    solution[3].node = 1;
+    solution[3].key = 0.3;
+    solution[3].demand = 1;
+
+    solution[4].node = 5;
+    solution[4].key = 0.4;
+    solution[4].demand = 5;
+
+    solution[5].node = 0;
+    solution[5].key = 0.5;
+    solution[5].demand = 0;
+
+    solution[6].node = 6;
+    solution[6].key = 0.6;
+    solution[6].demand = 6;
+
+    cout << "\n\n";
+    for (int i = 0; i < 7; ++i)
+    {
+    	cout << solution[i].node << " (" << solution[i].demand << " - " << solution[i].key << " ) ";
+    }
+
+    // nShift(solution, 7);
+    // nSwap(solution, 7);
+    nSwap21(solution, 7);
+
+    cout << "\n\n";
+    for (int i = 0; i < 7; ++i)
+    {
+    	cout << solution[i].node << " (" << solution[i].demand << " - " << solution[i].key << " ) ";
+    }
+
+	return 0;
+}
