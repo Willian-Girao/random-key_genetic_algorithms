@@ -81,12 +81,6 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       //Sorting by fitness.
       pop.sortByFitness();
 
-      //Local Search
-      for (int l = 0; l < 5; ++l)
-      {
-        pop.localSearch(l, muleSpeed, &inst);
-      }
-
       //Save best sol. thus far
       bestSolution = pop.getSingleChromosome(0).getFitness();
 
@@ -95,20 +89,6 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
       //Complete with offspring.
       pop.mateIndividuals();
-
-      //Checking termination criteria
-      if (firstGen)
-      {
-        firstGen = false;
-        previousBest = bestSolution;
-      } else {
-        if (bestSolution == previousBest)
-        {
-          genWithoutImprov++;
-        } else {
-          genWithoutImprov = 0;
-        }
-      }
 
       //Updating previous best
       previousBest = bestSolution;
@@ -123,11 +103,27 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     //Sorting by fitness.
     pop.sortByFitness();
 
+    //Local Search
+    // double pBest = pop.getSingleChromosome(0).getFitness();
+    // while (genWithoutImprov < 50) 
+    // {
+    //   pop.localSearch(0, muleSpeed, &inst);
+
+    //   if (pop.getSingleChromosome(0).getFitness() == pBest)
+    //   {
+    //     genWithoutImprov++;
+    //     // cout << "Without improve: " << genWithoutImprov << endl;
+    //   } else {
+    //     genWithoutImprov = 0;
+    //     pBest = pop.getSingleChromosome(0).getFitness();
+    //   }
+    // }
+
     time = clock() - time;
 
     //Printing best solution to screem.
     // inst.printFinalSolution(pop.getSingleChromosome(0).getChromosomeAsArray(), muleSpeed);
-    cout << "\n\nFitness: " << setprecision(10) << pop.getSingleChromosome(0).getFitness() << endl;
+    cout << "\nFitness: " << setprecision(10) << pop.getSingleChromosome(0).getFitness() << endl;
 
     // //Calculating total time taken by the program. 
     double elapsed = 0.0;

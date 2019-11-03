@@ -11,7 +11,6 @@
 #include <iomanip>
 
 #include "helper.cpp"
-#include "2opt.cpp"
 
 /* Headers containing classes definitions */
 #include "instance_class.h"
@@ -90,20 +89,6 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       //Complete with offspring.
       pop.mateIndividuals();
 
-      //Checking termination criteria
-      if (firstGen)
-      {
-        firstGen = false;
-        previousBest = bestSolution;
-      } else {
-        if (bestSolution == previousBest)
-        {
-          genWithoutImprov++;
-        } else {
-          genWithoutImprov = 0;
-        }
-      }
-
       //Updating previous best
       previousBest = bestSolution;
     }
@@ -120,8 +105,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     time = clock() - time;
 
     //Printing best solution to screem.
-    // inst.printFinalSolution(pop.getSingleChromosome(0).getChromosomeAsArray(), muleSpeed);
-    cout << "\n\nFitness: " << setprecision(10) << pop.getSingleChromosome(0).getFitness() << endl;
+    cout << "\nFitness: " << setprecision(10) << pop.getSingleChromosome(0).getFitness() << endl;
 
     // //Calculating total time taken by the program. 
     double elapsed = 0.0;

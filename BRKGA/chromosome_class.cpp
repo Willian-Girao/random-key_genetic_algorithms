@@ -26,6 +26,10 @@ void Chromosome::setFitness(double fit) {
 }
 
 void Chromosome::resetChromosome(void) {
+  double lowestKey = 2.0;
+  int lowestKeySensor = 0;
+  int lowestKeyIndex = 1;
+
   for (int i = 1; i < length - 1; ++i)
   {
     double key = ((double) rand() / RAND_MAX);
@@ -36,6 +40,13 @@ void Chromosome::resetChromosome(void) {
 
     genes[i].key = key;
     genes[i].index = i;
+
+    if (key < lowestKey)
+    {
+      lowestKey = key;
+      lowestKeySensor = i;
+      lowestKeyIndex = i;
+    }
   }
 
   double key = ((double) rand() / RAND_MAX);
@@ -47,22 +58,49 @@ void Chromosome::resetChromosome(void) {
   genes[length - 1].key = key;
   genes[length - 1].index = 0;
 
-  // for (int i = 0; i < length; ++i)
-  // {
-  //   cout << genes[i].index << " ";
-  // }
-  // cout << endl;
+  if (key < lowestKey)
+  {
+    lowestKey = key;
+    lowestKeySensor = 0;
+    lowestKeyIndex = (length - 1);
+  }
+
+  if (lowestKeySensor == 0)
+  {
+    int swapA = (rand() % (length - 2)) + 2;
+    while (swapA == lowestKeyIndex)
+    {
+      swapA = (rand() % (length - 2)) + 2;
+    }
+
+    double tempI = genes[swapA].index;
+
+    genes[swapA].index = lowestKeySensor;
+
+    genes[lowestKeyIndex].index = tempI;
+  }
 }
 
 void Chromosome::generateGenes(int chromosomeSize) {
   length = chromosomeSize + 1;
   genes = new Hallele[length];
 
+  double lowestKey = 2.0;
+  int lowestKeySensor = 0;
+  int lowestKeyIndex = 0;
+
   for (int i = 1; i < chromosomeSize; i++) {    
     double key = ((double) rand() / RAND_MAX);
 
     while (key == 1.0) {
       key = ((double) rand() / RAND_MAX);
+    }
+
+    if (key < lowestKey)
+    {
+      lowestKey = key;
+      lowestKeySensor = i;
+      lowestKeyIndex = i;
     }
 
     Hallele h;
@@ -86,11 +124,36 @@ void Chromosome::generateGenes(int chromosomeSize) {
 
   genes[chromosomeSize] = bs;
 
+  if (key < lowestKey)
+  {
+    lowestKey = key;
+    lowestKeySensor = 0;
+    lowestKeyIndex = chromosomeSize;
+  }
+
   Hallele h;
   h.key = 0.0;
   h.index = 0;
 
   genes[0] = h;
+
+  if (lowestKeySensor == 0)
+  {
+    int swapA = (rand() % (length - 2)) + 2;
+    while (swapA == lowestKeyIndex)
+    {
+      swapA = (rand() % (length - 2)) + 2;
+    }
+
+    // double tempK = genes[swapA].key;
+    double tempI = genes[swapA].index;
+
+    // genes[swapA].key = lowestKey;
+    genes[swapA].index = lowestKeySensor;
+
+    // genes[lowestKeyIndex].key = tempK;
+    genes[lowestKeyIndex].index = tempI;
+  }
 }
 
 bool Chromosome::canInsertGene(Hallele * h, int gene) {
@@ -207,4 +270,15 @@ void Chromosome::resetGenes() {
 
   genes[length-1].key = key;
   genes[length-1].index = 0;
+}
+
+void Chromosome::updateKeysIndex(double key, int newIndex) {
+  for (int i = 0; i < length; ++i)
+  {
+    if (genes[i].key == key)
+    {
+      genes[i].index = newIndex;
+      break;
+    }
+  }
 }

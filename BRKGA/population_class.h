@@ -2,6 +2,7 @@
 #define POPULATION_H
 
 #include "chromosome_class.h"
+#include "instance_class.h"
 
 using namespace std;
 
@@ -22,10 +23,12 @@ class Population {
     void sortByFitness(void); /* Sorts the population in descending ascending order based on the fitness values. */
     void resetInvalidSolutions(void);
     void updateSolutionHalleles(int index, Hallele *newHallele);
-
     void resetEvaluateFlag(int index); /* Resets 'evaluate' back to true */
     void setEvaluateFlag(int index); /* Resets 'evaluate' back to true */
+
     bool shouldCalcFitness(int index);
+
+    void localSearch(int index, double muleVelocity, Instance *inst); /* Upplies a loceal search to the chromosome 'index' */
 
     /* Utils */
     void printPopulation(void); /* Prints each vector of the current population. */

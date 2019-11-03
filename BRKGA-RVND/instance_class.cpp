@@ -647,6 +647,13 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   //Building solution structure array.
   SolutionStruct *solution = buildSolutionStructure(chromosome);
 
+  if (solution[1].node == 0)
+  {
+    int w = 0;
+    cout << "\nBS followed by BS\n";
+    cin >> w;
+  }
+
   // cout << "sol [ ";
   // for (int i = 0; i < (original_nodes_n + 1); ++i)
   // {
@@ -755,36 +762,25 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   return fit;
 };
 
-double Instance::evaluateLocalSearchSolution(SolutionStruct *solution, double muleVelocity) {
+double Instance::evaluateLocalSearchSolution(SolutionStruct *solutionInput, double muleVelocity, bool print) {
   double totalDistance = 0.0;
   double timeElapsedServing = 0.0;
   double demandMet = 0.0;
   int sizeC = original_nodes_n + 1;
 
+  SolutionStruct *solution = new SolutionStruct[sizeC];;
+
   // cout << "A: ";
-  // for (int i = 0; i < sizeC; ++i)
-  // {
-  //   cout << chromosome[i].index << "[" << chromosome[i].key << "] ";
-  // }
+  for (int i = 0; i < sizeC; ++i)
+  {
+    SolutionStruct s;
+    s.node = solutionInput[i].node;
+    s.demand = solutionInput[i].demand;
+    s.key = solutionInput[i].key;
+
+    solution[i] = s;
+  }
   // cout << "\n\n";
-
-  // cout << "sol [ ";
-  // for (int i = 0; i < (original_nodes_n + 1); ++i)
-  // {
-  //   cout << solution[i].node << " (" << solution[i].key << ") ";
-  //   // cout << solution[i].node << " ";
-  // }
-  // cout << " ]\n\n";
-
-  // cout << "As: ";
-  // for (int i = 0; i < sizeC; ++i)
-  // {
-  //   cout << chromosome[i].index << "[" << chromosome[i].key << "] ";
-  // }
-  // cout << "\n\n";
-
-  // int l = 0;
-  // cin >> l;
 
   for (int i = 0; i < sizeC; ++i)
   {
@@ -963,22 +959,16 @@ void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
     totalDistance = -1.0;
   }
 
-  cout << "\n> Solution found\n\n";
-  cout << "Demand missed: " << demandLeft << endl;
-  cout << "Route length: " << totalDistance << endl;
-  cout << "Time Serving: " << timeElapsedServing << endl;
-  cout << "\n\nFitness: " << (totalDistance / muleVelocity) << endl;
+  // cout << "\n> Solution found\n\n";
+  // cout << "Demand missed: " << demandLeft << endl;
+  // cout << "Route length: " << totalDistance << endl;
+  // cout << "Time Serving: " << timeElapsedServing << endl;
+  // cout << "\n\nFitness: " << (totalDistance / muleVelocity) << endl;
   cout << "Path: ";
   for (int i = 0; i < (original_nodes_n + 1); ++i)
   {
-    if (i < original_nodes_n)
-    {
-      cout << solution[i].node << " [" << solution[i].demand << "], ";
-    } else {
-      cout << solution[i].node << " [" << solution[i].demand << "]";
-    }
+    cout << solution[i].node << " [" << solution[i].demand << "] ";
   }
-  cout << "\n\n";
 };
 
 void Instance::setTotalDemand() {

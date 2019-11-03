@@ -4,6 +4,9 @@
 #include <math.h>
 
 #include "population_class.h"
+#include "instance_class.h"
+
+#include "neighborhood_structures.cpp"
 
 using namespace std;
 
@@ -65,6 +68,13 @@ void Population::sortByFitness(void) {
 Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double bFitness) {
   double prob;
 
+  int crossoverPoint = rand() % (population[0].getLength() - 1); /* [0,length-2)]*/
+
+  if (crossoverPoint == 0)
+  {
+  	crossoverPoint = 1;
+  }
+
   Hallele *offspring = new Hallele[population[0].getLength()];
 
   //Initializing offspring
@@ -76,8 +86,12 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
   }
   offspring[population[0].getLength()-1].index = 0;
 
-  for (int i = 1; i < population[0].getLength(); i++) {
+  double lowestKey = 2.0;
+  int lowestKeySensor = 0;
+  int lowestKeyIndex = 1;
 
+  for (int i = 1; i < population[0].getLength(); i++) 
+  {
   	//Crossover gives priority to the parent with the best fitness value
     if (aFitness <= bFitness) //Parent 'a' has better fitness - biasing coin toss towards 'a'
     {
@@ -86,8 +100,20 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
     	if (prob <= 0.7) //Parent 'a' won coin toss
     	{
 	    	offspring[i].key = a[i].key;
+	    	if (offspring[i].key < lowestKey)
+	    	{
+	    		lowestKey = offspring[i].key;
+	    		lowestKeySensor = offspring[i].index;
+	    		lowestKeyIndex = i;
+	    	}
 	    } else { //Parent 'b' won coin toss
 		    offspring[i].key = b[i].key;
+		    if (offspring[i].key < lowestKey)
+	    	{
+	    		lowestKey = offspring[i].key;
+	    		lowestKeySensor = offspring[i].index;
+	    		lowestKeyIndex = i;
+	    	}
 	    }
     } else { //Parent 'b' has better fitness - biasing coin toss towards 'b'
     	prob = ((double) rand() / RAND_MAX);
@@ -95,10 +121,37 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
     	if (prob <= 0.7) //Parent 'b' won coin toss
     	{
 	    	offspring[i].key = b[i].key;
+	    	if (offspring[i].key < lowestKey)
+	    	{
+	    		lowestKey = offspring[i].key;
+	    		lowestKeySensor = offspring[i].index;
+	    		lowestKeyIndex = i;
+	    	}
 	    } else { //Parent 'a' won coin toss
 		    offspring[i].key = a[i].key;
+		    if (offspring[i].key < lowestKey)
+	    	{
+	    		lowestKey = offspring[i].key;
+	    		lowestKeySensor = offspring[i].index;
+	    		lowestKeyIndex = i;
+	    	}
 	    }
     }
+  }
+
+  if (lowestKeySensor == 0)
+  {
+    int swapA = (rand() % (population[0].getLength() - 2)) + 2;
+    while (swapA == lowestKeyIndex)
+    {
+      swapA = (rand() % (population[0].getLength() - 2)) + 2;
+    }
+
+    double tempI = offspring[swapA].index;
+
+    offspring[swapA].index = lowestKeySensor;
+
+    offspring[lowestKeyIndex].index = tempI;
   }
 
   return offspring;
@@ -205,3 +258,79 @@ void Population::resetInvalidSolutions(void) {
 }
 
 /* Private methods */
+
+void Population::localSearch(int index, double muleVelocity, Instance *inst) {
+	SolutionStruct *solutionAux = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+	
+	double inputSolFitness = population[index].getFitness();
+	double newSolFitness = -1.0;
+	double auxSolFitness = -1.0;
+	
+	int solLenghth = population[index].getLength();
+	int Kmax = 3;
+	int neighborhoodStructure = -1; /* Randomly selects what neighborhood structure to use */
+
+	bool keepVnd = true;
+
+	/* VND */
+	while (keepVnd)
+	{
+		// neighborhoodStructure = rand() % 3;
+		neighborhoodStructure = 0;
+		auxSolFitness = newSolFitness;
+
+		for (int i = 0; i < Kmax; ++i)
+		{
+			if (neighborhoodStructure == 0) 		/* N-Swap */
+			{
+				nSwap(solutionAux, solLenghth);
+			} else if (neighborhoodStructure == 1) {
+				nSwap21(solutionAux, solLenghth);
+			} else {
+				nShift(solutionAux, solLenghth);
+			}
+
+			newSolFitness = inst->evaluateLocalSearchSolution(solutionAux, muleVelocity, false);
+
+			if (newSolFitness >= inputSolFitness || newSolFitness == 0)
+			{
+				solutionAux = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+				// neighborhoodStructure = rand() % 3;
+				neighborhoodStructure += 1;
+			} 
+		}
+
+		if (newSolFitness >= auxSolFitness)
+		{
+			break;
+		}
+	}
+
+	// cout << "\na";
+	if (newSolFitness < inputSolFitness && newSolFitness != 0)
+	{
+		// cout << "\nb";
+		// cout << "\n\n";
+		// population[index].printGenes();
+		// cout << "\n\n";
+		for (int i = 0; i < solLenghth; ++i)
+		{
+			population[index].updateKeysIndex(solutionAux[i].key, solutionAux[i].node);
+		}
+		// inst->evaluateLocalSearchSolution(solutionAux, muleVelocity, true);
+		population[index].setFitness(newSolFitness);
+		// cout << "inputSolFitness: " << inputSolFitness << " , newSolFitness: " << newSolFitness << endl;
+		// for (int i = 0; i < solLenghth; ++i)
+	 //    {
+	 //      cout << solutionAux[i].node << " ";
+	 //    }
+	 //    cout << "\n";
+
+		// inst->evaluateLocalSearchSolution(solutionAux, muleVelocity, true);
+		// population[index].printGenes();
+		// cout << "\n\n";
+
+		// int a = 0;
+		// cin >> a;
+	}
+}

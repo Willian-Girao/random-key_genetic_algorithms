@@ -30,6 +30,7 @@ class Chromosome {
     void resetChromosome(void); /* Whipe cleans a chromosome - reset */
     void resetEvaluateFlag(void); /* Resets 'evaluate' back to true */
     void setEvaluateFlag(void); /* Resets 'evaluate' back to true */
+    void updateKeysIndex(double key, int newIndex); /**/
     bool shouldCalcFitness(void);
 
     /* Utillities */
