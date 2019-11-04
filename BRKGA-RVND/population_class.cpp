@@ -209,6 +209,32 @@ void Population::introduceMutants(void) {
 	}
 }
 
+void Population::mutationBRKGA01(double mutationChoiceProb, double mutationBRKGA01Prob) {
+	int endIndex = floor((size / 4.0)); //End index when introducing mutants.
+	int index = size - 1;
+	double prob = 0.0;
+
+	//Reseting 25% of the population (introducing mutants).
+	while(endIndex > 0)
+	{
+		prob = ((double) rand() / RAND_MAX);
+		
+		if (prob <= mutationChoiceProb)
+		{
+			population[index].resetChromosome();
+			population[index].setFitness(0.0);
+			population[index].setEvaluateFlag();
+		} else {
+			population[index].mutateBRKGA01(mutationBRKGA01Prob);
+			population[index].setFitness(0.0);
+			population[index].setEvaluateFlag();
+		}
+
+		index--;
+		endIndex--;
+	}
+}
+
 Chromosome Population::getSingleChromosome(int index) {
 	return population[index];
 }

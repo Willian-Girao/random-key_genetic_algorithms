@@ -19,7 +19,8 @@ class Population {
     void initializePopulation(int popSize, int chromSize); /* Sets population size and solution array length. */
     void updateFitness(int index, double fitness); /* Updates the fitness of a solution indexed by 'index'. */
     void mateIndividuals(void); /* Produces offsprings of solutions - 'popSize' even 25% of population | 'popSize' odd 20% of population */
-    void introduceMutants(); /* Replaces 25% of the 'non-elit' halfh with mutant individuals. */
+    void introduceMutants(void); /* Replaces 25% of the 'non-elit' halfh with mutant individuals. */
+    void mutationBRKGA01(double mutationChoiceProb, double mutationBRKGA01Prob); /* Replaces 25% of the 'non-elit' halfh with mutant individuals. */
     void sortByFitness(void); /* Sorts the population in descending ascending order based on the fitness values. */
     void resetInvalidSolutions(void);
     void updateSolutionHalleles(int index, Hallele *newHallele);

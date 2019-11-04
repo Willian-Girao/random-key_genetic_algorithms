@@ -81,6 +81,55 @@ void Chromosome::resetChromosome(void) {
   }
 }
 
+void Chromosome::mutateBRKGA01(double chance) {
+  double lowestKey = 2.0;
+  int lowestKeySensor = 0;
+  int lowestKeyIndex = 1;
+  double prob = 0.0;
+
+  /* Iterating over each gene */
+  for (int i = 1; i < length; ++i)
+  {
+    prob = ((double) rand() / RAND_MAX);
+
+    /* Mutating gene (new random value) */
+    if (prob <= chance)
+    {
+      double key = ((double) rand() / RAND_MAX);
+
+      while (key == 1.0) {
+        key = ((double) rand() / RAND_MAX);
+      }
+
+      genes[i].key = key;
+    }
+
+    /* Checking if there's no BS followed by BS */
+    if (genes[i].key < lowestKey)
+    {
+      lowestKey = genes[i].key;
+      lowestKeySensor = genes[i].index;
+      lowestKeyIndex = i;
+    }
+  }
+
+  /* Checking if there's no BS followed by BS */
+  if (lowestKeySensor == 0)
+  {
+    int swapA = (rand() % (length - 2)) + 2;
+    while (swapA == lowestKeyIndex)
+    {
+      swapA = (rand() % (length - 2)) + 2;
+    }
+
+    double tempI = genes[swapA].index;
+
+    genes[swapA].index = lowestKeySensor;
+
+    genes[lowestKeyIndex].index = tempI;
+  }
+}
+
 void Chromosome::generateGenes(int chromosomeSize) {
   length = chromosomeSize + 1;
   genes = new Hallele[length];
