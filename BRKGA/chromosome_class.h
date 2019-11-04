@@ -28,6 +28,7 @@ class Chromosome {
     void resetGenes(void); /* Change the current hallele sequency for 'newGenes'. */
     void setFitness(double fit); /* Updates a chromosome fitness value. */ 
     void resetChromosome(void); /* Whipe cleans a chromosome - reset */
+    void mutateBRKGA01(double chance); /* replaces the i-th position with a new key with a 'chance' percent probability */
     void resetEvaluateFlag(void); /* Resets 'evaluate' back to true */
     void setEvaluateFlag(void); /* Resets 'evaluate' back to true */
     void updateKeysIndex(double key, int newIndex); /**/

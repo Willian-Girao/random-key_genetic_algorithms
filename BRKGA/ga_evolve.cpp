@@ -11,6 +11,7 @@
 #include <iomanip>
 
 #include "helper.cpp"
+#include "2opt.cpp"
 
 /* Headers containing classes definitions */
 #include "instance_class.h"
@@ -29,12 +30,7 @@
 // 'instanceFileName': name of the .txt file containing the graph instance.
 void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFileName, string timeFormat, bool debbug, int debbugLevel, int totalExecution) {
   srand(time(0));
-  
-  clock_t time;
-  time = clock();
 
-  Instance inst;
-  Population pop;
   double overallBest = -1.0;
   double averageSol = 0.0;
   double everageTime = 0.0;
@@ -44,12 +40,18 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
   bool firstExecution = true;
 
+  Instance inst;
+  Population pop;
+
   ifstream instance_file(instanceFileName);
 
   consumeInstance(instance_file, &inst);
 
   //Calculating instance demand.
   inst.setTotalDemand();
+
+  clock_t time;
+  time = clock();
 
   while(executionsCount < totalExecution)
   {
@@ -84,7 +86,8 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       bestSolution = pop.getSingleChromosome(0).getFitness();
 
       //Introduce mutants.
-      pop.introduceMutants();
+      pop.mutationBRKGA01(0.5, 0.7); /* NM01 - New Mutation 01 */
+      // pop.introduceMutants(); /* Standard BRKGA mutation */
 
       //Complete with offspring.
       pop.mateIndividuals();
@@ -102,9 +105,26 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     //Sorting by fitness.
     pop.sortByFitness();
 
+    //Local Search
+    // double pBest = pop.getSingleChromosome(0).getFitness();
+    // while (genWithoutImprov < 50) 
+    // {
+    //   pop.localSearch(0, muleSpeed, &inst);
+
+    //   if (pop.getSingleChromosome(0).getFitness() == pBest)
+    //   {
+    //     genWithoutImprov++;
+    //     // cout << "Without improve: " << genWithoutImprov << endl;
+    //   } else {
+    //     genWithoutImprov = 0;
+    //     pBest = pop.getSingleChromosome(0).getFitness();
+    //   }
+    // }
+
     time = clock() - time;
 
     //Printing best solution to screem.
+    // inst.printFinalSolution(pop.getSingleChromosome(0).getChromosomeAsArray(), muleSpeed);
     cout << "\nFitness: " << setprecision(10) << pop.getSingleChromosome(0).getFitness() << endl;
 
     // //Calculating total time taken by the program. 
