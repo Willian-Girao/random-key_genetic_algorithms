@@ -872,6 +872,150 @@ double Instance::evaluateLocalSearchSolution(SolutionStruct *solutionInput, doub
   return fit;
 };
 
+double Instance::evaluateBRKGA02Solution(SolutionStruct *solutionInput, double muleVelocity, int sensorsOnRounte, bool print) {
+  double totalDistance = 0.0;
+  double timeElapsedServing = 0.0;
+  double demandMet = 0.0;
+  int sizeC = original_nodes_n + 1;
+
+  SolutionStruct *solution = new SolutionStruct[sensorsOnRounte];;
+
+  for (int i = 0; i < sensorsOnRounte; ++i)
+  {
+    solution[i].node = solutionInput[i].node;
+    solution[i].demand = solutionInput[i].demand;
+    solution[i].key = solutionInput[i].key;
+  }
+
+  for (int i = 0; i < sensorsOnRounte; ++i)
+  {
+    if (i < (sensorsOnRounte-1))
+    {
+      int nodeA = solution[i].node;
+      int nodeB = solution[i+1].node;
+      int aeBetween = getNumberOfAEBP(nodeA, nodeB);
+
+      // Acounting time to cross edge between main nodes under consideration.
+      totalDistance += getDistanceBP(nodeA, nodeB);
+
+      // Going through the artificial edges metadata ('j' is an artificial edge "id").
+      for (int j = (aeBetween-1); j >= 0; --j)
+      {
+        int countAux = 0;        
+        int numNodesCanServe = getAENumberNodeCanBeServed(nodeA, nodeB, j);
+        double aeLength = getAELength(nodeA, nodeB, j);
+        double timeInJ = aeLength / muleVelocity;
+        double timeLeftInJ = timeInJ; //"Workble time" left while in 'j'.
+
+        // Getting G's nodes that can be served in 'j'.
+        for (int k = 0; k < sensorsOnRounte; ++k)
+        {
+          // Processing information regarding each node that can be served by 'j'.
+          if (canXbeServedInAE(nodeA, nodeB, j, solution[k].node) && (timeLeftInJ > 0) && (solution[k].demand > 0))
+          {
+            double timeRequired = solution[k].demand / getNodesTRate(solution[k].node);
+
+            if (timeRequired <= timeLeftInJ)
+            {
+              timeLeftInJ -= timeRequired;
+              timeElapsedServing += timeRequired;
+
+              // cout << solution[k].demand << endl;
+              solution[k].demand -= solution[k].demand;
+
+              if (solution[k].demand < 0)
+              {
+                cout << " - WARNING 2 -\n";
+              }
+            }
+          }
+          // cout << k << endl;
+        }
+        // cout << i << " > " << i+1 << endl;
+        // Finished parsing artificial edge metadata.
+      }
+    }
+
+    if (solution[i+1].node == 0)
+    {
+      break;
+    }
+  }
+
+  double demandLeft = 0.0;
+  for (int i = 0; i < sensorsOnRounte; ++i)
+  {
+    demandLeft += solution[i].demand;
+    if (solution[i].demand < 0)
+    {
+      cout << " - WARNING 2 -\n";
+    }
+  }
+
+  double fit = (totalDistance / muleVelocity);
+  
+  if ((total_demand - demandLeft) < total_demand) {
+    // cout << numeric_limits<double>::max() << "\n\n";
+    return numeric_limits<double>::max();
+  }
+
+  return fit;
+};
+
+int Instance::checkCanInserSensor(SolutionStruct *sol, int sensor, int sensorsOnRoute) {
+  bool canInsert = true;
+  SolutionStruct *aux = new SolutionStruct[original_nodes_n];
+
+  for (int i = 0; i < original_nodes_n; ++i)
+  {
+    aux[i].node = i;
+    aux[i].key = 0.0;
+    aux[i].demand = 0.0; // Get demand here.
+  }
+
+  for (int i = 1; i < sensorsOnRoute; ++i)
+  {
+    /* marking used sensor */
+    for (int j = 1; j < sensorsOnRoute; ++j)
+    {
+      for (int k = 1; k < original_nodes_n; ++k)
+      {
+        if (sol[j].node == aux[k].node)
+        {
+          aux[k].node = -1;
+          break;
+        }
+      }
+    }
+
+    /* check if it was used already */
+    if (sol[i].node == sensor)
+    {
+      // cout << sol[i].node << " > " << sensor << endl;
+      canInsert = false;
+      break;
+    } else {
+      // cout << " < " << endl;
+    }
+  }
+
+  if (!canInsert)
+  {
+    /* searching for legitimate */
+    for (int j = 0; j < original_nodes_n; ++j)
+    {
+      if (aux[j].node != -1)
+      {
+        // cout << aux[j].node << endl;
+        return aux[j].node;
+      }
+    }
+  } else {
+    // cout << sensor << endl;
+    return sensor;
+  }
+}
+
 void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
   double totalDistance = 0.0;
   double timeElapsedServing = 0.0;

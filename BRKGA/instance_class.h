@@ -55,10 +55,12 @@ class Instance {
     double getNodesDemmand(int index); /* Gets the demmand of a node indexed by 'index' */    
     double evaluateSolution(Hallele *solution, double muleVelocity); /* Set and returns the fitness value of a solution - evaluate on the problem. */
     double evaluateLocalSearchSolution(SolutionStruct *solution, double muleVelocity, bool print);
+    double evaluateBRKGA02Solution(SolutionStruct *solution, double muleVelocity, int sensorsOnRounte, bool print);
     void printFinalSolution(Hallele *chromosome, double muleVelocity); /*  */
     Node getNode(int index); /* Gets the representation of a node indexed by 'index' */
     Node getBaseStation(); /* Gets the representation of the base station */
     SolutionStruct * buildSolutionStructure(Hallele *chromosome); /* Interface between RKGA solution vector and DMSP structure - Mr. Pablo's modeling based. */
+    int checkCanInserSensor(SolutionStruct *sol, int sensor, int sensorsOnRoute);
     
     /* Getters - Objective function evaluation helpers | AE - Artificial Edge | BP - Between Pairs' | Values regarding metadata between two consecutive nodes */
     int getNumberOfAEBP(int main_node_index, int pair_node_index); /* Returns the number of artificial edges */

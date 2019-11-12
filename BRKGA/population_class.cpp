@@ -68,13 +68,6 @@ void Population::sortByFitness(void) {
 Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double bFitness) {
   double prob;
 
-  int crossoverPoint = rand() % (population[0].getLength() - 1); /* [0,length-2)]*/
-
-  if (crossoverPoint == 0)
-  {
-  	crossoverPoint = 1;
-  }
-
   Hallele *offspring = new Hallele[population[0].getLength()];
 
   //Initializing offspring
@@ -155,6 +148,169 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
   }
 
   return offspring;
+}
+
+Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, double bFitness, Instance *inst, double muleVelocity) {
+  SolutionStruct *parentA = inst->buildSolutionStructure(a);
+  SolutionStruct *parentB = inst->buildSolutionStructure(b);
+  SolutionStruct *currentBestSol = inst->buildSolutionStructure(a);
+  double usingAFit = 0.0;
+  double usingBFit = 0.0;
+
+  int endingIndex = 0;
+  int pause = 0;
+
+  SolutionStruct *aux = new SolutionStruct[population[0].getLength()-2];
+
+  for (int i = 0; i < population[0].getLength()-1; ++i)
+  {
+  	// cout << i << endl;
+    aux[i].node = i;
+    aux[i].key = 0.0;
+    aux[i].demand = 0.0; // Get demand here.
+  }
+
+  aux[0].node = -1;
+
+  // for (int y = 0; y < population[0].getLength()-1; ++y)
+  //   {
+  // 	  cout << aux[y].node << " ";
+  //   }
+  //   cout << "\n\n";
+
+  cout << "Parent A: ";
+  for (int i = 0; i < population[0].getLength(); ++i)
+  {
+  	cout << parentA[i].node << " ";
+  }
+  cout << " | " << inst->evaluateBRKGA02Solution(parentA, muleVelocity, population[0].getLength(), false) << "\n\n";
+
+  cout << "Parent B: ";
+  for (int i = 0; i < population[0].getLength(); ++i)
+  {
+  	cout << parentB[i].node << " ";
+  }
+  cout << " | " << inst->evaluateBRKGA02Solution(parentB, muleVelocity, population[0].getLength(), false) << "\n\n";
+
+  int before = 0;
+  for (int i = 1; i < population[0].getLength(); i++) 
+  {
+  	/* alph: create chromose using parent 'a' (index i):
+  	when i is a sensor within the current best
+  	mating result's route already (or when there's
+  	no more sensors after it), use the 1st 'legitimate
+  	sensor' from within {1,2,...,n}.
+  	*/
+  	currentBestSol[i].node = inst->checkCanInserSensor(currentBestSol, parentA[i].node, i);
+  	/* finding selected's legitimate demand */
+  	for (int x = 0; x < population[0].getLength(); ++x)
+  	{
+  		if (parentA[x].node == currentBestSol[i].node)
+  		{
+  			currentBestSol[i].demand = parentA[x].demand;
+  			break;
+  		}
+  	}
+  	usingAFit = inst->evaluateBRKGA02Solution(currentBestSol, muleVelocity, i+1, false);
+  	// cout << "A: " << currentBestSol[i].node << endl;
+  	// cout << "Offspring: ";
+	  // for (int y = 0; y < i+1; ++y)
+	  // {
+	  // 	cout << currentBestSol[y].node << " ";
+	  // }
+	  // cout << " | " << usingAFit << "\n\n";
+
+  	/* bet: create chromose using parent 'b' (index i):
+  	when i is a sensor within the current best
+  	mating result's route already (or when there's
+  	no more sensors after it), use the 1st 'legitimate
+  	sensor' from within {1,2,...,n}.
+  	*/
+  	currentBestSol[i].node = inst->checkCanInserSensor(currentBestSol, parentB[i].node, i);
+  	/* finding selected's legitimate demand */
+  	for (int x = 0; x < population[0].getLength(); ++x)
+  	{
+  		if (parentB[x].node == currentBestSol[i].node)
+  		{
+  			currentBestSol[i].demand = parentB[x].demand;
+  			break;
+  		}
+  	}
+  	usingBFit = inst->evaluateBRKGA02Solution(currentBestSol, muleVelocity, i+1, false);
+
+  	/* if cost of alph < bet, then current best mating
+  	result receives alpah's index (bet's otherwise).
+  	*/
+  	// cout << "B: " << currentBestSol[i].node << endl;
+  	// cout << "Offspring: ";
+   //  for (int y = 0; y < i+1; ++y)
+   //  {
+  	//   cout << currentBestSol[y].node << " ";
+   //  }
+   //  cout << " | " << usingBFit << "\n\n";
+  	// cin >> pause;
+  	if (usingAFit < usingBFit)
+  	{
+  		currentBestSol[i].node = inst->checkCanInserSensor(currentBestSol, parentA[i].node, i);
+	  	/* finding selected's legitimate demand */
+	  	for (int x = 0; x < population[0].getLength(); ++x)
+	  	{
+	  		if (parentA[x].node == currentBestSol[i].node)
+	  		{
+	  			currentBestSol[i].demand = parentA[x].demand;
+	  			break;
+	  		}
+	  	}
+  	}
+
+  	for (int k = 0; k < population[0].getLength()-1; ++k)
+    {
+      if (aux[k].node == currentBestSol[i].node)
+      {
+        aux[k].node = -1;
+        break;
+      }
+    }
+
+  	/* if current best mating result already contains the
+  	final BS, return (updating fitness and completing the rest
+  	of the hallele).
+  	*/
+  	if (currentBestSol[i].node == 0)
+  	{
+  		endingIndex = i;
+  		break;
+  	}
+  }
+
+  // for (int y = 0; y < population[0].getLength()-1; ++y)
+  //   {
+  // 	  cout << aux[y].node << " ";
+  //   }
+  //   cout << "\n\n";
+
+  if (endingIndex < population[0].getLength()-1)
+  {
+  	for (int i = 1; i < population[0].getLength()-1; ++i)
+  	{
+  		if (aux[i].node != -1)
+  		{
+  			currentBestSol[endingIndex+1].node = aux[i].node;
+  			endingIndex += 1;
+  		}
+  	}
+  }
+
+  cout << "Offspr X: ";
+    for (int y = 0; y < population[0].getLength(); ++y)
+    {
+  	  cout << currentBestSol[y].node << " ";
+    }
+    cout << " | " << inst->evaluateBRKGA02Solution(currentBestSol, muleVelocity, population[0].getLength(), false) << "\n\n";
+
+  	cin >> pause;
+
+  return a;
 }
 
 void Population::printPopulation(void) {
@@ -271,6 +427,27 @@ void Population::mateIndividuals(void) {
 
 	// int a;
 	// cin >> a;
+}
+
+void Population::mateBRKGA02(Instance *inst, double muleVelocity) {
+	int numMutants = floor((size / 4.0));
+	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
+
+	int indexStartRand = size - ceil((size / 2.0));
+	int indexEndRand = size - 1;
+
+	//Indexes of chromosomes to be overrided by mating result.
+	for (int i = (size - numMutants - 1); i >= (size - ceil((size / 2.0))); --i)
+	{
+		int parentAIndex = rand() % (size / 2);
+		int parentBIndex = rand() % (size / 2);
+
+		while(parentBIndex == parentAIndex) {
+			parentBIndex = rand() % (size / 2);
+		}
+
+		population[i].setResetGenes(matePairBRKGA02(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness(), inst, muleVelocity));
+	}
 }
 
 void Population::resetInvalidSolutions(void) {
