@@ -878,7 +878,7 @@ double Instance::evaluateBRKGA02Solution(SolutionStruct *solutionInput, double m
   double demandMet = 0.0;
   int sizeC = original_nodes_n + 1;
 
-  SolutionStruct *solution = new SolutionStruct[sensorsOnRounte];;
+  SolutionStruct *solution = new SolutionStruct[sensorsOnRounte];
 
   for (int i = 0; i < sensorsOnRounte; ++i)
   {
@@ -929,9 +929,7 @@ double Instance::evaluateBRKGA02Solution(SolutionStruct *solutionInput, double m
               }
             }
           }
-          // cout << k << endl;
         }
-        // cout << i << " > " << i+1 << endl;
         // Finished parsing artificial edge metadata.
       }
     }
@@ -959,19 +957,20 @@ double Instance::evaluateBRKGA02Solution(SolutionStruct *solutionInput, double m
     return numeric_limits<double>::max();
   }
 
+  delete[] solution;
+
   return fit;
 };
 
 int Instance::checkCanInserSensor(SolutionStruct *sol, int sensor, int sensorsOnRoute) {
   bool canInsert = true;
-  SolutionStruct *aux = new SolutionStruct[original_nodes_n];
+  int *aux = new int[original_nodes_n];
 
   for (int i = 0; i < original_nodes_n; ++i)
   {
-    aux[i].node = i;
-    aux[i].key = 0.0;
-    aux[i].demand = 0.0; // Get demand here.
+    aux[i] = i;
   }
+  aux[0] = -1;
 
   for (int i = 1; i < sensorsOnRoute; ++i)
   {
@@ -980,22 +979,19 @@ int Instance::checkCanInserSensor(SolutionStruct *sol, int sensor, int sensorsOn
     {
       for (int k = 1; k < original_nodes_n; ++k)
       {
-        if (sol[j].node == aux[k].node)
+        if (sol[j].node == aux[k])
         {
-          aux[k].node = -1;
+          aux[k] = -1;
           break;
         }
       }
     }
 
-    /* check if it was used already */
+    // check if it was used already 
     if (sol[i].node == sensor)
     {
-      // cout << sol[i].node << " > " << sensor << endl;
       canInsert = false;
       break;
-    } else {
-      // cout << " < " << endl;
     }
   }
 
@@ -1004,16 +1000,32 @@ int Instance::checkCanInserSensor(SolutionStruct *sol, int sensor, int sensorsOn
     /* searching for legitimate */
     for (int j = 0; j < original_nodes_n; ++j)
     {
-      if (aux[j].node != -1)
+      if (aux[j] != -1)
       {
-        // cout << aux[j].node << endl;
-        return aux[j].node;
+        return aux[j];
       }
     }
-  } else {
-    // cout << sensor << endl;
-    return sensor;
   }
+
+  return sensor;
+}
+
+int Instance::findNextSensorOnRoute(SolutionStruct *sol, int sensor) {
+  int nextSensorIndex = -1;
+  // cout << "Entering: " << sensor << "\n";
+
+  for (int i = 1; i < original_nodes_n+1; ++i)
+  {
+    if (sol[i].node == sensor && i < original_nodes_n+2)
+    {
+      nextSensorIndex = i+1;
+      break;
+    }
+  }
+
+  // cout << "Returnin: " << nextSensorIndex << "\n";
+
+  return nextSensorIndex;
 }
 
 void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {

@@ -61,6 +61,7 @@ class Instance {
     Node getBaseStation(); /* Gets the representation of the base station */
     SolutionStruct * buildSolutionStructure(Hallele *chromosome); /* Interface between RKGA solution vector and DMSP structure - Mr. Pablo's modeling based. */
     int checkCanInserSensor(SolutionStruct *sol, int sensor, int sensorsOnRoute);
+    int findNextSensorOnRoute(SolutionStruct *sol, int sensor);
     
     /* Getters - Objective function evaluation helpers | AE - Artificial Edge | BP - Between Pairs' | Values regarding metadata between two consecutive nodes */
     int getNumberOfAEBP(int main_node_index, int pair_node_index); /* Returns the number of artificial edges */
