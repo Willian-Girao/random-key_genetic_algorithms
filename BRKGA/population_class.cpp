@@ -2,6 +2,7 @@
 #include <array>
 #include <stdlib.h>
 #include <math.h>
+#include <limits>
 
 #include "population_class.h"
 #include "instance_class.h"
@@ -161,33 +162,40 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
   	int endingIndex = 0;
   	int pause = 0;
 
+  	int choiceA = 0;
+  	int choiceB = 0;
+  	int lastDeletedAux = 0;
+  	int lastDeletedAuxIndex = 0;
+
+  	bool skipedOneBs = false;
+
   	int *aux = new int[population[0].getLength()-2];
 
   	for (int i = 0; i < population[0].getLength()-1; ++i)
   	{
     	aux[i] = i;
   	}
-  	aux[0] = -1;
+  	// aux[0] = -1;
 
-	// for (int y = 0; y < population[0].getLength()-1; ++y)
+ //  	for (int y = 0; y < population[0].getLength()-1; ++y)
 	// {
-	// 	  cout << aux[y] << " ";
+	// 	cout << aux[y] << " ";
 	// }
 	// cout << "\n\n";
 
-	cout << "Parent A: ";
-	for (int i = 0; i < population[0].getLength(); ++i)
-	{
-		cout << parentA[i].node << " ";
-	}
-	cout << " | " << inst->evaluateBRKGA02Solution(parentA, muleVelocity, population[0].getLength(), false) << "\n\n";
+	// cout << "Parent A: ";
+	// for (int i = 0; i < population[0].getLength(); ++i)
+	// {
+	// 	cout << parentA[i].node << " ";
+	// }
+	// cout << " | " << inst->evaluateBRKGA02Solution(parentA, muleVelocity, population[0].getLength(), false) << "\n\n";
 
-	cout << "Parent B: ";
-	for (int i = 0; i < population[0].getLength(); ++i)
-	{
-		cout << parentB[i].node << " ";
-	}
-	cout << " | " << inst->evaluateBRKGA02Solution(parentB, muleVelocity, population[0].getLength(), false) << "\n\n";
+	// cout << "Parent B: ";
+	// for (int i = 0; i < population[0].getLength(); ++i)
+	// {
+	// 	cout << parentB[i].node << " ";
+	// }
+	// cout << " | " << inst->evaluateBRKGA02Solution(parentB, muleVelocity, population[0].getLength(), false) << "\n\n";
 
 	/* alph: create chromose using parent 'a' (index i):
 	when i is a sensor within the current best
@@ -268,6 +276,8 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
     {
       if (aux[k] == currentBestSol[1].node)
       {
+      	lastDeletedAux = aux[k];
+      	lastDeletedAuxIndex = k;
         aux[k] = -1;
         break;
       }
@@ -291,6 +301,7 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
     	nextSensorIndex = inst->findNextSensorOnRoute(parentA, currentLegitimateNode);
     	tempSensorIdHolder = nextSensorIndex == -1 ? -1 : parentA[nextSensorIndex].node;
 		currentBestSol[i].node = inst->checkCanInserSensor(currentBestSol, tempSensorIdHolder, i);
+		choiceA = currentBestSol[i].node;
 		/* finding selected legitimate's demand */
 		for (int x = 0; x < population[0].getLength(); ++x)
 		{
@@ -326,6 +337,7 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
     	nextSensorIndex = inst->findNextSensorOnRoute(parentB, currentLegitimateNode);
     	tempSensorIdHolder = nextSensorIndex == -1 ? -1 : parentB[nextSensorIndex].node;
 		currentBestSol[i].node = inst->checkCanInserSensor(currentBestSol, tempSensorIdHolder, i);
+		choiceB = currentBestSol[i].node;
 		/* finding selected legitimate's demand */
 		for (int x = 0; x < population[0].getLength(); ++x)
 		{
@@ -357,9 +369,7 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
 		if (usingAFit < usingBFit)
 		{
 			/* finding next legitimate node on route for parent A */
-	    	nextSensorIndex = inst->findNextSensorOnRoute(currentBestSol, currentLegitimateNode);
-	    	tempSensorIdHolder = nextSensorIndex == -1 ? -1 : parentA[nextSensorIndex].node;
-			currentBestSol[i].node = inst->checkCanInserSensor(currentBestSol, tempSensorIdHolder, i);
+			currentBestSol[i].node = choiceA;
 		  	/* finding selected's legitimate demand */
 		  	for (int x = 0; x < population[0].getLength(); ++x)
 		  	{
@@ -373,22 +383,29 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
 		  	crossoverFitness = usingAFit;
 		}
 
+		for (int k = 0; k < population[0].getLength()-1; ++k)
+		{
+			if (aux[k] == currentBestSol[i].node)
+			{
+				lastDeletedAux = aux[k];
+      			lastDeletedAuxIndex = k;
+				aux[k] = -1;
+				break;
+			}
+		}
+
 		// cout << "\n\nChosen of: ";
 		// for (int y = 0; y < i+1; ++y)
 		// {
 		//   cout << currentBestSol[y].node << " ";
 		// }
+		// cout << endl;
+		// for (int y = 0; y < population[0].getLength()-1; ++y)
+		// {
+		// 	cout << aux[y] << " ";
+		// }
 		// cout << "\n=============================================\n\n";
 		// cin >> pause;
-
-		for (int k = 0; k < population[0].getLength()-1; ++k)
-		{
-			if (aux[k] == currentBestSol[i].node)
-			{
-				aux[k] = -1;
-				break;
-			}
-		}
 
 		/* if current best mating result already contains the
 		final BS, return (updating fitness and completing the rest
@@ -397,11 +414,107 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
 		if (currentBestSol[i].node == 0)
 		{
 			endingIndex = i;
-			break;
+
+			if (endingIndex < population[0].getLength()-1)
+			{
+				int endingIndexAux = endingIndex;
+				for (int j = 0; j < population[0].getLength()-1; ++j)
+				{
+					if (aux[j] != -1)
+					{
+						currentBestSol[endingIndexAux+1].node = aux[j];
+						// aux[j] = -1;
+						endingIndexAux += 1;
+					}
+				}
+			}
+
+			double partialFitness = inst->evaluateBRKGA02Solution(currentBestSol, muleVelocity, population[0].getLength(), false);
+
+			if (partialFitness == numeric_limits<double>::max() && !skipedOneBs)
+			{
+				// cout << "\n-----------------------------------------------\n";
+				skipedOneBs = true;
+
+      			aux[lastDeletedAuxIndex] = lastDeletedAux;
+
+				if (usingAFit < usingBFit)
+				{
+					/* finding next legitimate node on route for parent A */
+					currentBestSol[i].node = choiceB;
+				  	/* finding selected's legitimate demand */
+				  	for (int x = 0; x < population[0].getLength(); ++x)
+				  	{
+				  		if (parentA[x].node == currentBestSol[i].node)
+				  		{
+				  			currentBestSol[i].demand = parentB[x].demand;
+				  			break;
+				  		}
+				  	}
+
+				  	crossoverFitness = usingBFit;
+				} else {
+					/* finding next legitimate node on route for parent A */
+					currentBestSol[i].node = choiceA;
+				  	/* finding selected's legitimate demand */
+				  	for (int x = 0; x < population[0].getLength(); ++x)
+				  	{
+				  		if (parentA[x].node == currentBestSol[i].node)
+				  		{
+				  			currentBestSol[i].demand = parentA[x].demand;
+				  			break;
+				  		}
+				  	}
+
+				  	crossoverFitness = usingAFit;
+				}
+
+				for (int k = 0; k < population[0].getLength()-1; ++k)
+				{
+					if (aux[k] == currentBestSol[i].node)
+					{
+						lastDeletedAux = aux[k];
+		      			lastDeletedAuxIndex = k;
+						aux[k] = -1;
+						break;
+					}
+				}
+
+				// cout << "\n\nFinal BS fix: ";
+				// for (int y = 0; y < i+1; ++y)
+				// {
+				//   cout << currentBestSol[y].node << " ";
+				// }
+				// cout << endl;
+				// for (int y = 0; y < population[0].getLength()-1; ++y)
+				// {
+				// 	cout << aux[y] << " ";
+				// }
+				// cout << "\n-----------------------------------------------\n";
+			} else {
+				break;
+			}
 		}
 
 		/* updating current legitimate node */
 		currentLegitimateNode = currentBestSol[i].node;
+	}
+
+	// cout << "\nendingIndex: " << endingIndex << endl;
+
+	if (endingIndex < population[0].getLength()-1)
+	{
+		int endingIndexAux = endingIndex;
+		for (int i = 0; i < population[0].getLength()-1; ++i)
+		{
+			if (aux[i] != -1)
+			{
+				currentBestSol[endingIndexAux+1].node = aux[i];
+				// cout << "\nPosition: " << endingIndexAux+1 << " Value: " << aux[i] << endl;
+				aux[i] = -1;
+				endingIndexAux += 1;
+			}
+		}
 	}
 
 	// for (int y = 0; y < population[0].getLength()-1; ++y)
@@ -410,24 +523,12 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
 	// }
 	// cout << "\n\n";
 
-	if (endingIndex < population[0].getLength()-1)
-	{
-		for (int i = 1; i < population[0].getLength()-1; ++i)
-		{
-			if (aux[i] != -1)
-			{
-				currentBestSol[endingIndex+1].node = aux[i];
-				endingIndex += 1;
-			}
-		}
-	}
-
 	cout << "Offspr X: ";
 	for (int y = 0; y < population[0].getLength(); ++y)
 	{
 		cout << currentBestSol[y].node << " ";
 	}
-	cout << " | " << crossoverFitness << "\n\n";
+	cout << " | " << inst->evaluateBRKGA02Solution(currentBestSol, muleVelocity, population[0].getLength(), false) << "\n\n";
 
 	cin >> pause;
 	cout << "\n=============================================\n\n";
