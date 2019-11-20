@@ -183,19 +183,19 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
 	// }
 	// cout << "\n\n";
 
-	// cout << "Parent A: ";
-	// for (int i = 0; i < population[0].getLength(); ++i)
-	// {
-	// 	cout << parentA[i].node << " ";
-	// }
-	// cout << " | " << inst->evaluateBRKGA02Solution(parentA, muleVelocity, population[0].getLength(), false) << "\n\n";
+	cout << "Parent A: ";
+	for (int i = 0; i < population[0].getLength(); ++i)
+	{
+		cout << parentA[i].node << " ";
+	}
+	cout << " | " << inst->evaluateBRKGA02Solution(parentA, muleVelocity, population[0].getLength(), false) << "\n\n";
 
-	// cout << "Parent B: ";
-	// for (int i = 0; i < population[0].getLength(); ++i)
-	// {
-	// 	cout << parentB[i].node << " ";
-	// }
-	// cout << " | " << inst->evaluateBRKGA02Solution(parentB, muleVelocity, population[0].getLength(), false) << "\n\n";
+	cout << "Parent B: ";
+	for (int i = 0; i < population[0].getLength(); ++i)
+	{
+		cout << parentB[i].node << " ";
+	}
+	cout << " | " << inst->evaluateBRKGA02Solution(parentB, muleVelocity, population[0].getLength(), false) << "\n\n";
 
 	/* alph: create chromose using parent 'a' (index i):
 	when i is a sensor within the current best
@@ -433,8 +433,9 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
 
 			if (partialFitness == numeric_limits<double>::max() && !skipedOneBs)
 			{
-				// cout << "\n-----------------------------------------------\n";
+				cout << "\n-----------------------------------------------\n";
 				skipedOneBs = true;
+				cout << currentLegitimateNode << " -> " << currentBestSol[i].node << endl;
 
       			aux[lastDeletedAuxIndex] = lastDeletedAux;
 
@@ -479,6 +480,8 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
 						break;
 					}
 				}
+
+				cout << currentLegitimateNode << " *-> " << currentBestSol[i].node << endl;
 
 				// cout << "\n\nFinal BS fix: ";
 				// for (int y = 0; y < i+1; ++y)
