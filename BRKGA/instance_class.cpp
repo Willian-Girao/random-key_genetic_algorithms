@@ -859,7 +859,7 @@ double Instance::evalSolFromSolStructure(SolutionStruct *solutionInput, double m
   return fit;
 };
 
-double Instance::evaluateBRKGA02Solution(SolutionStruct *solutionInput, double muleVelocity, int sensorsOnRounte, bool print) {
+double Instance::evaluateBRKGA02Solution(SolutionStruct *solutionInput, double muleVelocity, int sensorsOnRounte, bool skipDemandBreak) {
   double totalDistance = 0.0;
   double timeElapsedServing = 0.0;
   double demandMet = 0.0;
@@ -942,7 +942,10 @@ double Instance::evaluateBRKGA02Solution(SolutionStruct *solutionInput, double m
   double fit = (totalDistance / muleVelocity);
   
   if ((total_demand - demandLeft) < total_demand) {
-    fit = numeric_limits<double>::max();
+    if (!skipDemandBreak)
+    {
+      fit = numeric_limits<double>::max();
+    }
   }
 
   delete[] solution;

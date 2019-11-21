@@ -91,7 +91,8 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
       //Complete with offspring.
       // pop.mateIndividuals();
-      pop.mateBRKGA02(&inst, muleSpeed);
+      // pop.mateBRKGA02(&inst, muleSpeed);
+      pop.mateModularCrossover(&inst, muleSpeed);
 
       //Updating previous best
       previousBest = bestSolution;

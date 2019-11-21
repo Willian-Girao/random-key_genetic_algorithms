@@ -426,6 +426,97 @@ SolutionStruct * Population::matePairBRKGA02(Hallele *a, Hallele *b, Instance *i
 	return currentBestSol;
 }
 
+SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instance *inst, double muleVelocity) {
+	SolutionStruct *parentA = inst->buildSolutionStructure(a.getChromosomeAsArray());
+  	SolutionStruct *parentB = inst->buildSolutionStructure(b.getChromosomeAsArray());
+  	SolutionStruct *currentBestSol;
+
+  	int *aux = new int[population[0].getLength()-1];
+  	for (int i = 0; i < population[0].getLength()-1; ++i)
+  	{
+    	aux[i] = i;
+  	}
+  	int pause = 0;
+
+	cout << "Parent A: ";
+	for (int i = 0; i < population[0].getLength(); ++i)
+	{
+		cout << parentA[i].node << " ";
+	}
+	cout << " | " << a.getFitness() << "\n\n";
+
+	cout << "Parent B: ";
+	for (int i = 0; i < population[0].getLength(); ++i)
+	{
+		cout << parentB[i].node << " ";
+	}
+	cout << " | " << b.getFitness() << "\n\n";
+
+	if (a.getFitness() <= b.getFitness())
+	{
+		currentBestSol = inst->buildSolutionStructure(b.getChromosomeAsArray());
+
+		for (int i = 1; i < population[0].getLength(); ++i)
+	  	{
+	    	for (int x = 0; x < population[0].getLength()-1; ++x)
+	    	{
+	    	 	if (aux[x] == parentB[i].node)
+	    	 	{
+	    	 		aux[x] = -1;
+	    	 		break;
+	    	 	}
+	    	}
+
+	    	if (parentB[i].node == 0)
+	    	{
+	    		break;
+	    	}
+	  	}
+	} else {
+		currentBestSol = inst->buildSolutionStructure(a.getChromosomeAsArray());
+		for (int i = 1; i < population[0].getLength(); ++i)
+	  	{
+	    	for (int x = 0; x < population[0].getLength()-1; ++x)
+	    	{
+	    	 	if (aux[x] == parentA[i].node)
+	    	 	{
+	    	 		aux[x] = -1;
+	    	 		break;
+	    	 	}
+	    	}
+
+	    	if (parentA[i].node == 0)
+	    	{
+	    		break;
+	    	}
+	  	}
+	}
+
+	cout << "Base sol.: ";
+	for (int i = 0; i < population[0].getLength(); ++i)
+	{
+		cout << currentBestSol[i].node << " ";
+	}
+	cout << "\n\n";
+
+	cout << "Aux: ";
+	for (int y = 0; y < population[0].getLength()-1; ++y)
+	{
+	  cout << aux[y] << " ";
+	}
+
+	cin >> pause;
+	// cout << "\n=============================================\n\n";
+	// cin >> pause;
+
+	delete[] aux;
+	delete[] parentA;
+	delete[] parentB;
+	// delete[] currentBestSol;
+
+	return currentBestSol;
+}
+
 void Population::printPopulation(void) {
   for (int i = 0; i < size; i++) {
     cout << "Vector " << i << " (" << population[i].getFitness() << ")" << endl;
@@ -563,6 +654,50 @@ void Population::mateBRKGA02(Instance *inst, double muleVelocity) {
 
 		// cout << "==>\n";
 		SolutionStruct *matingResult = matePairBRKGA02(population[parentAIndex].getChromosomeAsArray(), population[parentBIndex].getChromosomeAsArray(), inst, muleVelocity);
+		// cout << "<--\n";
+
+		for (int x = 1; x < population[0].getLength(); ++x)
+		{
+			// cout << matingResult[x].node << " (" << matingResult[x].key << ")\n";
+			population[i].updateGenesSCX(matingResult[x].node, matingResult[x].key);
+		}
+
+		population[i].resetEvaluateFlag();
+
+		// population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity));
+
+		// population[i].printGenes();
+
+		// cout << "\nfit.: " << population[i].getFitness() << endl;
+
+		// int pause = 0;
+		// cin >> pause;
+
+		delete[] matingResult;
+	}
+}
+
+void Population::mateModularCrossover(Instance *inst, double muleVelocity) {
+	int numMutants = floor((size / 4.0));
+	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
+
+	int indexStartRand = size - ceil((size / 2.0));
+	int indexEndRand = size - 1;
+
+	SolutionStruct *matingResult = NULL;
+
+	//Indexes of chromosomes to be overrided by mating result.
+	for (int i = (size - numMutants - 1); i >= (size - ceil((size / 2.0))); --i)
+	{
+		int parentAIndex = rand() % (size / 2);
+		int parentBIndex = rand() % (size / 2);
+
+		while(parentBIndex == parentAIndex) {
+			parentBIndex = rand() % (size / 2);
+		}
+
+		// cout << "==>\n";
+		SolutionStruct *matingResult = modularCrossover(population[parentAIndex], population[parentBIndex], inst, muleVelocity);
 		// cout << "<--\n";
 
 		for (int x = 1; x < population[0].getLength(); ++x)

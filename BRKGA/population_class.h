@@ -13,6 +13,7 @@ class Population {
     /* Getters */
     Hallele * matePair(Hallele *a, double aFitness, Hallele *b, double bFitness); /* Returns the offspring of a pair of chromosomes. */
     SolutionStruct * matePairBRKGA02(Hallele *a, Hallele *b, Instance *inst, double muleVelocity); /* Returns the offspring of a pair of chromosomes using SCX. */
+    SolutionStruct * modularCrossover(Chromosome a, Chromosome b, Instance *inst, double muleVelocity); /* Returns the offspring of a pair of chromosomes using SCX. */
     Hallele * getSolutionAsArray(int solIndex); /* Returns the chromosome sequence of alleles - RKGA encoding */
     Chromosome getSingleChromosome(int index); /* Returns the object instance of one of the chromosomes within the population. */
 
@@ -21,6 +22,7 @@ class Population {
     void updateFitness(int index, double fitness); /* Updates the fitness of a solution indexed by 'index'. */
     void mateIndividuals(void); /* Produces offsprings of solutions - 'popSize' even 25% of population | 'popSize' odd 20% of population */
     void mateBRKGA02(Instance *inst, double muleVelocity); /* Produces offsprings of solutions - 'popSize' even 25% of population | 'popSize' odd 20% of population */
+    void mateModularCrossover(Instance *inst, double muleVelocity); /* Produces offsprings of solutions - 'popSize' even 25% of population | 'popSize' odd 20% of population */
     void introduceMutants(void); /* Replaces 25% of the 'non-elit' halfh with mutant individuals. */
     void mutationBRKGA01(double mutationChoiceProb, double mutationBRKGA01Prob); /* Replaces 25% of the 'non-elit' halfh with mutant individuals. */
     void sortByFitness(void); /* Sorts the population in descending ascending order based on the fitness values. */
