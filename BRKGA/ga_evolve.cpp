@@ -74,7 +74,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       {
         if (pop.shouldCalcFitness(i))
         {
-          pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed));
+          pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed, false));
           pop.resetEvaluateFlag(i);
         }
       }
@@ -90,9 +90,9 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       // pop.introduceMutants(); /* Standard BRKGA mutation */
 
       //Complete with offspring.
-      // pop.mateIndividuals(&inst, muleSpeed);
+      pop.mateIndividuals(&inst, muleSpeed);
       // pop.mateBRKGA02(&inst, muleSpeed);
-      pop.mateModularCrossover(&inst, muleSpeed);
+      // pop.mateModularCrossover(&inst, muleSpeed);
 
       //Updating previous best
       previousBest = bestSolution;
@@ -101,7 +101,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     //Updating fitness.
     for (int i = 0; i < popSize; ++i)
     {
-      pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed));
+      pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed, false));
     }
 
     //Sorting by fitness.

@@ -631,7 +631,7 @@ SolutionStruct * Instance::buildSolutionStructure(Hallele *chromosome) {
 }
 
 // 'ae' stands for Artificial Edge.
-double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
+double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity, double skipeBSCheck) {
   double totalDistance = 0.0;
   double timeElapsedServing = 0.0;
   double demandMet = 0.0;
@@ -647,7 +647,7 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   //Building solution structure array.
   SolutionStruct *solution = buildSolutionStructure(chromosome);
 
-  if (solution[1].node == 0)
+  if (solution[1].node == 0 && !skipeBSCheck)
   {
     int w = 0;
     cout << "\nBS followed by BS\n";

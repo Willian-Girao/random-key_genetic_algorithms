@@ -53,7 +53,7 @@ class Instance {
     double getNodesCRange(int index); /* Gets the communication rang of a node indexed by 'index' */
     double getNodesTRate(int index); /* Gets the transmition rate of a node indexed by 'index' */
     double getNodesDemmand(int index); /* Gets the demmand of a node indexed by 'index' */    
-    double evaluateSolution(Hallele *solution, double muleVelocity); /* Set and returns the fitness value of a solution - evaluate on the problem. */
+    double evaluateSolution(Hallele *solution, double muleVelocity, double skipeBSCheck); /* Set and returns the fitness value of a solution - evaluate on the problem. */
     double evalSolFromSolStructure(SolutionStruct *solution, double muleVelocity, bool skipDemandBreak);
     double evaluateBRKGA02Solution(SolutionStruct *solution, double muleVelocity, int sensorsOnRounte, bool skipDemandBreak);
     void printFinalSolution(Hallele *chromosome, double muleVelocity); /*  */

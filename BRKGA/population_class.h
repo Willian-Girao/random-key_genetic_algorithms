@@ -12,6 +12,7 @@ class Population {
 
     /* Getters */
     Hallele * matePair(Hallele *a, double aFitness, Hallele *b, double bFitness); /* Returns the offspring of a pair of chromosomes. */
+    Hallele * matePair004(Hallele *a, double aFitness, Hallele *b, double bFitness, Instance *inst, double muleVelocity); /* Returns the offspring of a pair of chromosomes. */
     SolutionStruct * matePairBRKGA02(Hallele *a, Hallele *b, Instance *inst, double muleVelocity); /* Returns the offspring of a pair of chromosomes using SCX. */
     SolutionStruct * modularCrossover(Chromosome a, Chromosome b, Instance *inst, double muleVelocity); /* Returns the offspring of a pair of chromosomes using SCX. */
     Hallele * getSolutionAsArray(int solIndex); /* Returns the chromosome sequence of alleles - RKGA encoding */

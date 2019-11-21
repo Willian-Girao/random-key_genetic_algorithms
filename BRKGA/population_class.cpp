@@ -151,6 +151,91 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
   return offspring;
 }
 
+Hallele * Population::matePair004(Hallele *a, double aFitness, Hallele *b, double bFitness, Instance *inst, double muleVelocity) {
+  double prob;
+
+  Hallele *offspring = new Hallele[population[0].getLength()];
+
+  //Initializing offspring
+  offspring[0].index = 0;
+  offspring[0].key = 0.0;
+  for (int i = 1; i < population[0].getLength(); ++i)
+  {
+  	offspring[i].index = i;
+  }
+  offspring[population[0].getLength()-1].index = 0;
+
+  for (int i = 1; i < population[0].getLength(); i++)
+  {
+  	//Crossover gives priority to the parent with the best fitness value
+    if (aFitness <= bFitness) //Parent 'a' has better fitness - biasing coin toss towards 'a'
+    {
+    	prob = ((double) rand() / RAND_MAX);
+
+    	if (prob <= 0.7) //Parent 'a' won coin toss
+    	{
+	    	offspring[i].key = a[i].key;
+	    } else { //Parent 'b' won coin toss
+		    offspring[i].key = b[i].key;
+	    }
+    } else { //Parent 'b' has better fitness - biasing coin toss towards 'b'
+    	prob = ((double) rand() / RAND_MAX);
+
+    	if (prob <= 0.7) //Parent 'b' won coin toss
+    	{
+	    	offspring[i].key = b[i].key;
+	    } else { //Parent 'a' won coin toss
+		    offspring[i].key = a[i].key;
+	    }
+    }
+  }
+
+  double aFit = 0.0;
+  double bFit = 0.0;
+
+  double lowestKey = 2.0;
+  int lowestKeySensor = 0;
+  int lowestKeyIndex = 1;
+
+  for (int i = 1; i < population[0].getLength(); i++)
+  {
+  	offspring[i].key = a[i].key;
+  	aFit = inst->evaluateSolution(offspring, muleVelocity, true);
+
+  	offspring[i].key = b[i].key;
+  	bFit = inst->evaluateSolution(offspring, muleVelocity, true);
+
+  	if (aFit < bFit)
+  	{
+  		offspring[i].key = a[i].key;
+  	}
+
+  	if (offspring[i].key < lowestKey)
+	{
+		lowestKey = offspring[i].key;
+		lowestKeySensor = offspring[i].index;
+		lowestKeyIndex = i;
+	}
+  }
+
+  if (lowestKeySensor == 0)
+  {
+    int swapA = (rand() % (population[0].getLength() - 2)) + 2;
+    while (swapA == lowestKeyIndex)
+    {
+      swapA = (rand() % (population[0].getLength() - 2)) + 2;
+    }
+
+    double tempI = offspring[swapA].index;
+
+    offspring[swapA].index = lowestKeySensor;
+
+    offspring[lowestKeyIndex].index = tempI;
+  }
+
+  return offspring;
+}
+
 SolutionStruct * Population::matePairBRKGA02(Hallele *a, Hallele *b, Instance *inst, double muleVelocity) {
 	SolutionStruct *parentA = inst->buildSolutionStructure(a);
   	SolutionStruct *parentB = inst->buildSolutionStructure(b);
@@ -744,9 +829,10 @@ void Population::mateIndividuals(Instance *inst, double muleVelocity) {
 		// cout << "Parent B: " << parentBIndex << endl;
 		// cout << "Individual " << i << " became offspring\n";
 
-		population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
-		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity));
-		cout << "\nO fit.: " << population[i].getFitness() << endl;
+		// population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
+		population[i].setResetGenes(matePair004(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness(), inst, muleVelocity));
+		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
+		// cout << "\nO fit.: " << population[i].getFitness() << endl;
 		population[i].setEvaluateFlag();
 	}
 
@@ -831,7 +917,7 @@ void Population::mateModularCrossover(Instance *inst, double muleVelocity) {
 
 		// population[i].resetEvaluateFlag();
 
-		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity));
+		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
 
 		// if (population[parentAIndex].getFitness() <= population[parentBIndex].getFitness())
 		// {
