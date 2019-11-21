@@ -299,6 +299,18 @@ void Chromosome::updateGene(int i, double key) {
   genes[i].key = key;
 }
 
+void Chromosome::updateGenesSCX(int sensor, double key) {
+  for (int i = 1; i < length; ++i)
+  {
+    if (genes[i].index == sensor)
+    {
+      // cout << "\n==>\n";
+      genes[i].key = key;
+      break;
+    }
+  }
+}
+
 void Chromosome::resetGenes() {
   for (int i = 1; i < (length - 1); i++) {    
     double key = ((double) rand() / RAND_MAX);

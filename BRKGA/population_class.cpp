@@ -151,7 +151,7 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
   return offspring;
 }
 
-Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, double bFitness, Instance *inst, double muleVelocity) {
+SolutionStruct * Population::matePairBRKGA02(Hallele *a, Hallele *b, Instance *inst, double muleVelocity) {
 	SolutionStruct *parentA = inst->buildSolutionStructure(a);
   	SolutionStruct *parentB = inst->buildSolutionStructure(b);
   	SolutionStruct *currentBestSol = inst->buildSolutionStructure(a);
@@ -177,19 +177,21 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
     	aux[i] = i;
   	}
 
-	// cout << "Parent A: ";
-	// for (int i = 0; i < population[0].getLength(); ++i)
-	// {
-	// 	cout << parentA[i].node << " ";
-	// }
-	// cout << " | " << inst->evaluateBRKGA02Solution(parentA, muleVelocity, population[0].getLength(), false) << "\n\n";
+	cout << "Parent A: ";
+	for (int i = 0; i < population[0].getLength(); ++i)
+	{
+		cout << parentA[i].node << " ";
+	}
+	cout << " | " << inst->evaluateBRKGA02Solution(parentA, muleVelocity, population[0].getLength(), false) << "\n\n";
 
-	// cout << "Parent B: ";
-	// for (int i = 0; i < population[0].getLength(); ++i)
-	// {
-	// 	cout << parentB[i].node << " ";
-	// }
-	// cout << " | " << inst->evaluateBRKGA02Solution(parentB, muleVelocity, population[0].getLength(), false) << "\n\n";
+	cout << "Parent B: ";
+	for (int i = 0; i < population[0].getLength(); ++i)
+	{
+		cout << parentB[i].node << " ";
+	}
+	cout << " | " << inst->evaluateBRKGA02Solution(parentB, muleVelocity, population[0].getLength(), false) << "\n\n";
+
+	cin >> pause;
 
 	/* alph: create chromose using parent 'a' (index i):
 	when i is a sensor within the current best
@@ -419,9 +421,9 @@ Hallele * Population::matePairBRKGA02(Hallele *a, double aFitness, Hallele *b, d
 	delete[] aux;
 	delete[] parentA;
 	delete[] parentB;
-	delete[] currentBestSol;
+	// delete[] currentBestSol;
 
-	return a;
+	return currentBestSol;
 }
 
 void Population::printPopulation(void) {
@@ -547,6 +549,8 @@ void Population::mateBRKGA02(Instance *inst, double muleVelocity) {
 	int indexStartRand = size - ceil((size / 2.0));
 	int indexEndRand = size - 1;
 
+	SolutionStruct *matingResult = NULL;
+
 	//Indexes of chromosomes to be overrided by mating result.
 	for (int i = (size - numMutants - 1); i >= (size - ceil((size / 2.0))); --i)
 	{
@@ -557,7 +561,28 @@ void Population::mateBRKGA02(Instance *inst, double muleVelocity) {
 			parentBIndex = rand() % (size / 2);
 		}
 
-		population[i].setResetGenes(matePairBRKGA02(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness(), inst, muleVelocity));
+		// cout << "==>\n";
+		SolutionStruct *matingResult = matePairBRKGA02(population[parentAIndex].getChromosomeAsArray(), population[parentBIndex].getChromosomeAsArray(), inst, muleVelocity);
+		// cout << "<--\n";
+
+		for (int x = 1; x < population[0].getLength(); ++x)
+		{
+			// cout << matingResult[x].node << " (" << matingResult[x].key << ")\n";
+			population[i].updateGenesSCX(matingResult[x].node, matingResult[x].key);
+		}
+
+		population[i].resetEvaluateFlag();
+
+		// population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity));
+
+		// population[i].printGenes();
+
+		// cout << "\nfit.: " << population[i].getFitness() << endl;
+
+		// int pause = 0;
+		// cin >> pause;
+
+		delete[] matingResult;
 	}
 }
 

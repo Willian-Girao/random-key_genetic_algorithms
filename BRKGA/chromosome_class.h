@@ -46,6 +46,7 @@ class Chromosome {
     Hallele *genes; /* Raw array representing the solution. */
     bool mustEvaluate; /* Flags if the fitness value for the chromosome must be calculated */
     void updateGene(int i, double key); /* Updates the key 'i' of the vector with the value 'key'. */
+    void updateGenesSCX(int sensor, double key); /* Updates the key 'i' of the vector with the value 'key'. */
 };
 
 #endif
