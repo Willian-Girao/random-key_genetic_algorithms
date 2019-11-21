@@ -453,6 +453,13 @@ int Population::findeNextSensorIndexFromSensor(SolutionStruct *sol, int sensor, 
 			break;
 		}
 	}
+
+	if (index > size-1)
+	{
+		return 0;
+	}
+
+
 	return index;
 }
 
@@ -488,7 +495,7 @@ SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instan
 
 		for (int i = 1; i < population[0].getLength(); ++i)
 	  	{
-	    	for (int x = 0; x < population[0].getLength()-1; ++x)
+	    	for (int x = 1; x < population[0].getLength()-1; ++x)
 	    	{
 	    	 	if (aux[x] == parentB[i].node)
 	    	 	{
@@ -506,7 +513,7 @@ SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instan
 		currentBestSol = inst->buildSolutionStructure(a.getChromosomeAsArray());
 		for (int i = 1; i < population[0].getLength(); ++i)
 	  	{
-	    	for (int x = 0; x < population[0].getLength()-1; ++x)
+	    	for (int x = 1; x < population[0].getLength()-1; ++x)
 	    	{
 	    	 	if (aux[x] == parentA[i].node)
 	    	 	{
@@ -552,12 +559,14 @@ SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instan
 		if (a.getFitness() <= b.getFitness())
 		{
 			otherParentsNext = findeNextSensorIndexFromSensor(parentA, currentBestSol[i].node, population[0].getLength());
-			cout << "other's next: " << parentA[otherParentsNext].node << endl;
-			otherNext = parentA[otherParentsNext].node;
+			cout << otherParentsNext << endl;
+			otherNext = otherParentsNext != 0 ? parentA[otherParentsNext].node : baseNext;
+			cout << "other's next: " << otherNext << endl;
 		} else {
 			otherParentsNext = findeNextSensorIndexFromSensor(parentB, currentBestSol[i].node, population[0].getLength());
-			cout << "other's next: " << parentB[otherParentsNext].node << endl;
-			otherNext = parentB[otherParentsNext].node;
+			cout << otherParentsNext << endl;
+			otherNext = otherParentsNext != 0 ? parentB[otherParentsNext].node : baseNext;
+			cout << "other's next: " << otherNext << endl;
 		}
 
 		/* check if 'otherParentsNext' can be inserted */
