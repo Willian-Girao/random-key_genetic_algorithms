@@ -480,14 +480,14 @@ SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instan
 	{
 		cout << parentA[i].node << " ";
 	}
-	cout << " | " << a.getFitness() << "\n\n";
+	cout << " | " << inst->evalSolFromSolStructure(parentA, muleVelocity, false) << "\n\n";
 
 	cout << "Parent B: ";
 	for (int i = 0; i < population[0].getLength(); ++i)
 	{
 		cout << parentB[i].node << " ";
 	}
-	cout << " | " << b.getFitness() << "\n\n";
+	cout << " | " << inst->evalSolFromSolStructure(parentB, muleVelocity, false) << "\n\n";
 
 	if (a.getFitness() <= b.getFitness())
 	{
@@ -529,18 +529,18 @@ SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instan
 	  	}
 	}
 
-	cout << "Base sol.: ";
-	for (int i = 0; i < population[0].getLength(); ++i)
-	{
-		cout << currentBestSol[i].node << " ";
-	}
-	cout << "\n\n";
+	// cout << "Base sol.: ";
+	// for (int i = 0; i < population[0].getLength(); ++i)
+	// {
+	// 	cout << currentBestSol[i].node << " ";
+	// }
+	// cout << "\n\n";
 
-	cout << "Aux: ";
-	for (int y = 0; y < population[0].getLength()-1; ++y)
-	{
-	  cout << aux[y] << " ";
-	}
+	// cout << "Aux: ";
+	// for (int y = 0; y < population[0].getLength()-1; ++y)
+	// {
+	//   cout << aux[y] << " ";
+	// }
 
 	int baseNext = 0;
 	int baseNextIndex = 0;
@@ -552,21 +552,21 @@ SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instan
 		baseNextIndex = findeNextSensorIndexFromSensor(currentBestSol, currentBestSol[i].node, population[0].getLength());
 		baseNext = currentBestSol[baseNextIndex].node;
 
-		cout << "\nCurrent: " << currentBestSol[i].node << endl;
-		cout << "baseNext: " << baseNext << endl;
+		// cout << "\nCurrent: " << currentBestSol[i].node << endl;
+		// cout << "baseNext: " << baseNext << endl;
 
 		/* getting next eligible from the other parent (not the one generating the base solution) */
 		if (a.getFitness() <= b.getFitness())
 		{
 			otherParentsNext = findeNextSensorIndexFromSensor(parentA, currentBestSol[i].node, population[0].getLength());
-			cout << otherParentsNext << endl;
+			// cout << otherParentsNext << endl;
 			otherNext = otherParentsNext != 0 ? parentA[otherParentsNext].node : baseNext;
-			cout << "other's next: " << otherNext << endl;
+			// cout << "other's next: " << otherNext << endl;
 		} else {
 			otherParentsNext = findeNextSensorIndexFromSensor(parentB, currentBestSol[i].node, population[0].getLength());
-			cout << otherParentsNext << endl;
+			// cout << otherParentsNext << endl;
 			otherNext = otherParentsNext != 0 ? parentB[otherParentsNext].node : baseNext;
-			cout << "other's next: " << otherNext << endl;
+			// cout << "other's next: " << otherNext << endl;
 		}
 
 		/* check if 'otherParentsNext' can be inserted */
@@ -581,7 +581,7 @@ SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instan
 
 		if (canInsert)
 		{
-			cout << "sensor " << otherNext << " can be inserted\n\n";
+			// cout << "sensor " << otherNext << " can be inserted\n\n";
 			int targetIndex = 0;
 			for (int y = 1; y < population[0].getLength(); ++y)
 			{
@@ -593,21 +593,40 @@ SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instan
 			}
 
 			insertNewGeneAt(currentBestSol, i+1, targetIndex);
-			cout << "updated sol.: ";
-			for (int i = 0; i < population[0].getLength(); ++i)
+			// cout << "updated sol.: ";
+			// for (int i = 0; i < population[0].getLength(); ++i)
+			// {
+			// 	cout << currentBestSol[i].node << " ";
+			// }
+			// cout << "\n\n";
+
+			for (int x = 1; x < population[0].getLength()-1; ++x)
 			{
-				cout << currentBestSol[i].node << " ";
+				if (aux[x] == otherNext)
+				{
+					aux[x] = -1;
+					break;
+				}
 			}
-			cout << "\n\n";
+			// cout << "Aux: ";
+			// for (int y = 0; y < population[0].getLength()-1; ++y)
+			// {
+			//   cout << aux[y] << " ";
+			// }
 		} else {
-			cout << "sensor " << otherNext << " can NOT be inserted\n\n";
+			// cout << "sensor " << otherNext << " can NOT be inserted\n\n";
 		}
 
-		cout << "\n=============================================\n\n";
-		cin >> pause;
+		// cout << "\n=============================================\n\n";
+		// cin >> pause;
 	}
-	// cout << "\n=============================================\n\n";
-	// cin >> pause;
+	cout << "Base sol.: ";
+	for (int i = 0; i < population[0].getLength(); ++i)
+	{
+		cout << currentBestSol[i].node << " ";
+	}
+	cout << " | " << inst->evalSolFromSolStructure(currentBestSol, muleVelocity, false) << "\n\n";
+	cin >> pause;
 
 	delete[] aux;
 	delete[] parentA;
