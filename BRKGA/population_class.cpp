@@ -536,24 +536,65 @@ SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instan
 	}
 
 	int baseNext = 0;
+	int baseNextIndex = 0;
+	int otherNext = 0;
 	int otherParentsNext = 0;
 
 	for (int i = 1; i < population[0].getLength()-1; ++i)
 	{
-		baseNext = currentBestSol[i+1].node;
+		baseNextIndex = findeNextSensorIndexFromSensor(currentBestSol, currentBestSol[i].node, population[0].getLength());
+		baseNext = currentBestSol[baseNextIndex].node;
 
 		cout << "\nCurrent: " << currentBestSol[i].node << endl;
-		cout << "\nbaseNext: " << baseNext << endl;
+		cout << "baseNext: " << baseNext << endl;
 
-
+		/* getting next eligible from the other parent (not the one generating the base solution) */
 		if (a.getFitness() <= b.getFitness())
 		{
 			otherParentsNext = findeNextSensorIndexFromSensor(parentA, currentBestSol[i].node, population[0].getLength());
-			cout << "\nother's next: " << parentA[otherParentsNext].node << endl;
+			cout << "other's next: " << parentA[otherParentsNext].node << endl;
+			otherNext = parentA[otherParentsNext].node;
 		} else {
 			otherParentsNext = findeNextSensorIndexFromSensor(parentB, currentBestSol[i].node, population[0].getLength());
-			cout << "\nother's next: " << parentB[otherParentsNext].node << endl;
+			cout << "other's next: " << parentB[otherParentsNext].node << endl;
+			otherNext = parentB[otherParentsNext].node;
 		}
+
+		/* check if 'otherParentsNext' can be inserted */
+		bool canInsert = false;
+		for (int x = 0; x < population[0].getLength()-1; ++x)
+		{
+			if (aux[x] == otherNext)
+			{
+				canInsert = true;
+			}
+		}
+
+		if (canInsert)
+		{
+			cout << "sensor " << otherNext << " can be inserted\n\n";
+			int targetIndex = 0;
+			for (int y = 1; y < population[0].getLength(); ++y)
+			{
+				if (currentBestSol[y].node == otherNext)
+				{
+					targetIndex = y;
+					break;
+				}
+			}
+
+			insertNewGeneAt(currentBestSol, i+1, targetIndex);
+			cout << "updated sol.: ";
+			for (int i = 0; i < population[0].getLength(); ++i)
+			{
+				cout << currentBestSol[i].node << " ";
+			}
+			cout << "\n\n";
+		} else {
+			cout << "sensor " << otherNext << " can NOT be inserted\n\n";
+		}
+
+		cout << "\n=============================================\n\n";
 		cin >> pause;
 	}
 	// cout << "\n=============================================\n\n";
