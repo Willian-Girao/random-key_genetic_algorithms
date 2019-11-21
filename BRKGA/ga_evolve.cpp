@@ -90,7 +90,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       // pop.introduceMutants(); /* Standard BRKGA mutation */
 
       //Complete with offspring.
-      // pop.mateIndividuals();
+      // pop.mateIndividuals(&inst, muleSpeed);
       // pop.mateBRKGA02(&inst, muleSpeed);
       pop.mateModularCrossover(&inst, muleSpeed);
 

@@ -475,19 +475,19 @@ SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instan
   	}
   	int pause = 0;
 
-	cout << "Parent A: ";
-	for (int i = 0; i < population[0].getLength(); ++i)
-	{
-		cout << parentA[i].node << " ";
-	}
-	cout << " | " << inst->evalSolFromSolStructure(parentA, muleVelocity, false) << "\n\n";
+	// cout << "Parent A: ";
+	// for (int i = 0; i < population[0].getLength(); ++i)
+	// {
+	// 	cout << parentA[i].node << " ";
+	// }
+	// cout << " | " << inst->evalSolFromSolStructure(parentA, muleVelocity, false) << "\n\n";
 
-	cout << "Parent B: ";
-	for (int i = 0; i < population[0].getLength(); ++i)
-	{
-		cout << parentB[i].node << " ";
-	}
-	cout << " | " << inst->evalSolFromSolStructure(parentB, muleVelocity, false) << "\n\n";
+	// cout << "Parent B: ";
+	// for (int i = 0; i < population[0].getLength(); ++i)
+	// {
+	// 	cout << parentB[i].node << " ";
+	// }
+	// cout << " | " << inst->evalSolFromSolStructure(parentB, muleVelocity, false) << "\n\n";
 
 	if (a.getFitness() <= b.getFitness())
 	{
@@ -620,13 +620,13 @@ SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instan
 		// cout << "\n=============================================\n\n";
 		// cin >> pause;
 	}
-	cout << "Base sol.: ";
-	for (int i = 0; i < population[0].getLength(); ++i)
-	{
-		cout << currentBestSol[i].node << " ";
-	}
-	cout << " | " << inst->evalSolFromSolStructure(currentBestSol, muleVelocity, false) << "\n\n";
-	cin >> pause;
+	// cout << "Base sol.: ";
+	// for (int i = 0; i < population[0].getLength(); ++i)
+	// {
+	// 	cout << currentBestSol[i].node << " ";
+	// }
+	// cout << " | " << inst->evalSolFromSolStructure(currentBestSol, muleVelocity, false) << "\n";
+	// cin >> pause;
 
 	delete[] aux;
 	delete[] parentA;
@@ -718,7 +718,7 @@ Chromosome Population::getSingleChromosome(int index) {
 	return population[index];
 }
 
-void Population::mateIndividuals(void) {
+void Population::mateIndividuals(Instance *inst, double muleVelocity) {
 	int numMutants = floor((size / 4.0));
 	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
 
@@ -745,6 +745,8 @@ void Population::mateIndividuals(void) {
 		// cout << "Individual " << i << " became offspring\n";
 
 		population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
+		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity));
+		cout << "\nO fit.: " << population[i].getFitness() << endl;
 		population[i].setEvaluateFlag();
 	}
 
@@ -805,6 +807,8 @@ void Population::mateModularCrossover(Instance *inst, double muleVelocity) {
 
 	SolutionStruct *matingResult = NULL;
 
+	double bestFiness = 0;
+
 	//Indexes of chromosomes to be overrided by mating result.
 	for (int i = (size - numMutants - 1); i >= (size - ceil((size / 2.0))); --i)
 	{
@@ -825,13 +829,28 @@ void Population::mateModularCrossover(Instance *inst, double muleVelocity) {
 			population[i].updateGenesSCX(matingResult[x].node, matingResult[x].key);
 		}
 
-		population[i].resetEvaluateFlag();
+		// population[i].resetEvaluateFlag();
 
-		// population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity));
+		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity));
+
+		// if (population[parentAIndex].getFitness() <= population[parentBIndex].getFitness())
+		// {
+		// 	bestFiness = population[parentAIndex].getFitness();
+		// } else {
+		// 	bestFiness = population[parentBIndex].getFitness();
+		// }
+
+		// if (population[i].getFitness() <= bestFiness)
+		// {
+		// 	population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
+		// 	population[i].setEvaluateFlag();
+		// }
 
 		// population[i].printGenes();
 
-		// cout << "\nfit.: " << population[i].getFitness() << endl;
+		// cout << "\nA fit.: " << population[parentAIndex].getFitness() << endl;
+		// cout << "\nB fit.: " << population[parentBIndex].getFitness() << endl;
+		cout << "\nO fit.: " << population[i].getFitness() << endl;
 
 		// int pause = 0;
 		// cin >> pause;
