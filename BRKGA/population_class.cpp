@@ -426,6 +426,36 @@ SolutionStruct * Population::matePairBRKGA02(Hallele *a, Hallele *b, Instance *i
 	return currentBestSol;
 }
 
+void Population::insertNewGeneAt(SolutionStruct *sol, int indexEdit, int indexAux) {
+	int tempNode = sol[indexAux].node; /* saving 10 */
+	double tempKey = sol[indexAux].key;
+	double tempDemand = sol[indexAux].demand;
+
+	for (int i = indexAux; i > indexEdit; --i)
+	{
+		sol[i].node = sol[i-1].node;
+		sol[i].key = sol[i-1].key;
+		sol[i].demand = sol[i-1].demand;
+	}
+
+	sol[indexEdit].node = tempNode;
+	sol[indexEdit].key = tempKey;
+	sol[indexEdit].demand = tempDemand;
+}
+
+int Population::findeNextSensorIndexFromSensor(SolutionStruct *sol, int sensor, int size) {
+	int index = 0;
+	for (int i = 1; i < size; ++i)
+	{
+		if (sol[i].node == sensor)
+		{
+			index = i+1;
+			break;
+		}
+	}
+	return index;
+}
+
 SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instance *inst, double muleVelocity) {
 	SolutionStruct *parentA = inst->buildSolutionStructure(a.getChromosomeAsArray());
   	SolutionStruct *parentB = inst->buildSolutionStructure(b.getChromosomeAsArray());
@@ -505,7 +535,27 @@ SolutionStruct * Population::modularCrossover(Chromosome a, Chromosome b, Instan
 	  cout << aux[y] << " ";
 	}
 
-	cin >> pause;
+	int baseNext = 0;
+	int otherParentsNext = 0;
+
+	for (int i = 1; i < population[0].getLength()-1; ++i)
+	{
+		baseNext = currentBestSol[i+1].node;
+
+		cout << "\nCurrent: " << currentBestSol[i].node << endl;
+		cout << "\nbaseNext: " << baseNext << endl;
+
+
+		if (a.getFitness() <= b.getFitness())
+		{
+			otherParentsNext = findeNextSensorIndexFromSensor(parentA, currentBestSol[i].node, population[0].getLength());
+			cout << "\nother's next: " << parentA[otherParentsNext].node << endl;
+		} else {
+			otherParentsNext = findeNextSensorIndexFromSensor(parentB, currentBestSol[i].node, population[0].getLength());
+			cout << "\nother's next: " << parentB[otherParentsNext].node << endl;
+		}
+		cin >> pause;
+	}
 	// cout << "\n=============================================\n\n";
 	// cin >> pause;
 
