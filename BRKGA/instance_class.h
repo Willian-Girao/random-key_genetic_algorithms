@@ -54,7 +54,7 @@ class Instance {
     double getNodesTRate(int index); /* Gets the transmition rate of a node indexed by 'index' */
     double getNodesDemmand(int index); /* Gets the demmand of a node indexed by 'index' */    
     double evaluateSolution(Hallele *solution, double muleVelocity); /* Set and returns the fitness value of a solution - evaluate on the problem. */
-    double evaluateLocalSearchSolution(SolutionStruct *solution, double muleVelocity, bool print);
+    double evalSolFromSolStructure(SolutionStruct *solution, double muleVelocity, bool skipDemandBreak);
     double evaluateBRKGA02Solution(SolutionStruct *solution, double muleVelocity, int sensorsOnRounte, bool print);
     void printFinalSolution(Hallele *chromosome, double muleVelocity); /*  */
     Node getNode(int index); /* Gets the representation of a node indexed by 'index' */

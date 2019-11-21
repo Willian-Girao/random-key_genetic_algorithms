@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
   int popSize = 300;
   int maxInt = 100;
   int debuggLevel = 1;
-  int totalExecutions = 10;
+  int totalExecutions = 1;
 
   bool debbug = true;
 

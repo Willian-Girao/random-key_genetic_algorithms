@@ -31,7 +31,7 @@ class Population {
 
     bool shouldCalcFitness(int index);
 
-    void localSearch(int index, double muleVelocity, Instance *inst); /* Upplies a loceal search to the chromosome 'index' */
+    // void localSearch(int index, double muleVelocity, Instance *inst); /* Upplies a loceal search to the chromosome 'index' */
 
     /* Utils */
     void printPopulation(void); /* Prints each vector of the current population. */

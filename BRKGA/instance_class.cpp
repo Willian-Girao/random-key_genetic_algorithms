@@ -762,7 +762,7 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity) {
   return fit;
 };
 
-double Instance::evaluateLocalSearchSolution(SolutionStruct *solutionInput, double muleVelocity, bool print) {
+double Instance::evalSolFromSolStructure(SolutionStruct *solutionInput, double muleVelocity, bool skipDemandBreak) {
   double totalDistance = 0.0;
   double timeElapsedServing = 0.0;
   double demandMet = 0.0;
@@ -770,7 +770,6 @@ double Instance::evaluateLocalSearchSolution(SolutionStruct *solutionInput, doub
 
   SolutionStruct *solution = new SolutionStruct[sizeC];;
 
-  // cout << "A: ";
   for (int i = 0; i < sizeC; ++i)
   {
     SolutionStruct s;
@@ -780,7 +779,6 @@ double Instance::evaluateLocalSearchSolution(SolutionStruct *solutionInput, doub
 
     solution[i] = s;
   }
-  // cout << "\n\n";
 
   for (int i = 0; i < sizeC; ++i)
   {
@@ -802,13 +800,6 @@ double Instance::evaluateLocalSearchSolution(SolutionStruct *solutionInput, doub
         double timeInJ = aeLength / muleVelocity;
         double timeLeftInJ = timeInJ; //"Workble time" left while in 'j'.
 
-        // cout << "Pair: " << nodeA << ", " << nodeB << endl;
-        // cout << "A.E. ID: " << j+1 << endl;
-        // cout << "A.E. length: " << aeLength << endl;
-        // cout << "Time in A.E.: " << timeInJ << endl;
-        // cout << "Time left in A.E.: " << timeLeftInJ << endl;
-        // cout << "Mule velocity: " << muleVelocity << endl << endl;
-
         // Getting G's nodes that can be served in 'j'.
         for (int k = 0; k < sizeC; ++k)
         {
@@ -816,8 +807,6 @@ double Instance::evaluateLocalSearchSolution(SolutionStruct *solutionInput, doub
           if (canXbeServedInAE(nodeA, nodeB, j, solution[k].node) && (timeLeftInJ > 0) && (solution[k].demand > 0))
           {
             double timeRequired = solution[k].demand / getNodesTRate(solution[k].node);
-            // cout << "Node being served: " << solution[k].node << endl;
-            // cout << "Time required to serve it: " << timeRequired << endl;
 
             if (timeRequired <= timeLeftInJ)
             {
@@ -830,12 +819,6 @@ double Instance::evaluateLocalSearchSolution(SolutionStruct *solutionInput, doub
               {
                 cout << " - WARNING 2 -\n";
               }
-
-              // cout << "Time left in A.E.: " << timeLeftInJ << endl;
-              // cout << "Sensor " << solution[k].node << " updated demand: " << solution[k].demand << endl << endl;
-
-              int pause = 0;
-              // cin >> pause;
             }
           }
         }
@@ -850,7 +833,7 @@ double Instance::evaluateLocalSearchSolution(SolutionStruct *solutionInput, doub
   }
 
   double demandLeft = 0.0;
-  for (int i = 0; i < sizeC; ++i)
+  for (int i = 1; i < sizeC; ++i)
   {
     demandLeft += solution[i].demand;
 
@@ -858,16 +841,20 @@ double Instance::evaluateLocalSearchSolution(SolutionStruct *solutionInput, doub
     {
       cout << " - WARNING 2 -\n";
     }
+
+    if (solution[i].node == 0 && skipDemandBreak)
+    {
+      break;
+    }
   }
 
   double fit = (totalDistance / muleVelocity);
   
   if ((total_demand - demandLeft) < total_demand) {
-    // cout << numeric_limits<double>::max() << "\n\n";
-    return numeric_limits<double>::max();
+    fit = numeric_limits<double>::max();
   }
 
-  // cout << fit << "\n\n";
+  delete[] solution;
 
   return fit;
 };
@@ -879,6 +866,8 @@ double Instance::evaluateBRKGA02Solution(SolutionStruct *solutionInput, double m
   int sizeC = original_nodes_n + 1;
 
   SolutionStruct *solution = new SolutionStruct[sensorsOnRounte];
+
+  // return 1.0;
 
   for (int i = 0; i < sensorsOnRounte; ++i)
   {
@@ -953,8 +942,7 @@ double Instance::evaluateBRKGA02Solution(SolutionStruct *solutionInput, double m
   double fit = (totalDistance / muleVelocity);
   
   if ((total_demand - demandLeft) < total_demand) {
-    // cout << numeric_limits<double>::max() << "\n\n";
-    return numeric_limits<double>::max();
+    fit = numeric_limits<double>::max();
   }
 
   delete[] solution;
@@ -1006,6 +994,8 @@ int Instance::checkCanInserSensor(SolutionStruct *sol, int sensor, int sensorsOn
       }
     }
   }
+
+  delete[] aux;
 
   return sensor;
 }
