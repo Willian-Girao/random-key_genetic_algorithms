@@ -66,7 +66,8 @@ class Instance {
     /* Getters - Objective function evaluation helpers | AE - Artificial Edge | BP - Between Pairs' | Values regarding metadata between two consecutive nodes */
     int getNumberOfAEBP(int main_node_index, int pair_node_index); /* Returns the number of artificial edges */
     int getAENumberNodeCanBeServed(int main_node_index, int pair_node_index, int ae_index); /* Returns the number of nodes that can be served in 'ed_index' */    
-    double getDistanceBP(int main_node_index, int pair_node_index); /* Returns the distance */    
+    double getDistanceBP(int main_node_index, int pair_node_index); /* Returns the distance */
+    double getGainAB(int A_index, int B_index); /* Returns the cost of the edge AB (total demand attended/distance travelled) - he bigger, the better.*/
     double getAExStartAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the x starting coordinate of 'ed_index' */
     double getAEyStartAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the y starting coordinate of 'ed_index' */
     double getAExEndAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the x ending coordinate of 'ed_index' */

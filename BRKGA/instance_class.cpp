@@ -571,6 +571,91 @@ double Instance::getDistanceBP(int main_node_index, int pair_node_index) {
   return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].distance;
 };
 
+/* Returns the cost of the edge AB (total demand attended/distance travelled) */
+double Instance::getGainAB(int A_index, int B_index) {
+  int aeBetween = getNumberOfAEBP(A_index, B_index);
+  double totalDistance = getDistanceBP(A_index, B_index);
+  double totalDemandAttended = 0.0;
+  int pause = 0;
+
+  cout << "A: " << A_index << ", B: " << B_index << endl;
+  cout << "AB distance: " << totalDistance << endl;
+
+  SolutionStruct *idsToServe = new SolutionStruct[original_nodes_n];
+
+  for (int i = 0; i < original_nodes_n; ++i)
+  {
+    SolutionStruct sl;
+
+    sl.node = i;
+    sl.demand = getNodesDemmand(i);
+
+    sl.key = 0; // not important here
+
+    idsToServe[i] = sl;
+  }
+
+  // Going through the artificial edges metadata ('j' is an artificial edge "id").
+  for (int j = (aeBetween-1); j >= 0; --j)
+  {
+    double aeLength = getAELength(A_index, B_index, j);
+    double timeInJ = aeLength / 0.001;                                                // set mule speed here!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    double timeLeftInJ = timeInJ; //"Workble time" left while in 'j'.
+
+    cout << "AE: " << j+1 << endl;
+    cout << "length: " << aeLength << endl;
+
+    int n_nodes_can_be_served = original_nodes[A_index].paired_with_nodes_info[B_index].edges_between_info[j].n_nodes_can_serve;
+
+    cout << "# nodes reacheble: " << n_nodes_can_be_served << endl;
+    cout << "time available in AE: " << timeInJ << endl;
+
+    for (int i = 0; i < n_nodes_can_be_served; ++i)
+    {
+      int target = original_nodes[A_index].paired_with_nodes_info[B_index].edges_between_info[j].ids_nodes_can_serve[i];
+
+      cout << "serving: " << idsToServe[target].node << endl;
+      cout << "demand: " << idsToServe[target].demand << endl;
+
+      double trate = getNodesTRate(idsToServe[target].node);
+      double timeRequired = idsToServe[target].demand / trate;
+
+      cout << "time required: " << timeRequired << endl;
+      cout << "time left in AE: " << timeLeftInJ << endl;
+
+      if (timeRequired <= timeLeftInJ && idsToServe[target].demand > 0)
+      {
+        timeLeftInJ -= timeRequired;
+        totalDemandAttended += idsToServe[target].demand;
+        idsToServe[target].demand -= idsToServe[target].demand;
+        cout << "# served #" << endl;
+      } else {
+        cout << "# not served #" << endl;
+      }
+
+      cout << "\n==============================\n";
+
+      cin >> pause;
+    }
+  }
+
+  for (int i = 0; i < original_nodes_n; ++i)
+  {
+    cout << "Node: " << idsToServe[i].node << endl;
+    cout << "Demand: " << idsToServe[i].demand << "\n\n";
+  }
+
+  cin >> pause;
+
+  double totalCost = totalDemandAttended / totalDistance;
+
+  cout << "total cost: " << totalCost << endl;
+
+  cin >> pause;
+
+  return totalCost; // The bigger, the better.
+};
+
 /* Returns the x starting coordinate of 'ed_index' */
 double Instance::getAExStartAxis(int main_node_index, int pair_node_index, int ae_index) {
   return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].start_x_axis;

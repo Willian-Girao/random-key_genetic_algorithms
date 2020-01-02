@@ -162,33 +162,34 @@ Hallele * Population::matePair004(Hallele *a, double aFitness, Hallele *b, doubl
   for (int i = 1; i < population[0].getLength(); ++i)
   {
   	offspring[i].index = i;
+  	offspring[i].key = a[i].key;
   }
   offspring[population[0].getLength()-1].index = 0;
 
-  for (int i = 1; i < population[0].getLength(); i++)
-  {
-  	//Crossover gives priority to the parent with the best fitness value
-    if (aFitness <= bFitness) //Parent 'a' has better fitness - biasing coin toss towards 'a'
-    {
-    	prob = ((double) rand() / RAND_MAX);
+  // for (int i = 1; i < population[0].getLength(); i++)
+  // {
+  // 	//Crossover gives priority to the parent with the best fitness value
+  //   if (aFitness <= bFitness) //Parent 'a' has better fitness - biasing coin toss towards 'a'
+  //   {
+  //   	prob = ((double) rand() / RAND_MAX);
 
-    	if (prob <= 0.7) //Parent 'a' won coin toss
-    	{
-	    	offspring[i].key = a[i].key;
-	    } else { //Parent 'b' won coin toss
-		    offspring[i].key = b[i].key;
-	    }
-    } else { //Parent 'b' has better fitness - biasing coin toss towards 'b'
-    	prob = ((double) rand() / RAND_MAX);
+  //   	if (prob <= 0.7) //Parent 'a' won coin toss
+  //   	{
+	 //    	offspring[i].key = a[i].key;
+	 //    } else { //Parent 'b' won coin toss
+		//     offspring[i].key = b[i].key;
+	 //    }
+  //   } else { //Parent 'b' has better fitness - biasing coin toss towards 'b'
+  //   	prob = ((double) rand() / RAND_MAX);
 
-    	if (prob <= 0.7) //Parent 'b' won coin toss
-    	{
-	    	offspring[i].key = b[i].key;
-	    } else { //Parent 'a' won coin toss
-		    offspring[i].key = a[i].key;
-	    }
-    }
-  }
+  //   	if (prob <= 0.7) //Parent 'b' won coin toss
+  //   	{
+	 //    	offspring[i].key = b[i].key;
+	 //    } else { //Parent 'a' won coin toss
+		//     offspring[i].key = a[i].key;
+	 //    }
+  //   }
+  // }
 
   double aFit = 0.0;
   double bFit = 0.0;
