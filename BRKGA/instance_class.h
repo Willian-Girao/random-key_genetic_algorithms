@@ -60,6 +60,7 @@ class Instance {
     Node getNode(int index); /* Gets the representation of a node indexed by 'index' */
     Node getBaseStation(); /* Gets the representation of the base station */
     SolutionStruct * buildSolutionStructure(Hallele *chromosome); /* Interface between RKGA solution vector and DMSP structure - Mr. Pablo's modeling based. */
+    int findFinalBSIndex(SolutionStruct *solution);
     int checkCanInserSensor(SolutionStruct *sol, int sensor, int sensorsOnRoute);
     int findNextSensorOnRoute(SolutionStruct *sol, int sensor);
     

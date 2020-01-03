@@ -50,9 +50,9 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   //Calculating instance demand.
   inst.setTotalDemand();
 
-  int pause = 0;
-  inst.getGainAB(0, 3);
-  cin >> pause;
+  // int pause = 0;
+  // inst.getGainAB(0, 3);
+  // cin >> pause;
 
   clock_t time;
   time = clock();
