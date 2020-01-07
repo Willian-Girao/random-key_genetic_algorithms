@@ -732,6 +732,21 @@ int Instance::findFinalBSIndex(SolutionStruct *solution) {
   return index;
 }
 
+int Instance::findAXFromA(SolutionStruct *solution, int a) {
+  int next = -1;
+
+  for (int i = 1; i < (original_nodes_n + 1); ++i)
+  {
+    if (solution[i].node == a && i <= (original_nodes_n - 1))
+    {
+      next = solution[i+1].node;
+      break;
+    }
+  }
+
+  return next;
+}
+
 // 'ae' stands for Artificial Edge.
 double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity, double skipeBSCheck) {
   double totalDistance = 0.0;
@@ -749,9 +764,7 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity, doub
   //Building solution structure array.
   SolutionStruct *solution = buildSolutionStructure(chromosome);
 
-  int index = findFinalBSIndex(solution);
-  cout << "(last commit) Index of final BS: " << index << "\n";
-  cin >> index;
+  int index = findAXFromA(solution, 1);
 
   if (solution[1].node == 0 && !skipeBSCheck)
   {
