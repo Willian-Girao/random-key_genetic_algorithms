@@ -578,8 +578,8 @@ double Instance::getGainAB(int A_index, int B_index) {
   double totalDemandAttended = 0.0;
   int pause = 0;
 
-  cout << "A: " << A_index << ", B: " << B_index << endl;
-  cout << "AB distance: " << totalDistance << endl;
+  // cout << "[ A: " << A_index << ", B: " << B_index << " ]" << endl;
+  // cout << "AB distance: " << totalDistance << endl;
 
   SolutionStruct *idsToServe = new SolutionStruct[original_nodes_n];
 
@@ -602,56 +602,56 @@ double Instance::getGainAB(int A_index, int B_index) {
     double timeInJ = aeLength / 0.001;                                                // set mule speed here!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     double timeLeftInJ = timeInJ; //"Workble time" left while in 'j'.
 
-    cout << "AE: " << j+1 << endl;
-    cout << "length: " << aeLength << endl;
+    // cout << "AE: " << j+1 << endl;
+    // cout << "length: " << aeLength << endl;
 
     int n_nodes_can_be_served = original_nodes[A_index].paired_with_nodes_info[B_index].edges_between_info[j].n_nodes_can_serve;
 
-    cout << "# nodes reacheble: " << n_nodes_can_be_served << endl;
-    cout << "time available in AE: " << timeInJ << endl;
+    // cout << "# nodes reacheble: " << n_nodes_can_be_served << endl;
+    // cout << "time available in AE: " << timeInJ << endl;
 
     for (int i = 0; i < n_nodes_can_be_served; ++i)
     {
       int target = original_nodes[A_index].paired_with_nodes_info[B_index].edges_between_info[j].ids_nodes_can_serve[i];
 
-      cout << "serving: " << idsToServe[target].node << endl;
-      cout << "demand: " << idsToServe[target].demand << endl;
+      // cout << "serving: " << idsToServe[target].node << endl;
+      // cout << "demand: " << idsToServe[target].demand << endl;
 
       double trate = getNodesTRate(idsToServe[target].node);
       double timeRequired = idsToServe[target].demand / trate;
 
-      cout << "time required: " << timeRequired << endl;
-      cout << "time left in AE: " << timeLeftInJ << endl;
+      // cout << "time required: " << timeRequired << endl;
+      // cout << "time left in AE: " << timeLeftInJ << endl;
 
       if (timeRequired <= timeLeftInJ && idsToServe[target].demand > 0)
       {
         timeLeftInJ -= timeRequired;
         totalDemandAttended += idsToServe[target].demand;
         idsToServe[target].demand -= idsToServe[target].demand;
-        cout << "# served #" << endl;
+        // cout << "# served #" << endl;
       } else {
-        cout << "# not served #" << endl;
+        // cout << "# not served #" << endl;
       }
 
-      cout << "\n==============================\n";
+      // cout << "\n==============================\n";
 
-      cin >> pause;
+      // cin >> pause;
     }
   }
 
-  for (int i = 0; i < original_nodes_n; ++i)
-  {
-    cout << "Node: " << idsToServe[i].node << endl;
-    cout << "Demand: " << idsToServe[i].demand << "\n\n";
-  }
-
-  cin >> pause;
+  // for (int i = 0; i < original_nodes_n; ++i)
+  // {
+  //   cout << "Node: " << idsToServe[i].node << endl;
+  //   cout << "Demand: " << idsToServe[i].demand << "\n\n";
+  // }
+  //
+  // cin >> pause;
 
   double totalCost = totalDemandAttended / totalDistance;
 
-  cout << "total cost: " << totalCost << endl;
-
-  cin >> pause;
+  // cout << "total cost: " << totalCost << endl;
+  //
+  // cin >> pause;
 
   return totalCost; // The bigger, the better.
 };

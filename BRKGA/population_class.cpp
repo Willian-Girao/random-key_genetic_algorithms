@@ -848,6 +848,8 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
 	int indexStartRand = size - ceil((size / 2.0));
 	int indexEndRand = size - 1;
 
+  int pause = 0;
+
 	//Indexes of chromosomes to be overrided by mating result.
 	for (int i = (size - numMutants - 1); i >= (size - ceil((size / 2.0))); --i)
 	{
@@ -862,17 +864,22 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
     // get parents as solution structure (sorted array)
     SolutionStruct *a = inst->buildSolutionStructure(population[parentAIndex].getChromosomeAsArray());
     SolutionStruct *b = inst->buildSolutionStructure(population[parentBIndex].getChromosomeAsArray());
+    SolutionStruct *child = new SolutionStruct[population[0].getLength()];
+
+    child[0].node = 0;
+    child[0].demand = 0.0;
+    child[0].key = 0.0;
 
     cout << endl;
     for (int x = 0; x < population[0].getLength(); x++) {
       cout << a[x].node << " (" << a[x].key << ") ";
     }
-    cout << " - " << population[parentAIndex].getFitness();
+    cout << " { " << population[parentAIndex].getFitness();
     cout << endl;
     for (int x = 0; x < population[0].getLength(); x++) {
       cout << b[x].node << " (" << b[x].key << ") ";
     }
-    cout << " - " << population[parentBIndex].getFitness();
+    cout << " { " << population[parentBIndex].getFitness();
     cout << endl;
 
     // get final BS positions
@@ -885,8 +892,60 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
     cout << "\nA invalid: " << inst->isInvalidSolution(population[parentAIndex].getFitness()) << endl;
     cout << "B invalid: " << inst->isInvalidSolution(population[parentBIndex].getFitness()) << endl;
 
-    int pause = 0;
-    cin >> pause;
+    cout << "\n--------------------\n" << endl;
+
+    // decide 1st sensor to go
+    double aGain = inst->getGainAB(0, a[1].node);
+    double bGain = inst->getGainAB(0, b[1].node);
+
+    cout << "\nleaving from: " << 0 << endl;
+    cout << "considering A: " << a[1].node << endl;
+    cout << "considering B: " << b[1].node << endl;
+
+    cout << "\nA gain: " << aGain << endl;
+    cout << "B gain: " << bGain << endl;
+
+    // updating 1st sensor to go
+    if (aGain > bGain) {
+      child[1].node = a[1].node;
+      child[1].demand = a[1].demand;
+    } else {
+      child[1].node = b[1].node;
+      child[1].demand = b[1].demand;
+    }
+    child[1].key = a[1].key; // doesn't matter which parent gives the key
+
+    cout << "\n--------------------\n" << endl;
+    int aNext = 0;
+    int bNext = 0;
+    // deciding rest of sensors to go
+    for (int x = 2; x < population[0].getLength(); x++) {
+      aNext = inst->findAXFromA(a, child[x-1].node);
+      bNext = inst->findAXFromA(b, child[x-1].node);
+
+      cout << "\nleaving from: " << child[x-1].node << endl;
+      cout << "considering A: " << aNext << endl;
+      cout << "considering B: " << bNext << endl;
+
+      aGain = inst->getGainAB(child[x-1].node, aNext);
+      bGain = inst->getGainAB(child[x-1].node, bNext);
+
+      cout << "A gain: " << aGain << endl;
+      cout << "B gain: " << bGain << endl;
+
+      // updating x-th sensor to go
+      if (aGain > bGain) {
+        child[x].node = aNext;
+        child[x].demand = inst->getNodesDemmand(aNext);
+      } else {
+        child[x].node = bNext;
+        child[x].demand = inst->getNodesDemmand(bNext);
+      }
+      child[x].key = a[x].key;
+
+      cout << "\n--------------------\n" << endl;
+      cin >> pause;
+    }
 
     // int index = findAXFromA(solution, 1);
     //
