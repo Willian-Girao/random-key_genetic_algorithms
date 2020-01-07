@@ -94,7 +94,9 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       // pop.introduceMutants(); /* Standard BRKGA mutation */
 
       //Complete with offspring.
-      pop.mateIndividuals(&inst, muleSpeed);
+      // pop.mateIndividuals(&inst, muleSpeed);
+      pop.mateSequentialNew(&inst, muleSpeed);
+
       // pop.mateBRKGA02(&inst, muleSpeed);
       // pop.mateModularCrossover(&inst, muleSpeed);
 
@@ -113,7 +115,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
     //Local Search
     // double pBest = pop.getSingleChromosome(0).getFitness();
-    // while (genWithoutImprov < 50) 
+    // while (genWithoutImprov < 50)
     // {
     //   pop.localSearch(0, muleSpeed, &inst);
 
@@ -133,7 +135,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     // inst.printFinalSolution(pop.getSingleChromosome(0).getChromosomeAsArray(), muleSpeed);
     cout << "\nFitness: " << setprecision(10) << pop.getSingleChromosome(0).getFitness() << endl;
 
-    // //Calculating total time taken by the program. 
+    // //Calculating total time taken by the program.
     double elapsed = 0.0;
 
     if (timeFormat == "ms") {

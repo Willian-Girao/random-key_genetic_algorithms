@@ -40,7 +40,7 @@ int Population::partition(Chromosome *array, int low, int high) {
 	for (int i = low; i <= (high - 1); ++i)
 	{
 		if (array[i].getFitness() <= pivot)
-		{			
+		{
 			sml++;
 			swap(&array[sml], &array[i]);
 		}
@@ -84,7 +84,7 @@ Hallele * Population::matePair(Hallele *a, double aFitness, Hallele *b, double b
   int lowestKeySensor = 0;
   int lowestKeyIndex = 1;
 
-  for (int i = 1; i < population[0].getLength(); i++) 
+  for (int i = 1; i < population[0].getLength(); i++)
   {
   	//Crossover gives priority to the parent with the best fitness value
     if (aFitness <= bFitness) //Parent 'a' has better fitness - biasing coin toss towards 'a'
@@ -349,7 +349,7 @@ SolutionStruct * Population::matePairBRKGA02(Hallele *a, Hallele *b, Instance *i
     int tempSensorIdHolder = 0;
 
     /* completing rest of legitimate nodes */
-	for (int i = 2; i < population[0].getLength(); i++) 
+	for (int i = 2; i < population[0].getLength(); i++)
 	{
 		// cout << "\nOffspring: ";
 		// for (int y = 0; y < i+1; ++y)
@@ -783,7 +783,7 @@ void Population::mutationBRKGA01(double mutationChoiceProb, double mutationBRKGA
 	while(endIndex > 0)
 	{
 		prob = ((double) rand() / RAND_MAX);
-		
+
 		if (prob <= mutationChoiceProb)
 		{
 			population[index].resetChromosome();
@@ -833,6 +833,88 @@ void Population::mateIndividuals(Instance *inst, double muleVelocity) {
 		// population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
 		population[i].setResetGenes(matePair004(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness(), inst, muleVelocity));
 		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
+		// cout << "\nO fit.: " << population[i].getFitness() << endl;
+		population[i].setEvaluateFlag();
+	}
+
+	// int a;
+	// cin >> a;
+}
+
+void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
+	int numMutants = floor((size / 4.0));
+	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
+
+	int indexStartRand = size - ceil((size / 2.0));
+	int indexEndRand = size - 1;
+
+	//Indexes of chromosomes to be overrided by mating result.
+	for (int i = (size - numMutants - 1); i >= (size - ceil((size / 2.0))); --i)
+	{
+		int parentAIndex = rand() % (size / 2);
+		int parentBIndex = rand() % (size / 2);
+
+		while(parentBIndex == parentAIndex) {
+			parentBIndex = rand() % (size / 2);
+		}
+
+    /* ======================= make sequential mutation here ======================= */
+    // get parents as solution structure (sorted array)
+    SolutionStruct *a = inst->buildSolutionStructure(population[parentAIndex].getChromosomeAsArray());
+    SolutionStruct *b = inst->buildSolutionStructure(population[parentBIndex].getChromosomeAsArray());
+
+    cout << endl;
+    for (int x = 0; x < population[0].getLength(); x++) {
+      cout << a[x].node << " (" << a[x].key << ") ";
+    }
+    cout << " - " << population[parentAIndex].getFitness();
+    cout << endl;
+    for (int x = 0; x < population[0].getLength(); x++) {
+      cout << b[x].node << " (" << b[x].key << ") ";
+    }
+    cout << " - " << population[parentBIndex].getFitness();
+    cout << endl;
+
+    // get final BS positions
+    int aFBS = inst->findFinalBSIndex(a);
+    int bFBS = inst->findFinalBSIndex(b);
+
+    cout << "\nA final station at: " << aFBS << endl;
+    cout << "B final station at: " << bFBS << endl;
+
+    cout << "\nA invalid: " << inst->isInvalidSolution(population[parentAIndex].getFitness()) << endl;
+    cout << "B invalid: " << inst->isInvalidSolution(population[parentBIndex].getFitness()) << endl;
+
+    int pause = 0;
+    cin >> pause;
+
+    // int index = findAXFromA(solution, 1);
+    //
+    // population[parentAIndex].getFitness()
+    //
+    // population[parentBIndex].getFitness()
+    //
+    // Hallele *offspring = new Hallele[population[0].getLength()];
+    //
+    // //Initializing offspring
+    // offspring[0].index = 0;
+    // offspring[0].key = 0.0;
+    // for (int i = 1; i < population[0].getLength(); ++i)
+    // {
+    // 	offspring[i].index = i;
+    // }
+    // offspring[population[0].getLength()-1].index = 0;
+    //
+    // for (int x = 0; x < count; x++) {
+    //   for (int y = 0; y < count; y++) {
+    //     /* code */
+    //   }
+    // }
+    /* ============================================================================= */
+
+		// population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
+		// population[i].setResetGenes(matePair004(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness(), inst, muleVelocity));
+		// population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
 		// cout << "\nO fit.: " << population[i].getFitness() << endl;
 		population[i].setEvaluateFlag();
 	}
@@ -960,11 +1042,11 @@ void Population::resetInvalidSolutions(void) {
 
 // void Population::localSearch(int index, double muleVelocity, Instance *inst) {
 // 	SolutionStruct *solutionAux = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
-	
+
 // 	double inputSolFitness = population[index].getFitness();
 // 	double newSolFitness = -1.0;
 // 	double auxSolFitness = -1.0;
-	
+
 // 	int solLenghth = population[index].getLength();
 // 	int Kmax = 3;
 // 	int neighborhoodStructure = -1; /* Randomly selects what neighborhood structure to use */
@@ -996,7 +1078,7 @@ void Population::resetInvalidSolutions(void) {
 // 				solutionAux = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
 // 				// neighborhoodStructure = rand() % 3;
 // 				neighborhoodStructure += 1;
-// 			} 
+// 			}
 // 		}
 
 // 		if (newSolFitness >= auxSolFitness)

@@ -52,7 +52,7 @@ class Instance {
     double getNodesY(int index); /* Gets the y coordinate of a node indexed by 'index' */
     double getNodesCRange(int index); /* Gets the communication rang of a node indexed by 'index' */
     double getNodesTRate(int index); /* Gets the transmition rate of a node indexed by 'index' */
-    double getNodesDemmand(int index); /* Gets the demmand of a node indexed by 'index' */    
+    double getNodesDemmand(int index); /* Gets the demmand of a node indexed by 'index' */
     double evaluateSolution(Hallele *solution, double muleVelocity, double skipeBSCheck); /* Set and returns the fitness value of a solution - evaluate on the problem. */
     double evalSolFromSolStructure(SolutionStruct *solution, double muleVelocity, bool skipDemandBreak);
     double evaluateBRKGA02Solution(SolutionStruct *solution, double muleVelocity, int sensorsOnRounte, bool skipDemandBreak);
@@ -60,22 +60,25 @@ class Instance {
     Node getNode(int index); /* Gets the representation of a node indexed by 'index' */
     Node getBaseStation(); /* Gets the representation of the base station */
     SolutionStruct * buildSolutionStructure(Hallele *chromosome); /* Interface between RKGA solution vector and DMSP structure - Mr. Pablo's modeling based. */
-    int findFinalBSIndex(SolutionStruct *solution);
-    int findAXFromA(SolutionStruct *solution, int a);
     int checkCanInserSensor(SolutionStruct *sol, int sensor, int sensorsOnRoute);
     int findNextSensorOnRoute(SolutionStruct *sol, int sensor);
-    
+
     /* Getters - Objective function evaluation helpers | AE - Artificial Edge | BP - Between Pairs' | Values regarding metadata between two consecutive nodes */
     int getNumberOfAEBP(int main_node_index, int pair_node_index); /* Returns the number of artificial edges */
-    int getAENumberNodeCanBeServed(int main_node_index, int pair_node_index, int ae_index); /* Returns the number of nodes that can be served in 'ed_index' */    
+    int getAENumberNodeCanBeServed(int main_node_index, int pair_node_index, int ae_index); /* Returns the number of nodes that can be served in 'ed_index' */
     double getDistanceBP(int main_node_index, int pair_node_index); /* Returns the distance */
-    double getGainAB(int A_index, int B_index); /* Returns the cost of the edge AB (total demand attended/distance travelled) - he bigger, the better.*/
     double getAExStartAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the x starting coordinate of 'ed_index' */
     double getAEyStartAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the y starting coordinate of 'ed_index' */
     double getAExEndAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the x ending coordinate of 'ed_index' */
     double getAEyEndAxis(int main_node_index, int pair_node_index, int ae_index); /* Returns the y ending coordinate of 'ed_index' */
     double getAELength(int main_node_index, int pair_node_index, int ae_index); /* Returns the length of 'ed_index' */
     bool canXbeServedInAE(int main_node_index, int pair_node_index, int ae_index, int x); /* Returns true if 'x' can be served in 'ed_index' - false otherwise */
+
+    /* Mating New */
+    double getGainAB(int A_index, int B_index); /* Returns the cost of the edge AB (total demand attended/distance travelled) - the bigger, the better.*/
+    int findFinalBSIndex(SolutionStruct *solution);
+    int findAXFromA(SolutionStruct *solution, int a);
+    bool isInvalidSolution(double fitness);
 
     /* Setters */
     /* Sets number of possible speeds to be used */
@@ -108,11 +111,11 @@ class Instance {
     void resetIdsCanbeServed(int main_node_index, int pair_node_index, int value, int artificial_edge_pointer_index_counter);
     void setTotalDemand();
 
-    /* Helpers */    
-    void printNode(int index); /* Prints the informations of a node indexed by 'index' */    
-    void printSpeeds(void); /* Prints the allowed speed's values */    
-    void printInstanceMetadata(void); /* Prints all the metadata associated with the graph */    
-    void pauseExecution(int line, string str); /* Pauses the execution of the program for debbuging purposes */    
+    /* Helpers */
+    void printNode(int index); /* Prints the informations of a node indexed by 'index' */
+    void printSpeeds(void); /* Prints the allowed speed's values */
+    void printInstanceMetadata(void); /* Prints all the metadata associated with the graph */
+    void pauseExecution(int line, string str); /* Pauses the execution of the program for debbuging purposes */
     void printPairsRelatedInfo(void); /* Prints all the metadata associated all pairs of original nodes */
 
   private:

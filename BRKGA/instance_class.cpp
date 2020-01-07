@@ -14,7 +14,7 @@ using namespace std;
 Instance::Instance() {}
 
 Instance::~Instance() {
-  delete []speeds;  
+  delete []speeds;
   // delete []original_nodes->paired_with_nodes_info->edges_between_info->ids_nodes_can_serve;
   // delete []original_nodes->paired_with_nodes_info->edges_between_info;
   // delete []original_nodes->paired_with_nodes_info;
@@ -47,7 +47,7 @@ void Instance::resetEdgesBetweenInfo(int main_node_index, int pair_node_index, i
     artificial_edge_k.n_nodes_can_serve = original_nodes_n;
 
     // Setting temporary ids that can be served
-    artificial_edge_k.ids_nodes_can_serve = new int[original_nodes_n];        
+    artificial_edge_k.ids_nodes_can_serve = new int[original_nodes_n];
     for (int l = 0; l < original_nodes_n; ++l)
     {
       artificial_edge_k.ids_nodes_can_serve[l] = -1;
@@ -82,7 +82,7 @@ void Instance::setOriginalNodesNumber(int orig_nodes_n) {
     node_i.x_axis = -1.0;
     node_i.y_axis = -1.0;
     node_i.c_range = -1.0;
-    node_i.t_rate = -1.0; 
+    node_i.t_rate = -1.0;
     node_i.demmand = -1.0;
 
     // Setting node->pair structures
@@ -110,7 +110,7 @@ void Instance::setOriginalNodesNumber(int orig_nodes_n) {
         artificial_edge_k.n_nodes_can_serve = original_nodes_n;
 
         // Setting temporary ids that can be served
-        artificial_edge_k.ids_nodes_can_serve = new int[original_nodes_n];        
+        artificial_edge_k.ids_nodes_can_serve = new int[original_nodes_n];
         for (int l = 0; l < original_nodes_n; ++l)
         {
           artificial_edge_k.ids_nodes_can_serve[l] = -1;
@@ -260,7 +260,7 @@ void Instance::setNode(int index, double x, double y, double c_range, double t_r
   (*(original_nodes + index)).x_axis = x;
   (*(original_nodes + index)).y_axis = y;
   (*(original_nodes + index)).c_range = c_range;
-  (*(original_nodes + index)).t_rate = t_rate; 
+  (*(original_nodes + index)).t_rate = t_rate;
   (*(original_nodes + index)).demmand = demmand;
 
   return;
@@ -331,7 +331,7 @@ void Instance::printInstanceMetadata(void) {
   cout << "\nOriginal nodes: " << original_nodes_n << endl;
   cout << "Total nodes: " << total_nodes_n << endl;
   cout << "Number of speeds: " << speeds_n << endl;
-  
+
   cout << "Speeds values: ";
   for (int i = 0; i < speeds_n; ++i)
   {
@@ -361,11 +361,11 @@ int Instance::getNumberOfOriginalNodes(void) {
 }
 
 /* Sets up information associated to a pair of nodes in the file - [int main_node_id, int pair_node_id, double distance, int artificial_edges_between] */
-void Instance::setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, bool &done) {  
+void Instance::setNodePair(int value_index, double value, int &main_node_index, int &pair_node_index, bool &is_parsing_artificial_info, int &artifial_edge_info_counter, bool &done) {
   switch(value_index) {
     case 0 :
       // ID of the current main node of the pair - should be equal to 'main_node_index'
-      main_node_index = int(value);      
+      main_node_index = int(value);
       break;
     case 1 :
       // ID of the node being paired with the main node - should be equal to 'pair_node_index'
@@ -379,19 +379,19 @@ void Instance::setNodePair(int value_index, double value, int &main_node_index, 
     case 3 :
       // Number of artificial edges (segments of the original edge) between the two nodes
       original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].n_edges_between = int(value); // Setting number of artificial edges (segmentation of an original edge)
-      
+
       resetEdgesBetweenInfo(main_node_index, pair_node_index, int(value)); // Initializing data struct to hold information regarding to artificial edges (segmented due to the presence of an artidial vertex)
 
       if (int(value) > 0) // There is information regarding the artificial edges to be processed
       {
-        is_parsing_artificial_info = true;        
-      } else 
+        is_parsing_artificial_info = true;
+      } else
       {
         // There is no artificial edge information -> no change in the line controlling parameters required
       }
       if (main_node_index == (getNumberOfOriginalNodes()-1) && pair_node_index == (getNumberOfOriginalNodes()-1))
       {
-        done = true;        
+        done = true;
       }
       artifial_edge_info_counter = int(value); // Value will be decreased while parsing artificial info in order to know the list positioning of the i-th artificial edge data
       break;
@@ -483,7 +483,7 @@ void Instance::setNodePairEdgeData(int value_index, double value, int &main_node
         {
           // There are no nodes that can be served while in this edge
         }
-        
+
         // "Label" of the current artificial edge being processed
         int current_artificial_edge_label = original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[artificial_edge_pointer_index_counter].edge_label;
         // Total of artificial edges that must be processed
@@ -495,7 +495,7 @@ void Instance::setNodePairEdgeData(int value_index, double value, int &main_node
         //    1 - current artificial edge being processed can't serve no original node
         //    2 - i have already processed all the ids of the nodes that can be served in this edge
         if ((nodes_can_be_served_counter == 0) && is_last_artificial_edge)
-        {       
+        {
           // Not parsing segmented edge information anymore
           is_parsing_artificial_info = false;
         } else if (nodes_can_be_served_counter == 0)
@@ -505,7 +505,7 @@ void Instance::setNodePairEdgeData(int value_index, double value, int &main_node
         } else
         {
           // There are still ids of nodes that can be served to be parsed - do nothing here
-        }        
+        }
       }
       break;
   }
@@ -566,7 +566,7 @@ int Instance::getAENumberNodeCanBeServed(int main_node_index, int pair_node_inde
   return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].n_nodes_can_serve;
 };
 
-/* Returns the distance */    
+/* Returns the distance */
 double Instance::getDistanceBP(int main_node_index, int pair_node_index) {
   return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].distance;
 };
@@ -659,27 +659,27 @@ double Instance::getGainAB(int A_index, int B_index) {
 /* Returns the x starting coordinate of 'ed_index' */
 double Instance::getAExStartAxis(int main_node_index, int pair_node_index, int ae_index) {
   return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].start_x_axis;
-}; 
+};
 
 /* Returns the y starting coordinate of 'ed_index' */
 double Instance::getAEyStartAxis(int main_node_index, int pair_node_index, int ae_index) {
   return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].start_y_axis;
-}; 
+};
 
 /* Returns the x ending coordinate of 'ed_index' */
 double Instance::getAExEndAxis(int main_node_index, int pair_node_index, int ae_index) {
   return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].end_x_axis;
-}; 
+};
 
 /* Returns the y ending coordinate of 'ed_index' */
 double Instance::getAEyEndAxis(int main_node_index, int pair_node_index, int ae_index) {
   return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].end_y_axis;
-}; 
+};
 
 /* Returns the length of 'ed_index' */
 double Instance::getAELength(int main_node_index, int pair_node_index, int ae_index) {
   return original_nodes[main_node_index].paired_with_nodes_info[pair_node_index].edges_between_info[ae_index].length;
-}; 
+};
 
 /* Returns true if 'x' can be served in 'ed_index' - false otherwise */
 bool Instance::canXbeServedInAE(int main_node_index, int pair_node_index, int ae_index, int x) {
@@ -747,6 +747,13 @@ int Instance::findAXFromA(SolutionStruct *solution, int a) {
   return next;
 }
 
+bool Instance::isInvalidSolution(double fitness) {
+  if (fitness == numeric_limits<double>::max()) {
+    return true;
+  }
+  return false;
+}
+
 // 'ae' stands for Artificial Edge.
 double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity, double skipeBSCheck) {
   double totalDistance = 0.0;
@@ -805,7 +812,7 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity, doub
       // Going through the artificial edges metadata ('j' is an artificial edge "id").
       for (int j = (aeBetween-1); j >= 0; --j)
       {
-        int countAux = 0;        
+        int countAux = 0;
         int numNodesCanServe = getAENumberNodeCanBeServed(nodeA, nodeB, j);
         double aeLength = getAELength(nodeA, nodeB, j);
         double timeInJ = aeLength / muleVelocity;
@@ -870,7 +877,7 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity, doub
   }
 
   double fit = (totalDistance / muleVelocity);
-  
+
   if ((total_demand - demandLeft) < total_demand) {
     // cout << numeric_limits<double>::max() << "\n\n";
     return numeric_limits<double>::max();
@@ -913,7 +920,7 @@ double Instance::evalSolFromSolStructure(SolutionStruct *solutionInput, double m
       // Going through the artificial edges metadata ('j' is an artificial edge "id").
       for (int j = (aeBetween-1); j >= 0; --j)
       {
-        int countAux = 0;        
+        int countAux = 0;
         int numNodesCanServe = getAENumberNodeCanBeServed(nodeA, nodeB, j);
         double aeLength = getAELength(nodeA, nodeB, j);
         double timeInJ = aeLength / muleVelocity;
@@ -968,7 +975,7 @@ double Instance::evalSolFromSolStructure(SolutionStruct *solutionInput, double m
   }
 
   double fit = (totalDistance / muleVelocity);
-  
+
   if ((total_demand - demandLeft) < total_demand) {
     fit = numeric_limits<double>::max();
   }
@@ -1009,7 +1016,7 @@ double Instance::evaluateBRKGA02Solution(SolutionStruct *solutionInput, double m
       // Going through the artificial edges metadata ('j' is an artificial edge "id").
       for (int j = (aeBetween-1); j >= 0; --j)
       {
-        int countAux = 0;        
+        int countAux = 0;
         int numNodesCanServe = getAENumberNodeCanBeServed(nodeA, nodeB, j);
         double aeLength = getAELength(nodeA, nodeB, j);
         double timeInJ = aeLength / muleVelocity;
@@ -1059,7 +1066,7 @@ double Instance::evaluateBRKGA02Solution(SolutionStruct *solutionInput, double m
   }
 
   double fit = (totalDistance / muleVelocity);
-  
+
   if ((total_demand - demandLeft) < total_demand) {
     if (!skipDemandBreak)
     {
@@ -1097,7 +1104,7 @@ int Instance::checkCanInserSensor(SolutionStruct *sol, int sensor, int sensorsOn
       }
     }
 
-    // check if it was used already 
+    // check if it was used already
     if (sol[i].node == sensor)
     {
       canInsert = false;
@@ -1175,7 +1182,7 @@ void Instance::printFinalSolution(Hallele *chromosome, double muleVelocity) {
       // Going through the artificial edges metadata ('j' is an artificial edge "id").
       for (int j = (aeBetween-1); j >= 0; --j)
       {
-        int countAux = 0;        
+        int countAux = 0;
         int numNodesCanServe = getAENumberNodeCanBeServed(nodeA, nodeB, j);
         double aeLength = getAELength(nodeA, nodeB, j);
         double timeInJ = aeLength / muleVelocity;
