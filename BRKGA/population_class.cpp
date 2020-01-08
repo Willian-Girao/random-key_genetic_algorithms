@@ -1055,17 +1055,19 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
     }
 
     double newFit = inst->evalSolFromSolStructure(child, muleVelocity, false);
-    cout << "[c] - ";
-    for (int x = 0; x < solVecSize; x++) {
-      cout << child[x].node << " (" << child[x].demand << ") ";
-    }
-    cout << " { " << newFit << endl;
-
     bool isChildInvalid = inst->isInvalidSolution(newFit);
 
+    // cout << "[c] - ";
+    // for (int x = 0; x < solVecSize; x++) {
+    //   cout << child[x].node << " (" << child[x].demand << ") ";
+    // }
+    // cout << " { " << newFit << endl;
+
     if (isChildInvalid && childFBS < (solVecSize-1)) {
-      cout << "\nc is invalid\n";
-      cout << "c FBS: " << childFBS << endl;
+      // cout << "\nc is invalid\n";
+      // cout << "c FBS: " << childFBS << endl;
+
+      // utils_pause();
 
       int auxNode = 0;
       double auxDemand = 0.0;
@@ -1087,9 +1089,56 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
         isChildInvalid = inst->isInvalidSolution(newFit);
         childFBS++;
       }
+    } else if (!isHFBSInvalid) {
+      bool improvement = true;
+      int auxNode = 0;
+      double auxDemand = 0.0;
+      double fit = 0.0;
+
+      // cout << "\nc room for improvement\n";
+      // cout << "c FBS: " << childFBS << endl;
+
+      // utils_pause();
+
+      // try to fit FBS a position behind
+      while (improvement && childFBS > 2) {
+        // temp saving node right before current FBS position
+        auxNode = child[childFBS-1].node;
+        auxDemand = child[childFBS-1].demand;
+
+        // swaping FBS with next position
+        child[childFBS-1].node = 0;
+        child[childFBS-1].demand = 0.0;
+
+        child[childFBS].node = auxNode;
+        child[childFBS].demand = auxDemand;
+
+        // reevaluating
+        fit = inst->evalSolFromSolStructure(child, muleVelocity, false);
+        improvement = !inst->isInvalidSolution(fit);
+
+        if (improvement) {
+          // cout << "\n[ improved ]";
+          childFBS--;
+        } else {
+          // cout << "\n[ no improvement ] { ";
+          // cout << "\n[c'] - ";
+          // for (int x = 0; x < solVecSize; x++) {
+          //   cout << child[x].node << " (" << child[x].demand << ") ";
+          // }
+          // cout << " { " << fit << endl;
+
+          // undo previous swap
+          child[childFBS-1].node = auxNode;
+          child[childFBS-1].demand = auxDemand;
+
+          child[childFBS].node = 0;
+          child[childFBS].demand = 0.0;
+        }
+      }
     }
 
-    cout << "\n[c'] - ";
+    cout << "[c] - ";
     for (int x = 0; x < solVecSize; x++) {
       cout << child[x].node << " (" << child[x].demand << ") ";
     }
