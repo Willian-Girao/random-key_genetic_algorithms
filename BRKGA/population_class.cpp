@@ -891,13 +891,15 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
     child[0].key = 0.0;
 
     cout << endl;
+    cout << "[a] - ";
     for (int x = 0; x < population[0].getLength(); x++) {
-      cout << a[x].node << " (" << a[x].key << ") ";
+      cout << a[x].node << " (" << a[x].demand << ") ";
     }
     cout << " { " << population[parentAIndex].getFitness();
     cout << endl;
+    cout << "[b] - ";
     for (int x = 0; x < population[0].getLength(); x++) {
-      cout << b[x].node << " (" << b[x].key << ") ";
+      cout << b[x].node << " (" << b[x].demand << ") ";
     }
     cout << " { " << population[parentBIndex].getFitness();
     cout << endl;
@@ -945,7 +947,7 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
       }
     }
 
-    cout << "\n1st selected: " << child[1].node << endl;
+    // cout << "\n1st selected: " << child[1].node << endl;
 
     int aNext = 0;
     int bNext = 0;
@@ -980,26 +982,15 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
         }
       }
 
-      cout << "\nA next: " << aNext << endl;
-      cout << "B next: " << bNext << endl;
+      // cout << "\nA next: " << aNext << endl;
+      // cout << "B next: " << bNext << endl;
       // cout << "(current): " << child[x-1].node << endl;
-
-      // for (int y = 0; y < x; y++) {
-      //   cout << child[y].node << " (" << child[y].key << ") ";
-      // }
-      // cout << " - child ";
-      //
-      // cout << endl;
-      // for (int y = 0; y < population[0].getLength()-2; y++) {
-      //   cout << sensorsLeftToUse[y] << " ";
-      // }
-      // cout << " - auxiliar\n";
 
       aGain = inst->getGainAB(child[x-1].node, aNext);
       bGain = inst->getGainAB(child[x-1].node, bNext);
 
-      cout << "\nA gain: " << aGain << endl;
-      cout << "B gain: " << bGain << endl;
+      // cout << "\nA gain: " << aGain << endl;
+      // cout << "B gain: " << bGain << endl;
 
       // updating x-th sensor to go
       if (aGain > bGain) {
@@ -1044,8 +1035,8 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
       }
     }
 
-    cout << "\nw\n";
-    cin >> pause;
+    // cout << "\nw\n";
+    // cin >> pause;
 
     if (patchFinalBS) {
       for (int y = lastAlteredIndex+1; y < population[0].getLength(); y++) {
@@ -1061,18 +1052,20 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
       }
     }
 
-    cout << "\nh\n";
+    // cout << "\nh\n";
 
+    double newFit = inst->evalSolFromSolStructure(child, muleVelocity, false);
+    cout << "[c] - ";
     for (int x = 0; x < population[0].getLength(); x++) {
-      cout << child[x].node << " (" << child[x].key << ") ";
+      cout << child[x].node << " (" << child[x].demand << ") ";
     }
-    cout << " - child ";
+    cout << " { " << newFit;
 
-    cout << endl;
-    for (int x = 0; x < population[0].getLength()-2; x++) {
-      cout << sensorsLeftToUse[x] << " ";
-    }
-    cout << " - auxiliar ";
+    // cout << endl;
+    // for (int x = 0; x < population[0].getLength()-2; x++) {
+    //   cout << sensorsLeftToUse[x] << " ";
+    // }
+    // cout << " - auxiliar ";
 
     cin >> pause;
     /* ============================================================================= */
