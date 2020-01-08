@@ -573,6 +573,9 @@ double Instance::getDistanceBP(int main_node_index, int pair_node_index) {
 
 /* Returns the cost of the edge AB (total demand attended/distance travelled) */
 double Instance::getGainAB(int A_index, int B_index) {
+  if (B_index == -1) {
+    return 0.0;
+  }
   int aeBetween = getNumberOfAEBP(A_index, B_index);
   double totalDistance = getDistanceBP(A_index, B_index);
   double totalDemandAttended = 0.0;
@@ -752,6 +755,20 @@ bool Instance::isInvalidSolution(double fitness) {
     return true;
   }
   return false;
+}
+
+bool Instance::isntInSolution(SolutionStruct *solution, int a, int size) {
+  if (a == -1) {
+    return false;
+  }
+  bool comparison = true;
+  for (int i = 1; i < size; i++) {
+    if (solution[i].node == a) {
+      comparison = false;
+      break;
+    }
+  }
+  return comparison;
 }
 
 // 'ae' stands for Artificial Edge.

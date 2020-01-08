@@ -38,6 +38,8 @@ class Population {
     void insertNewGeneAt(SolutionStruct *sol, int indexEdit, int indexAux);
     int findeNextSensorIndexFromSensor(SolutionStruct *sol, int sensor, int size);
 
+    int findAXFromA(SolutionStruct *solution, int a);
+
     // void localSearch(int index, double muleVelocity, Instance *inst); /* Upplies a loceal search to the chromosome 'index' */
 
     /* Utils */

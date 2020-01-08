@@ -841,6 +841,21 @@ void Population::mateIndividuals(Instance *inst, double muleVelocity) {
 	// cin >> a;
 }
 
+int Population::findAXFromA(SolutionStruct *solution, int a) {
+  int next = -1;
+
+  for (int i = 1; i < population[0].getLength(); ++i)
+  {
+    if (solution[i].node == a && i <= (population[0].getLength() - 2))
+    {
+      next = solution[i+1].node;
+      break;
+    }
+  }
+
+  return next;
+}
+
 void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
 	int numMutants = floor((size / 4.0));
 	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
@@ -865,6 +880,11 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
     SolutionStruct *a = inst->buildSolutionStructure(population[parentAIndex].getChromosomeAsArray());
     SolutionStruct *b = inst->buildSolutionStructure(population[parentBIndex].getChromosomeAsArray());
     SolutionStruct *child = new SolutionStruct[population[0].getLength()];
+    int *sensorsLeftToUse = new int[population[0].getLength()-2];
+
+    for (int x = 0; x < population[0].getLength()-2; x++) {
+      sensorsLeftToUse[x] = x+1;
+    }
 
     child[0].node = 0;
     child[0].demand = 0.0;
@@ -886,24 +906,27 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
     int aFBS = inst->findFinalBSIndex(a);
     int bFBS = inst->findFinalBSIndex(b);
 
-    cout << "\nA final station at: " << aFBS << endl;
-    cout << "B final station at: " << bFBS << endl;
+    int lowestFBS = 0;
+    int highestFBS = 0;
+    bool isLFBSInvalid = false;
+    bool isHFBSInvalid = false;
 
-    cout << "\nA invalid: " << inst->isInvalidSolution(population[parentAIndex].getFitness()) << endl;
-    cout << "B invalid: " << inst->isInvalidSolution(population[parentBIndex].getFitness()) << endl;
-
-    cout << "\n--------------------\n" << endl;
+    if (aFBS < bFBS) {
+      lowestFBS = aFBS;
+      highestFBS = bFBS;
+      isLFBSInvalid = inst->isInvalidSolution(population[parentAIndex].getFitness());
+      isHFBSInvalid = inst->isInvalidSolution(population[parentBIndex].getFitness());
+    } else {
+      lowestFBS = bFBS;
+      highestFBS = aFBS;
+      isLFBSInvalid = inst->isInvalidSolution(population[parentBIndex].getFitness());
+      isHFBSInvalid = inst->isInvalidSolution(population[parentAIndex].getFitness());
+    }
 
     // decide 1st sensor to go
     double aGain = inst->getGainAB(0, a[1].node);
     double bGain = inst->getGainAB(0, b[1].node);
 
-    cout << "\nleaving from: " << 0 << endl;
-    cout << "considering A: " << a[1].node << endl;
-    cout << "considering B: " << b[1].node << endl;
-
-    cout << "\nA gain: " << aGain << endl;
-    cout << "B gain: " << bGain << endl;
 
     // updating 1st sensor to go
     if (aGain > bGain) {
@@ -915,22 +938,67 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
     }
     child[1].key = a[1].key; // doesn't matter which parent gives the key
 
-    cout << "\n--------------------\n" << endl;
+    for (int y = 0; y < population[0].getLength()-2; y++) {
+      if (sensorsLeftToUse[y] == child[1].node) {
+        sensorsLeftToUse[y] = -1;
+        break;
+      }
+    }
+
+    cout << "\n1st selected: " << child[1].node << endl;
+
     int aNext = 0;
     int bNext = 0;
+    int Xindex = 0;
+    int lastAlteredIndex = 0;
+    bool patchFinalBS = false;
+
     // deciding rest of sensors to go
     for (int x = 2; x < population[0].getLength(); x++) {
-      aNext = inst->findAXFromA(a, child[x-1].node);
-      bNext = inst->findAXFromA(b, child[x-1].node);
+      aNext = findAXFromA(a, child[x-1].node);
+      bNext = findAXFromA(b, child[x-1].node);
 
-      cout << "\nleaving from: " << child[x-1].node << endl;
-      cout << "considering A: " << aNext << endl;
-      cout << "considering B: " << bNext << endl;
+      if ((aNext == -1) || (aNext == 0 && x <= lowestFBS) || (aNext == 0 && x <= highestFBS) || !inst->isntInSolution(child, aNext, x)) {
+        // using auxiliar to find next sensor
+        for (int y = 0; y < population[0].getLength()-2; y++) {
+          if (sensorsLeftToUse[y] != -1) {
+            aNext = sensorsLeftToUse[y];
+            // sensorsLeftToUse[y] = -1;
+            break;
+          }
+        }
+      }
+
+      if ((bNext == -1) || (bNext == 0 && x <= lowestFBS) || (bNext == 0 && x <= highestFBS) || !inst->isntInSolution(child, bNext, x)) {
+        // using auxiliar to find next sensor
+        for (int y = 0; y < population[0].getLength()-2; y++) {
+          if (sensorsLeftToUse[y] != -1) {
+            bNext = sensorsLeftToUse[y];
+            // sensorsLeftToUse[y] = -1;
+            break;
+          }
+        }
+      }
+
+      cout << "\nA next: " << aNext << endl;
+      cout << "B next: " << bNext << endl;
+      // cout << "(current): " << child[x-1].node << endl;
+
+      // for (int y = 0; y < x; y++) {
+      //   cout << child[y].node << " (" << child[y].key << ") ";
+      // }
+      // cout << " - child ";
+      //
+      // cout << endl;
+      // for (int y = 0; y < population[0].getLength()-2; y++) {
+      //   cout << sensorsLeftToUse[y] << " ";
+      // }
+      // cout << " - auxiliar\n";
 
       aGain = inst->getGainAB(child[x-1].node, aNext);
       bGain = inst->getGainAB(child[x-1].node, bNext);
 
-      cout << "A gain: " << aGain << endl;
+      cout << "\nA gain: " << aGain << endl;
       cout << "B gain: " << bGain << endl;
 
       // updating x-th sensor to go
@@ -943,32 +1011,70 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
       }
       child[x].key = a[x].key;
 
-      cout << "\n--------------------\n" << endl;
-      cin >> pause;
+      if (x == highestFBS && child[x].node != 0) {
+        child[x].node = 0;
+        child[x].demand = 0.0;
+        lastAlteredIndex = x;
+        patchFinalBS = true;
+        break;
+      }
+
+      if (child[x].node != 0) {
+        for (int y = 0; y < population[0].getLength()-2; y++) {
+          if (sensorsLeftToUse[y] == child[x].node) {
+            sensorsLeftToUse[y] = -1;
+            break;
+          }
+        }
+      }
+
+      if (child[x].node == 0) {
+        for (int y = x+1; y < population[0].getLength(); y++) {
+          for (int w = 0; w < population[0].getLength()-2; w++) {
+            if (sensorsLeftToUse[w] != -1) {
+              child[y].node = sensorsLeftToUse[w];
+              child[y].demand = inst->getNodesDemmand(sensorsLeftToUse[w]);
+              child[y].key = a[y].key;
+              sensorsLeftToUse[w] = -1;
+              break;
+            }
+          }
+        }
+        break;
+      }
     }
 
-    // int index = findAXFromA(solution, 1);
-    //
-    // population[parentAIndex].getFitness()
-    //
-    // population[parentBIndex].getFitness()
-    //
-    // Hallele *offspring = new Hallele[population[0].getLength()];
-    //
-    // //Initializing offspring
-    // offspring[0].index = 0;
-    // offspring[0].key = 0.0;
-    // for (int i = 1; i < population[0].getLength(); ++i)
-    // {
-    // 	offspring[i].index = i;
-    // }
-    // offspring[population[0].getLength()-1].index = 0;
-    //
-    // for (int x = 0; x < count; x++) {
-    //   for (int y = 0; y < count; y++) {
-    //     /* code */
-    //   }
-    // }
+    cout << "\nw\n";
+    cin >> pause;
+
+    if (patchFinalBS) {
+      for (int y = lastAlteredIndex+1; y < population[0].getLength(); y++) {
+        for (int w = 0; w < population[0].getLength()-2; w++) {
+          if (sensorsLeftToUse[w] != -1) {
+            child[y].node = sensorsLeftToUse[w];
+            child[y].demand = inst->getNodesDemmand(sensorsLeftToUse[w]);
+            child[y].key = a[y].key;
+            sensorsLeftToUse[w] = -1;
+            break;
+          }
+        }
+      }
+    }
+
+    cout << "\nh\n";
+
+    for (int x = 0; x < population[0].getLength(); x++) {
+      cout << child[x].node << " (" << child[x].key << ") ";
+    }
+    cout << " - child ";
+
+    cout << endl;
+    for (int x = 0; x < population[0].getLength()-2; x++) {
+      cout << sensorsLeftToUse[x] << " ";
+    }
+    cout << " - auxiliar ";
+
+    cin >> pause;
     /* ============================================================================= */
 
 		// population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
@@ -977,9 +1083,6 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
 		// cout << "\nO fit.: " << population[i].getFitness() << endl;
 		population[i].setEvaluateFlag();
 	}
-
-	// int a;
-	// cin >> a;
 }
 
 void Population::mateBRKGA02(Instance *inst, double muleVelocity) {

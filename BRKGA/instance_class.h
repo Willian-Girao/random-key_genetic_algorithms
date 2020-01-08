@@ -79,6 +79,7 @@ class Instance {
     int findFinalBSIndex(SolutionStruct *solution);
     int findAXFromA(SolutionStruct *solution, int a);
     bool isInvalidSolution(double fitness);
+    bool isntInSolution(SolutionStruct *solution, int a, int size);
 
     /* Setters */
     /* Sets number of possible speeds to be used */
