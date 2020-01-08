@@ -6,6 +6,7 @@
 
 #include "population_class.h"
 #include "instance_class.h"
+#include "utils.cpp"
 
 #include "neighborhood_structures.cpp"
 
@@ -864,6 +865,7 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
 	int indexEndRand = size - 1;
 
   int pause = 0;
+  int solVecSize = population[0].getLength();
 
 	//Indexes of chromosomes to be overrided by mating result.
 	for (int i = (size - numMutants - 1); i >= (size - ceil((size / 2.0))); --i)
@@ -879,10 +881,10 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
     // get parents as solution structure (sorted array)
     SolutionStruct *a = inst->buildSolutionStructure(population[parentAIndex].getChromosomeAsArray());
     SolutionStruct *b = inst->buildSolutionStructure(population[parentBIndex].getChromosomeAsArray());
-    SolutionStruct *child = new SolutionStruct[population[0].getLength()];
-    int *sensorsLeftToUse = new int[population[0].getLength()-2];
+    SolutionStruct *child = new SolutionStruct[solVecSize];
+    int *sensorsLeftToUse = new int[solVecSize-2];
 
-    for (int x = 0; x < population[0].getLength()-2; x++) {
+    for (int x = 0; x < solVecSize-2; x++) {
       sensorsLeftToUse[x] = x+1;
     }
 
@@ -892,13 +894,13 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
 
     cout << endl;
     cout << "[a] - ";
-    for (int x = 0; x < population[0].getLength(); x++) {
+    for (int x = 0; x < solVecSize; x++) {
       cout << a[x].node << " (" << a[x].demand << ") ";
     }
     cout << " { " << population[parentAIndex].getFitness();
     cout << endl;
     cout << "[b] - ";
-    for (int x = 0; x < population[0].getLength(); x++) {
+    for (int x = 0; x < solVecSize; x++) {
       cout << b[x].node << " (" << b[x].demand << ") ";
     }
     cout << " { " << population[parentBIndex].getFitness();
@@ -910,6 +912,7 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
 
     int lowestFBS = 0;
     int highestFBS = 0;
+    int childFBS = 0;
     bool isLFBSInvalid = false;
     bool isHFBSInvalid = false;
 
@@ -940,7 +943,7 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
     }
     child[1].key = a[1].key; // doesn't matter which parent gives the key
 
-    for (int y = 0; y < population[0].getLength()-2; y++) {
+    for (int y = 0; y < solVecSize-2; y++) {
       if (sensorsLeftToUse[y] == child[1].node) {
         sensorsLeftToUse[y] = -1;
         break;
@@ -956,13 +959,13 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
     bool patchFinalBS = false;
 
     // deciding rest of sensors to go
-    for (int x = 2; x < population[0].getLength(); x++) {
+    for (int x = 2; x < solVecSize; x++) {
       aNext = findAXFromA(a, child[x-1].node);
       bNext = findAXFromA(b, child[x-1].node);
 
-      if ((aNext == -1) || (aNext == 0 && x <= lowestFBS) || (aNext == 0 && x <= highestFBS) || !inst->isntInSolution(child, aNext, x)) {
+      if ((aNext == -1) || (aNext == 0 && x <= lowestFBS && isLFBSInvalid) || (aNext == 0 && x <= highestFBS) || !inst->isntInSolution(child, aNext, x)) {
         // using auxiliar to find next sensor
-        for (int y = 0; y < population[0].getLength()-2; y++) {
+        for (int y = 0; y < solVecSize-2; y++) {
           if (sensorsLeftToUse[y] != -1) {
             aNext = sensorsLeftToUse[y];
             // sensorsLeftToUse[y] = -1;
@@ -971,9 +974,9 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
         }
       }
 
-      if ((bNext == -1) || (bNext == 0 && x <= lowestFBS) || (bNext == 0 && x <= highestFBS) || !inst->isntInSolution(child, bNext, x)) {
+      if ((bNext == -1) || (bNext == 0 && x <= lowestFBS && isLFBSInvalid) || (bNext == 0 && x <= highestFBS) || !inst->isntInSolution(child, bNext, x)) {
         // using auxiliar to find next sensor
-        for (int y = 0; y < population[0].getLength()-2; y++) {
+        for (int y = 0; y < solVecSize-2; y++) {
           if (sensorsLeftToUse[y] != -1) {
             bNext = sensorsLeftToUse[y];
             // sensorsLeftToUse[y] = -1;
@@ -1005,13 +1008,14 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
       if (x == highestFBS && child[x].node != 0) {
         child[x].node = 0;
         child[x].demand = 0.0;
+        childFBS = x;
         lastAlteredIndex = x;
         patchFinalBS = true;
         break;
       }
 
       if (child[x].node != 0) {
-        for (int y = 0; y < population[0].getLength()-2; y++) {
+        for (int y = 0; y < solVecSize-2; y++) {
           if (sensorsLeftToUse[y] == child[x].node) {
             sensorsLeftToUse[y] = -1;
             break;
@@ -1020,8 +1024,9 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
       }
 
       if (child[x].node == 0) {
-        for (int y = x+1; y < population[0].getLength(); y++) {
-          for (int w = 0; w < population[0].getLength()-2; w++) {
+        childFBS = x;
+        for (int y = x+1; y < solVecSize; y++) {
+          for (int w = 0; w < solVecSize-2; w++) {
             if (sensorsLeftToUse[w] != -1) {
               child[y].node = sensorsLeftToUse[w];
               child[y].demand = inst->getNodesDemmand(sensorsLeftToUse[w]);
@@ -1035,12 +1040,9 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
       }
     }
 
-    // cout << "\nw\n";
-    // cin >> pause;
-
     if (patchFinalBS) {
-      for (int y = lastAlteredIndex+1; y < population[0].getLength(); y++) {
-        for (int w = 0; w < population[0].getLength()-2; w++) {
+      for (int y = lastAlteredIndex+1; y < solVecSize; y++) {
+        for (int w = 0; w < solVecSize-2; w++) {
           if (sensorsLeftToUse[w] != -1) {
             child[y].node = sensorsLeftToUse[w];
             child[y].demand = inst->getNodesDemmand(sensorsLeftToUse[w]);
@@ -1052,28 +1054,54 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
       }
     }
 
-    // cout << "\nh\n";
-
     double newFit = inst->evalSolFromSolStructure(child, muleVelocity, false);
     cout << "[c] - ";
-    for (int x = 0; x < population[0].getLength(); x++) {
+    for (int x = 0; x < solVecSize; x++) {
       cout << child[x].node << " (" << child[x].demand << ") ";
     }
-    cout << " { " << newFit;
+    cout << " { " << newFit << endl;
 
-    // cout << endl;
-    // for (int x = 0; x < population[0].getLength()-2; x++) {
-    //   cout << sensorsLeftToUse[x] << " ";
-    // }
-    // cout << " - auxiliar ";
+    bool isChildInvalid = inst->isInvalidSolution(newFit);
 
-    cin >> pause;
+    if (isChildInvalid && childFBS < (solVecSize-1)) {
+      cout << "\nc is invalid\n";
+      cout << "c FBS: " << childFBS << endl;
+
+      int auxNode = 0;
+      double auxDemand = 0.0;
+
+      while (isChildInvalid && childFBS < (solVecSize-1)) {
+        // temp saving node after current FBS position
+        auxNode = child[childFBS+1].node;
+        auxDemand = child[childFBS+1].demand;
+
+        // swaping FBS with next position
+        child[childFBS].node = auxNode;
+        child[childFBS].demand = auxNode;
+
+        child[childFBS+1].node = 0;
+        child[childFBS+1].demand = 0.0;
+
+        // reevaluating
+        newFit = inst->evalSolFromSolStructure(child, muleVelocity, false);
+        isChildInvalid = inst->isInvalidSolution(newFit);
+        childFBS++;
+      }
+    }
+
+    cout << "\n[c'] - ";
+    for (int x = 0; x < solVecSize; x++) {
+      cout << child[x].node << " (" << child[x].demand << ") ";
+    }
+    cout << " { " << newFit << endl;
+
+    utils_pause();
+
+    // if child is invalid and highestFBS < solution length, then swap FBS untill solution is valid
     /* ============================================================================= */
 
 		// population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
-		// population[i].setResetGenes(matePair004(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness(), inst, muleVelocity));
 		// population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
-		// cout << "\nO fit.: " << population[i].getFitness() << endl;
 		population[i].setEvaluateFlag();
 	}
 }
