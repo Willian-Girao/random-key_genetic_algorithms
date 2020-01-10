@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// /* Public methods */
+/* Public methods */
 
 Chromosome::Chromosome() {
   fitness = 0.0;
@@ -19,6 +19,14 @@ int Chromosome::getLength(void) {
 void Chromosome::setResetGenes(Hallele * newGenes) {
   genes = newGenes;
   fitness = 0.0;
+}
+
+void Chromosome::updateKey(int node, double key) {
+  if (node != 0) {
+    genes[node].key = key;
+  } else {
+    genes[length-1].key = key;
+  }
 }
 
 void Chromosome::setFitness(double fit) {
@@ -138,7 +146,7 @@ void Chromosome::generateGenes(int chromosomeSize) {
   int lowestKeySensor = 0;
   int lowestKeyIndex = 0;
 
-  for (int i = 1; i < chromosomeSize; i++) {    
+  for (int i = 1; i < chromosomeSize; i++) {
     double key = ((double) rand() / RAND_MAX);
 
     while (key == 1.0) {
@@ -312,7 +320,7 @@ void Chromosome::updateGenesSCX(int sensor, double key) {
 }
 
 void Chromosome::resetGenes() {
-  for (int i = 1; i < (length - 1); i++) {    
+  for (int i = 1; i < (length - 1); i++) {
     double key = ((double) rand() / RAND_MAX);
 
     while (key == 1.0) {

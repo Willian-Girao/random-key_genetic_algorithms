@@ -1143,15 +1143,36 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
       cout << child[x].node << " (" << child[x].demand << ") ";
     }
     cout << " { " << newFit << endl;
+    cout << "\nResult:\n";
+    /* ============================================================================= */
+
+    SolutionStruct *m = inst->buildSolutionStructure(population[i].getChromosomeAsArray());
+    cout << "[c] - ";
+    for (int x = 0; x < solVecSize; x++) {
+      cout << m[x].node << " [" << m[x].key << "] ";
+    }
+    cout << " { " << population[i].getFitness() << endl;
+
+    for (int y = 1; y < solVecSize; y++) {
+      population[i].updateKey(child[y].node, child[y].key);
+    }
+    population[i].setFitness(newFit);
+
+    SolutionStruct *l = inst->buildSolutionStructure(population[i].getChromosomeAsArray());
+
+    cout << "\n[c'] - ";
+    for (int x = 0; x < solVecSize; x++) {
+      cout << l[x].node << " [" << l[x].key << "] ";
+    }
+    cout << " { " << population[i].getFitness() << endl;
 
     utils_pause();
 
-    // if child is invalid and highestFBS < solution length, then swap FBS untill solution is valid
-    /* ============================================================================= */
-
-		// population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
-		// population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
-		population[i].setEvaluateFlag();
+    // freeing allocated memory
+    delete[] a;
+    delete[] b;
+    delete[] child;
+    delete[] sensorsLeftToUse;
 	}
 }
 

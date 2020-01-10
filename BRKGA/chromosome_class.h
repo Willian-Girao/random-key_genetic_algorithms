@@ -26,7 +26,7 @@ class Chromosome {
     void generateGenes(int chromosomeSize); /* Initializes the random keys of the chromosome. */
     void setResetGenes(Hallele * newGenes); /* Change the current hallele sequency for 'newGenes'. */
     void resetGenes(void); /* Change the current hallele sequency for 'newGenes'. */
-    void setFitness(double fit); /* Updates a chromosome fitness value. */ 
+    void setFitness(double fit); /* Updates a chromosome fitness value. */
     void resetChromosome(void); /* Whipe cleans a chromosome - reset */
     void mutateBRKGA01(double chance); /* replaces the i-th position with a new key with a 'chance' percent probability */
     void resetEvaluateFlag(void); /* Resets 'evaluate' back to true */
@@ -46,6 +46,7 @@ class Chromosome {
     Hallele *genes; /* Raw array representing the solution. */
     bool mustEvaluate; /* Flags if the fitness value for the chromosome must be calculated */
     void updateGene(int i, double key); /* Updates the key 'i' of the vector with the value 'key'. */
+    void updateKey(int node, double key); /*  */
     void updateGenesSCX(int sensor, double key); /* Updates the key 'i' of the vector with the value 'key'. */
 };
 
