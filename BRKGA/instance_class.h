@@ -75,7 +75,7 @@ class Instance {
     bool canXbeServedInAE(int main_node_index, int pair_node_index, int ae_index, int x); /* Returns true if 'x' can be served in 'ed_index' - false otherwise */
 
     /* Mating New */
-    double getGainAB(int A_index, int B_index); /* Returns the cost of the edge AB (total demand attended/distance travelled) - the bigger, the better.*/
+    double getGainAB(int A_index, int B_index, double muleSpeed); /* Returns the cost of the edge AB (total demand attended/distance travelled) - the bigger, the better.*/
     int findFinalBSIndex(SolutionStruct *solution);
     int findAXFromA(SolutionStruct *solution, int a);
     bool isInvalidSolution(double fitness);

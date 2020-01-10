@@ -167,31 +167,6 @@ Hallele * Population::matePair004(Hallele *a, double aFitness, Hallele *b, doubl
   }
   offspring[population[0].getLength()-1].index = 0;
 
-  // for (int i = 1; i < population[0].getLength(); i++)
-  // {
-  // 	//Crossover gives priority to the parent with the best fitness value
-  //   if (aFitness <= bFitness) //Parent 'a' has better fitness - biasing coin toss towards 'a'
-  //   {
-  //   	prob = ((double) rand() / RAND_MAX);
-
-  //   	if (prob <= 0.7) //Parent 'a' won coin toss
-  //   	{
-	 //    	offspring[i].key = a[i].key;
-	 //    } else { //Parent 'b' won coin toss
-		//     offspring[i].key = b[i].key;
-	 //    }
-  //   } else { //Parent 'b' has better fitness - biasing coin toss towards 'b'
-  //   	prob = ((double) rand() / RAND_MAX);
-
-  //   	if (prob <= 0.7) //Parent 'b' won coin toss
-  //   	{
-	 //    	offspring[i].key = b[i].key;
-	 //    } else { //Parent 'a' won coin toss
-		//     offspring[i].key = a[i].key;
-	 //    }
-  //   }
-  // }
-
   double aFit = 0.0;
   double bFit = 0.0;
 
@@ -789,12 +764,12 @@ void Population::mutationBRKGA01(double mutationChoiceProb, double mutationBRKGA
 		{
 			population[index].resetChromosome();
 			population[index].setFitness(0.0);
-			population[index].setEvaluateFlag();
 		} else {
 			population[index].mutateBRKGA01(mutationBRKGA01Prob);
 			population[index].setFitness(0.0);
-			population[index].setEvaluateFlag();
 		}
+
+    population[index].setEvaluateFlag();
 
 		index--;
 		endIndex--;
@@ -831,11 +806,11 @@ void Population::mateIndividuals(Instance *inst, double muleVelocity) {
 		// cout << "Parent B: " << parentBIndex << endl;
 		// cout << "Individual " << i << " became offspring\n";
 
-		// population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
-		population[i].setResetGenes(matePair004(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness(), inst, muleVelocity));
+		population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
+		// population[i].setResetGenes(matePair004(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness(), inst, muleVelocity));
 		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
 		// cout << "\nO fit.: " << population[i].getFitness() << endl;
-		population[i].setEvaluateFlag();
+		// population[i].setEvaluateFlag();
 	}
 
 	// int a;
@@ -857,7 +832,7 @@ int Population::findAXFromA(SolutionStruct *solution, int a) {
   return next;
 }
 
-void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
+void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelocity) {
 	int numMutants = floor((size / 4.0));
 	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
 
@@ -892,19 +867,19 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
     child[0].demand = 0.0;
     child[0].key = 0.0;
 
-    cout << endl;
-    cout << "[a] - ";
-    for (int x = 0; x < solVecSize; x++) {
-      cout << a[x].node << " (" << a[x].demand << ") ";
-    }
-    cout << " { " << population[parentAIndex].getFitness();
-    cout << endl;
-    cout << "[b] - ";
-    for (int x = 0; x < solVecSize; x++) {
-      cout << b[x].node << " (" << b[x].demand << ") ";
-    }
-    cout << " { " << population[parentBIndex].getFitness();
-    cout << endl;
+    // cout << endl;
+    // cout << "[a] - ";
+    // for (int x = 0; x < solVecSize; x++) {
+    //   cout << a[x].node << " (" << a[x].demand << ") ";
+    // }
+    // cout << " { " << population[parentAIndex].getFitness();
+    // cout << endl;
+    // cout << "[b] - ";
+    // for (int x = 0; x < solVecSize; x++) {
+    //   cout << b[x].node << " (" << b[x].demand << ") ";
+    // }
+    // cout << " { " << population[parentBIndex].getFitness();
+    // cout << endl;
 
     // get final BS positions
     int aFBS = inst->findFinalBSIndex(a);
@@ -929,17 +904,22 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
     }
 
     // decide 1st sensor to go
-    double aGain = inst->getGainAB(0, a[1].node);
-    double bGain = inst->getGainAB(0, b[1].node);
+    double aGain = inst->getGainAB(0, a[1].node, muleVelocity);
+    double bGain = inst->getGainAB(0, b[1].node, muleVelocity);
+
+    int aEqualCount = 1;
+    int bEqualCount = 1;
 
 
     // updating 1st sensor to go
     if (aGain > bGain) {
       child[1].node = a[1].node;
       child[1].demand = a[1].demand;
+      aEqualCount++;
     } else {
       child[1].node = b[1].node;
       child[1].demand = b[1].demand;
+      bEqualCount++;
     }
     child[1].key = a[1].key; // doesn't matter which parent gives the key
 
@@ -989,8 +969,8 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
       // cout << "B next: " << bNext << endl;
       // cout << "(current): " << child[x-1].node << endl;
 
-      aGain = inst->getGainAB(child[x-1].node, aNext);
-      bGain = inst->getGainAB(child[x-1].node, bNext);
+      aGain = inst->getGainAB(child[x-1].node, aNext, muleVelocity);
+      bGain = inst->getGainAB(child[x-1].node, bNext, muleVelocity);
 
       // cout << "\nA gain: " << aGain << endl;
       // cout << "B gain: " << bGain << endl;
@@ -1004,6 +984,12 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
         child[x].demand = inst->getNodesDemmand(bNext);
       }
       child[x].key = a[x].key;
+
+      if (child[x].node == a[x].node) {
+        aEqualCount++;
+      } else if (child[x].node == b[x].node) {
+        bEqualCount++;
+      }
 
       if (x == highestFBS && child[x].node != 0) {
         child[x].node = 0;
@@ -1138,35 +1124,36 @@ void Population::mateSequentialNew(Instance *inst, double muleVelocity) {
       }
     }
 
-    cout << "[c] - ";
-    for (int x = 0; x < solVecSize; x++) {
-      cout << child[x].node << " (" << child[x].demand << ") ";
-    }
-    cout << " { " << newFit << endl;
-    cout << "\nResult:\n";
+    // cout << "[c] - ";
+    // for (int x = 0; x < solVecSize; x++) {
+    //   cout << child[x].node << " (" << child[x].demand << ") ";
+    // }
+    // cout << " { " << newFit << endl;
+    // cout << "\nResult:\n";
     /* ============================================================================= */
 
-    SolutionStruct *m = inst->buildSolutionStructure(population[i].getChromosomeAsArray());
-    cout << "[c] - ";
-    for (int x = 0; x < solVecSize; x++) {
-      cout << m[x].node << " [" << m[x].key << "] ";
-    }
-    cout << " { " << population[i].getFitness() << endl;
+    // SolutionStruct *m = inst->buildSolutionStructure(population[i].getChromosomeAsArray());
+    // cout << "[c] - ";
+    // for (int x = 0; x < solVecSize; x++) {
+    //   cout << m[x].node << " [" << m[x].key << "] ";
+    // }
+    // cout << " { " << population[i].getFitness() << endl;
 
     for (int y = 1; y < solVecSize; y++) {
       population[i].updateKey(child[y].node, child[y].key);
     }
     population[i].setFitness(newFit);
 
-    SolutionStruct *l = inst->buildSolutionStructure(population[i].getChromosomeAsArray());
-
-    cout << "\n[c'] - ";
-    for (int x = 0; x < solVecSize; x++) {
-      cout << l[x].node << " [" << l[x].key << "] ";
-    }
-    cout << " { " << population[i].getFitness() << endl;
-
-    utils_pause();
+    // SolutionStruct *l = inst->buildSolutionStructure(population[i].getChromosomeAsArray());
+    //
+    // cout << "[c] - ";
+    // for (int x = 0; x < solVecSize; x++) {
+    //   cout << l[x].node << " (" << l[x].demand << ") ";
+    // }
+    // cout << " { " << population[i].getFitness() << endl;
+    //
+    // int hl = 0;
+    // cin >> hl;
 
     // freeing allocated memory
     delete[] a;

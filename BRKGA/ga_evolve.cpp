@@ -90,15 +90,12 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       bestSolution = pop.getSingleChromosome(0).getFitness();
 
       //Introduce mutants.
-      pop.mutationBRKGA01(0.5, 0.7); /* NM01 - New Mutation 01 */
-      // pop.introduceMutants(); /* Standard BRKGA mutation */
+      pop.introduceMutants(); /* Standard BRKGA mutation */
+      // pop.mutationBRKGA01(0.5, 0.7); /* NM01 - New Mutation 01 */
 
       //Complete with offspring.
-      // pop.mateIndividuals(&inst, muleSpeed);
-      pop.mateSequentialNew(&inst, muleSpeed);
-
-      // pop.mateBRKGA02(&inst, muleSpeed);
-      // pop.mateModularCrossover(&inst, muleSpeed);
+      pop.mateIndividuals(&inst, muleSpeed); /* Standard BRKGA crossover */
+      // pop.sequentialConstructiveCrossover(&inst, muleSpeed); /* Produces bad results */
 
       //Updating previous best
       previousBest = bestSolution;
@@ -113,38 +110,22 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     //Sorting by fitness.
     pop.sortByFitness();
 
-    //Local Search
-    // double pBest = pop.getSingleChromosome(0).getFitness();
-    // while (genWithoutImprov < 50)
-    // {
-    //   pop.localSearch(0, muleSpeed, &inst);
-
-    //   if (pop.getSingleChromosome(0).getFitness() == pBest)
-    //   {
-    //     genWithoutImprov++;
-    //     // cout << "Without improve: " << genWithoutImprov << endl;
-    //   } else {
-    //     genWithoutImprov = 0;
-    //     pBest = pop.getSingleChromosome(0).getFitness();
-    //   }
-    // }
-
     time = clock() - time;
 
     //Printing best solution to screem.
     // inst.printFinalSolution(pop.getSingleChromosome(0).getChromosomeAsArray(), muleSpeed);
-    cout << "\nFitness: " << setprecision(10) << pop.getSingleChromosome(0).getFitness() << endl;
+    // cout << "\nFitness: " << setprecision(10) << pop.getSingleChromosome(0).getFitness() << endl;
 
     // //Calculating total time taken by the program.
     double elapsed = 0.0;
 
     if (timeFormat == "ms") {
       elapsed = time;
-      cout << "Execution time (ms): " << elapsed << endl << endl << endl;
+      // cout << "Execution time (ms): " << elapsed << endl << endl << endl;
       everageTime += elapsed;
     } else if (timeFormat == "s") {
       elapsed = (time * 1.0) / CLOCKS_PER_SEC;
-      cout << "Execution time (s): " << elapsed << endl << endl << endl;
+      // cout << "Execution time (s): " << elapsed << endl << endl << endl;
       everageTime += elapsed;
     }
 

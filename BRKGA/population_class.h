@@ -22,7 +22,7 @@ class Population {
     void initializePopulation(int popSize, int chromSize); /* Sets population size and solution array length. */
     void updateFitness(int index, double fitness); /* Updates the fitness of a solution indexed by 'index'. */
     void mateIndividuals(Instance *inst, double muleVelocity); /* Produces offsprings of solutions - 'popSize' even 25% of population | 'popSize' odd 20% of population */
-    void mateSequentialNew(Instance *inst, double muleVelocity); /* Produces offsprings of solutions - 'popSize' even 25% of population | 'popSize' odd 20% of population */
+    void sequentialConstructiveCrossover(Instance *inst, double muleVelocity); /* Produces offsprings of solutions - 'popSize' even 25% of population | 'popSize' odd 20% of population */
     void mateBRKGA02(Instance *inst, double muleVelocity); /* Produces offsprings of solutions - 'popSize' even 25% of population | 'popSize' odd 20% of population */
     void mateModularCrossover(Instance *inst, double muleVelocity); /* Produces offsprings of solutions - 'popSize' even 25% of population | 'popSize' odd 20% of population */
     void introduceMutants(void); /* Replaces 25% of the 'non-elit' halfh with mutant individuals. */

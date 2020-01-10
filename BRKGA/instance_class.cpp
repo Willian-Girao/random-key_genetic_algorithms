@@ -572,7 +572,7 @@ double Instance::getDistanceBP(int main_node_index, int pair_node_index) {
 };
 
 /* Returns the cost of the edge AB (total demand attended/distance travelled) */
-double Instance::getGainAB(int A_index, int B_index) {
+double Instance::getGainAB(int A_index, int B_index, double muleSpeed) {
   if (B_index == -1) {
     return 0.0;
   }
@@ -650,7 +650,8 @@ double Instance::getGainAB(int A_index, int B_index) {
   //
   // cin >> pause;
 
-  double totalCost = totalDemandAttended / totalDistance;
+  double totalCost = totalDemandAttended / (totalDistance / muleSpeed);
+  // double totalCost = totalDemandAttended / totalDistance;
 
   // cout << "total cost: " << totalCost << endl;
   //
@@ -790,12 +791,12 @@ double Instance::evaluateSolution(Hallele *chromosome, double muleVelocity, doub
 
   int index = findAXFromA(solution, 1);
 
-  if (solution[1].node == 0 && !skipeBSCheck)
-  {
-    int w = 0;
-    cout << "\nBS followed by BS\n";
-    cin >> w;
-  }
+  // if (solution[1].node == 0 && !skipeBSCheck)
+  // {
+  //   int w = 0;
+  //   cout << "\nBS followed by BS\n";
+  //   cin >> w;
+  // }
 
   // cout << "sol [ ";
   // for (int i = 0; i < (original_nodes_n + 1); ++i)
