@@ -51,6 +51,10 @@ class Population {
     int partition(Chromosome *array, int low, int high); /* Utilized within the method performing quicksort. */
     void quickSort(Chromosome *array, int low, int high); /* Quicksort utilized to sort population by fitness. */
 
+
+
+    void vnd(int index, Instance *inst, double muleVelocity);
+
   private:
     int size; /* Number of individuals within the population. */
     // double peProb; /* Biased probability value towards elite solutions during crossover */

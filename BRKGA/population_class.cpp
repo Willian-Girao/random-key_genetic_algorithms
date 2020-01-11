@@ -807,10 +807,8 @@ void Population::mateIndividuals(Instance *inst, double muleVelocity) {
 		// cout << "Individual " << i << " became offspring\n";
 
 		population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
-		// population[i].setResetGenes(matePair004(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness(), inst, muleVelocity));
 		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
-		// cout << "\nO fit.: " << population[i].getFitness() << endl;
-		// population[i].setEvaluateFlag();
+		vnd(i, inst, muleVelocity);
 	}
 
 	// int a;
@@ -1278,80 +1276,91 @@ void Population::resetInvalidSolutions(void) {
 	}
 }
 
-/* Private methods */
+void Population::vnd(int index, Instance *inst, double muleVelocity) {
+  SolutionStruct *x = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+  SolutionStruct *xprime = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
 
-// void Population::localSearch(int index, double muleVelocity, Instance *inst) {
-// 	SolutionStruct *solutionAux = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+  double fx = population[index].getFitness();
+  double fxprime = fx;
 
-// 	double inputSolFitness = population[index].getFitness();
-// 	double newSolFitness = -1.0;
-// 	double auxSolFitness = -1.0;
+  int k = 0;
+  int kmax = 3;
 
-// 	int solLenghth = population[index].getLength();
-// 	int Kmax = 3;
-// 	int neighborhoodStructure = -1; /* Randomly selects what neighborhood structure to use */
+  int solLength = population[0].getLength();
 
-// 	bool keepVnd = true;
+  cout << "x  { ";
+  for (int j = 0; j < solLength; j++) {
+    cout << "[" << x[j].node << "]";
+  }
+  cout << " - " << fx << endl;
 
-// 	/* VND */
-// 	while (keepVnd)
-// 	{
-// 		// neighborhoodStructure = rand() % 3;
-// 		neighborhoodStructure = 0;
-// 		auxSolFitness = newSolFitness;
+  while (k < kmax)
+  {
+    if (k == 0) {
+      nShift(xprime, solLength);
+    } else if (k == 1) {
+      nSwap(xprime, solLength);
+    } else if (k == 2) {
+      nSwap21(xprime, solLength);
+    }
 
-// 		for (int i = 0; i < Kmax; ++i)
-// 		{
-// 			if (neighborhoodStructure == 0) 		/* N-Swap */
-// 			{
-// 				nSwap(solutionAux, solLenghth);
-// 			} else if (neighborhoodStructure == 1) {
-// 				nSwap21(solutionAux, solLenghth);
-// 			} else {
-// 				nShift(solutionAux, solLenghth);
-// 			}
+    fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
 
-// 			newSolFitness = inst->evaluateLocalSearchSolution(solutionAux, muleVelocity, false);
+    if (fxprime < fx) {
+      cout << "\n> Improvement ";
+      if (k == 0) {
+        cout << "(shift)\n";
+      } else if (k == 1) {
+        cout << "(swap)\n";
+      } else if (k == 2) {
+        cout << "(swap21)\n";
+      }
+      // update better fintness
+      fx = fxprime;
+      // update genes
+      for (int i = 1; i < solLength; i++) {
+        x[i].node = xprime[i].node;
+        x[i].demand = xprime[i].demand;
+      }
+      cout << "x' { ";
+      for (int j = 0; j < solLength; j++) {
+        cout << "[" << xprime[j].node << "]";
+      }
+      cout << " - " << fx << endl;
+    } else {
+      // reset x' to the previously x
+      for (int i = 1; i < solLength; i++) {
+        xprime[i].node = x[i].node;
+        xprime[i].demand = x[i].demand;
+      }
+      // change neighborhood structure
+      k++;
+    }
+  }
 
-// 			if (newSolFitness >= inputSolFitness || newSolFitness == 0)
-// 			{
-// 				solutionAux = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
-// 				// neighborhoodStructure = rand() % 3;
-// 				neighborhoodStructure += 1;
-// 			}
-// 		}
+  if (fx < population[index].getFitness()) {
+    cout << "\nx  { ";
+    for (int j = 0; j < solLength; j++) {
+      cout << "[" << x[j].node << "]";
+    }
+    cout << " - " << fx << endl;
 
-// 		if (newSolFitness >= auxSolFitness)
-// 		{
-// 			break;
-// 		}
-// 	}
+    // update genes
+    for (int y = 1; y < solLength; y++) {
+      population[index].updateKey(x[y].node, x[y].key);
+    }
+    // update fitness
+    population[index].setFitness(fx);
 
-// 	// cout << "\na";
-// 	if (newSolFitness < inputSolFitness && newSolFitness != 0)
-// 	{
-// 		// cout << "\nb";
-// 		// cout << "\n\n";
-// 		// population[index].printGenes();
-// 		// cout << "\n\n";
-// 		for (int i = 0; i < solLenghth; ++i)
-// 		{
-// 			population[index].updateKeysIndex(solutionAux[i].key, solutionAux[i].node);
-// 		}
-// 		// inst->evaluateLocalSearchSolution(solutionAux, muleVelocity, true);
-// 		population[index].setFitness(newSolFitness);
-// 		// cout << "inputSolFitness: " << inputSolFitness << " , newSolFitness: " << newSolFitness << endl;
-// 		// for (int i = 0; i < solLenghth; ++i)
-// 	 //    {
-// 	 //      cout << solutionAux[i].node << " ";
-// 	 //    }
-// 	 //    cout << "\n";
+    cout << "\n\n> validation\n";
+    SolutionStruct *v = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+    cout << "\nc  { ";
+    for (int j = 0; j < solLength; j++) {
+      cout << "[" << v[j].node << "]";
+    }
+    cout << " - " << population[index].getFitness() << endl;
 
-// 		// inst->evaluateLocalSearchSolution(solutionAux, muleVelocity, true);
-// 		// population[index].printGenes();
-// 		// cout << "\n\n";
-
-// 		// int a = 0;
-// 		// cin >> a;
-// 	}
-// }
+    cout << "\n\n> paused";
+    cin >> fx;
+  }
+}
