@@ -17,6 +17,7 @@ class Population {
     SolutionStruct * modularCrossover(Chromosome a, Chromosome b, Instance *inst, double muleVelocity); /* Returns the offspring of a pair of chromosomes using SCX. */
     Hallele * getSolutionAsArray(int solIndex); /* Returns the chromosome sequence of alleles - RKGA encoding */
     Chromosome getSingleChromosome(int index); /* Returns the object instance of one of the chromosomes within the population. */
+    double getFitness(int index); /* Returns the object instance of one of the chromosomes within the population. */
 
     /* Setters */
     void initializePopulation(int popSize, int chromSize); /* Sets population size and solution array length. */

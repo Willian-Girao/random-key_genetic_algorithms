@@ -780,6 +780,10 @@ Chromosome Population::getSingleChromosome(int index) {
 	return population[index];
 }
 
+double Population::getFitness(int index) {
+	return population[index].getFitness();
+}
+
 void Population::mateIndividuals(Instance *inst, double muleVelocity, string ls) {
 	int numMutants = floor((size / 4.0));
 	int x = size - ceil((size / 2.0)) - floor((size / 4.0));

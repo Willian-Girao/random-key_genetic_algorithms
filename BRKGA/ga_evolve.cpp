@@ -57,6 +57,9 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   clock_t time;
   time = clock();
 
+  int invalidCount = 0;
+  int totalCount = 0;
+
   while(executionsCount < totalExecution)
   {
     //Initializing control varibles
@@ -79,6 +82,10 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
         if (pop.shouldCalcFitness(i))
         {
           pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed, false));
+          if (inst.isInvalidSolution(pop.getFitness(i))) {
+            invalidCount++;
+          }
+          totalCount++;
           pop.resetEvaluateFlag(i);
         }
       }
@@ -155,11 +162,12 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   double avgTime = everageTime / totalExecution;
 
   // cout << "===========================================\n\n";
-  cout << "Instance: " << instanceFileName << endl;
+  cout << "\nInstance: " << instanceFileName << endl;
   cout << "Total executions: " << totalExecution << endl;
   cout << "Mating: " << mating << endl;
   cout << "Local search: " << ls << endl;
   cout << "Best solution: " << setprecision(10) << overallBest << endl;
   cout << "Avg. solution: " << setprecision(10) << avgSol << endl;
   cout << "Avg. time: " << setprecision(10) << avgTime << endl;
+  cout << "Invalid solutions : " << setprecision(2) << ((invalidCount*100.0) / totalCount) << "\% (" << invalidCount << ")";
 }
