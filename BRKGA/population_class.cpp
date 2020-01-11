@@ -780,7 +780,7 @@ Chromosome Population::getSingleChromosome(int index) {
 	return population[index];
 }
 
-void Population::mateIndividuals(Instance *inst, double muleVelocity) {
+void Population::mateIndividuals(Instance *inst, double muleVelocity, string ls) {
 	int numMutants = floor((size / 4.0));
 	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
 
@@ -810,7 +810,11 @@ void Population::mateIndividuals(Instance *inst, double muleVelocity) {
 		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
 
     // local search
-		vnd(i, inst, muleVelocity);
+    if (ls == "vnd") {
+      vnd(i, inst, muleVelocity);
+    } else if (ls == "rvnd") {
+      rvnd(i, inst, muleVelocity);
+    }
 	}
 
 	// int a;
@@ -1285,6 +1289,9 @@ void Population::vnd(int index, Instance *inst, double muleVelocity) {
   double fx = population[index].getFitness();
   double fxprime = fx;
 
+  // cout << "\n> vnd\n";
+  // cin >> fx;
+
   int k = 0;
   int kmax = 3;
 
@@ -1337,6 +1344,109 @@ void Population::vnd(int index, Instance *inst, double muleVelocity) {
       }
       // change neighborhood structure
       k++;
+    }
+  }
+
+  if (fx < population[index].getFitness()) {
+    // cout << "\nx  { ";
+    // for (int j = 0; j < solLength; j++) {
+    //   cout << "[" << x[j].node << "]";
+    // }
+    // cout << " - " << fx << endl;
+
+    // update genes
+    for (int y = 1; y < solLength; y++) {
+      population[index].updateKey(x[y].node, x[y].key);
+    }
+    // update fitness
+    population[index].setFitness(fx);
+
+    // cout << "\n\n> validation\n";
+    // SolutionStruct *v = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+    // cout << "\nc  { ";
+    // for (int j = 0; j < solLength; j++) {
+    //   cout << "[" << v[j].node << "]";
+    // }
+    // cout << " - " << population[index].getFitness() << endl;
+    //
+    // cout << "\n\n> paused";
+    // cin >> fx;
+  }
+
+  delete[] x;
+  delete[] xprime;
+}
+
+void Population::rvnd(int index, Instance *inst, double muleVelocity) {
+  SolutionStruct *x = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+  SolutionStruct *xprime = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+
+  double fx = population[index].getFitness();
+  double fxprime = fx;
+
+  // cout << "\n> rvnd\n";
+  // cin >> fx;
+
+  int kmax = 3;
+  int k = rand() % kmax;
+  int lastk = k;
+
+  int solLength = population[0].getLength();
+
+  // cout << "x  { ";
+  // for (int j = 0; j < solLength; j++) {
+  //   cout << "[" << x[j].node << "]";
+  // }
+  // cout << " - " << fx << endl;
+
+  int i = 0;
+  while (i < kmax)
+  {
+    if (k == 0) {
+      nShift(xprime, solLength);
+    } else if (k == 1) {
+      nSwap(xprime, solLength);
+    } else if (k == 2) {
+      nSwap21(xprime, solLength);
+    }
+
+    fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
+
+    if (fxprime < fx) {
+      // cout << "\n> Improvement ";
+      // if (k == 0) {
+      //   cout << "(shift)\n";
+      // } else if (k == 1) {
+      //   cout << "(swap)\n";
+      // } else if (k == 2) {
+      //   cout << "(swap21)\n";
+      // }
+      // update better fintness
+      fx = fxprime;
+      // update genes
+      for (int i = 1; i < solLength; i++) {
+        x[i].node = xprime[i].node;
+        x[i].demand = xprime[i].demand;
+      }
+      i = 0;
+      // cout << "x' { ";
+      // for (int j = 0; j < solLength; j++) {
+      //   cout << "[" << xprime[j].node << "]";
+      // }
+      // cout << " - " << fx << endl;
+    } else {
+      // reset x' to the previously x
+      for (int i = 1; i < solLength; i++) {
+        xprime[i].node = x[i].node;
+        xprime[i].demand = x[i].demand;
+      }
+      // change neighborhood structure
+      k = rand() % kmax;
+      while (k == lastk) {
+        k = rand() % kmax;
+      }
+      lastk = k;
+      i++;
     }
   }
 

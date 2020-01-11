@@ -28,7 +28,7 @@
 // 'maxInt': maximum number of iterations.
 // 'muleSpeed': speed utilized by the mule.
 // 'instanceFileName': name of the .txt file containing the graph instance.
-void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFileName, string timeFormat, bool debbug, int debbugLevel, int totalExecution) {
+void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFileName, string timeFormat, bool debbug, int debbugLevel, int totalExecution, string ls) {
   srand(time(0));
 
   double overallBest = -1.0;
@@ -93,7 +93,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       pop.introduceMutants(); /* Standard BRKGA mutation */
 
       //Complete with offspring.
-      pop.mateIndividuals(&inst, muleSpeed); /* BRKGA crossover with local search (vnd) */
+      pop.mateIndividuals(&inst, muleSpeed, ls); /* BRKGA crossover with local search (vnd) */
       // pop.sequentialConstructiveCrossover(&inst, muleSpeed); /* Produces bad results */
 
       //Updating previous best
@@ -154,6 +154,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   // cout << "===========================================\n\n";
   cout << "Instance: " << instanceFileName << endl;
   cout << "Total executions: " << totalExecution << endl;
+  cout << "Local search: " << ls << endl;
   cout << "Best solution: " << setprecision(10) << overallBest << endl;
   cout << "Avg. solution: " << setprecision(10) << avgSol << endl;
   cout << "Avg. time: " << setprecision(10) << avgTime << endl;
