@@ -836,7 +836,7 @@ int Population::findAXFromA(SolutionStruct *solution, int a) {
   return next;
 }
 
-void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelocity) {
+void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelocity, string ls) {
 	int numMutants = floor((size / 4.0));
 	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
 
@@ -860,6 +860,7 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
     // get parents as solution structure (sorted array)
     SolutionStruct *a = inst->buildSolutionStructure(population[parentAIndex].getChromosomeAsArray());
     SolutionStruct *b = inst->buildSolutionStructure(population[parentBIndex].getChromosomeAsArray());
+    SolutionStruct *o = inst->buildSolutionStructure(population[i].getChromosomeAsArray());
     SolutionStruct *child = new SolutionStruct[solVecSize];
     int *sensorsLeftToUse = new int[solVecSize-2];
 
@@ -874,13 +875,19 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
     // cout << endl;
     // cout << "[a] - ";
     // for (int x = 0; x < solVecSize; x++) {
-    //   cout << a[x].node << " (" << a[x].demand << ") ";
+    //   cout << a[x].node << " (" << a[x].key << ") ";
     // }
     // cout << " { " << population[parentAIndex].getFitness();
     // cout << endl;
     // cout << "[b] - ";
     // for (int x = 0; x < solVecSize; x++) {
-    //   cout << b[x].node << " (" << b[x].demand << ") ";
+    //   cout << b[x].node << " (" << b[x].key << ") ";
+    // }
+    // cout << " { " << population[parentBIndex].getFitness();
+    // cout << endl;
+    // cout << "[o] - ";
+    // for (int x = 0; x < solVecSize; x++) {
+    //   cout << o[x].node << " (" << o[x].key << ") ";
     // }
     // cout << " { " << population[parentBIndex].getFitness();
     // cout << endl;
@@ -925,7 +932,7 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
       child[1].demand = b[1].demand;
       bEqualCount++;
     }
-    child[1].key = a[1].key; // doesn't matter which parent gives the key
+    child[1].key = o[1].key; // doesn't matter which parent gives the key
 
     for (int y = 0; y < solVecSize-2; y++) {
       if (sensorsLeftToUse[y] == child[1].node) {
@@ -987,7 +994,7 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
         child[x].node = bNext;
         child[x].demand = inst->getNodesDemmand(bNext);
       }
-      child[x].key = a[x].key;
+      child[x].key = o[x].key;
 
       if (child[x].node == a[x].node) {
         aEqualCount++;
@@ -1020,7 +1027,7 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
             if (sensorsLeftToUse[w] != -1) {
               child[y].node = sensorsLeftToUse[w];
               child[y].demand = inst->getNodesDemmand(sensorsLeftToUse[w]);
-              child[y].key = a[y].key;
+              child[y].key = o[y].key;
               sensorsLeftToUse[w] = -1;
               break;
             }
@@ -1036,7 +1043,7 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
           if (sensorsLeftToUse[w] != -1) {
             child[y].node = sensorsLeftToUse[w];
             child[y].demand = inst->getNodesDemmand(sensorsLeftToUse[w]);
-            child[y].key = a[y].key;
+            child[y].key = o[y].key;
             sensorsLeftToUse[w] = -1;
             break;
           }
@@ -1128,20 +1135,11 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
       }
     }
 
-    // cout << "[c] - ";
+    // cout << "[x] - ";
     // for (int x = 0; x < solVecSize; x++) {
     //   cout << child[x].node << " (" << child[x].demand << ") ";
     // }
     // cout << " { " << newFit << endl;
-    // cout << "\nResult:\n";
-    /* ============================================================================= */
-
-    // SolutionStruct *m = inst->buildSolutionStructure(population[i].getChromosomeAsArray());
-    // cout << "[c] - ";
-    // for (int x = 0; x < solVecSize; x++) {
-    //   cout << m[x].node << " [" << m[x].key << "] ";
-    // }
-    // cout << " { " << population[i].getFitness() << endl;
 
     for (int y = 1; y < solVecSize; y++) {
       population[i].updateKey(child[y].node, child[y].key);
@@ -1152,16 +1150,24 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
     //
     // cout << "[c] - ";
     // for (int x = 0; x < solVecSize; x++) {
-    //   cout << l[x].node << " (" << l[x].demand << ") ";
+    //   cout << l[x].node << " (" << l[x].key << ") ";
     // }
     // cout << " { " << population[i].getFitness() << endl;
     //
     // int hl = 0;
     // cin >> hl;
 
+    // local search
+    if (ls == "vnd") {
+      vnd(i, inst, muleVelocity);
+    } else if (ls == "rvnd") {
+      rvnd(i, inst, muleVelocity);
+    }
+
     // freeing allocated memory
     delete[] a;
     delete[] b;
+    delete[] o;
     delete[] child;
     delete[] sensorsLeftToUse;
 	}
