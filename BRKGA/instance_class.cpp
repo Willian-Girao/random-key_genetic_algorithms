@@ -7,6 +7,7 @@
 
 #include "instance_class.h"
 #include "quicksort.cpp"
+#include "neighborhood_structures.cpp"
 
 using namespace std;
 
@@ -1274,4 +1275,49 @@ void Instance::setTotalDemand() {
   }
 
   total_demand = totalDemand;
+}
+
+void Instance::VND(int index, double muleVelocity) {
+  SolutionStruct *x = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+  SolutionStruct *xprime = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+
+  double fx = population[index].getFitness();
+  double fxprime = fx;
+
+  int k = 0;
+  int kmax = 3;
+
+  int solLength = population[0].getLength();
+
+  while (k < kmax)
+  {
+    if (k == 0) {
+      nShift(xprime, solLength);
+    } else if (k == 1) {
+      nSwap(xprime, solLength);
+    } else if (k == 2) {
+      nSwap21(xprime, solLength);
+    }
+
+    fxprime = evalSolFromSolStructure(xprime, muleVelocity, false);
+
+    if (fxprime < fx) {
+      fx = fxprime;
+      for (int i = 1; i < solLength; i++) {
+        x[i].node = xprime[i].node;
+        x[i].demand = xprime[i].demand;
+      }
+    } else {
+      for (int i = 1; i < solLength; i++) {
+        xprime[i].node = x[i].node;
+        xprime[i].demand = x[i].demand;
+      }
+      k++;
+    }
+  }
+
+  if (fx < population[index].getFitness()) {
+    /* update genes */
+    population[index].setFitness(fx);
+  }
 }
