@@ -1508,7 +1508,7 @@ void Population::fixInvalidSolution(Instance *inst, int index, double muleVeloci
 
   cout << "\n[befo.] { ";
   for (int i = 0; i < solLength; i++) {
-    cout << xprime[i].node << " [" << xprime[i].key << "] " ;
+    cout << xprime[i].node << " [" << xprime[i].demand << "] " ;
   }
   cout << " - " << population[index].getFitness();
 
@@ -1546,11 +1546,27 @@ void Population::fixInvalidSolution(Instance *inst, int index, double muleVeloci
 
   cout << "\n[afte.] { ";
   for (int i = 0; i < solLength; i++) {
-    cout << xprime[i].node << " [" << xprime[i].key << "] " ;
+    cout << xprime[i].node << " [" << xprime[i].demand << "] " ;
   }
   cout << " - " << curFitness;
 
+  for (int y = 1; y < solLength; y++) {
+    population[index].updateKey(xprime[y].node, xprime[y].key);
+  }
+  population[index].setFitness(curFitness);
+
+  SolutionStruct *l = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+
+  cout << "\n\n[check] { ";
+  for (int x = 0; x < solLength; x++) {
+    cout << l[x].node << " [" << l[x].demand << "] ";
+  }
+  cout << " - " << population[index].getFitness() << endl;
+
   cout << "\n\n> paused";
+
+  int hl = 0;
+  cin >> hl;
 
   cin >> finalBS;
 }

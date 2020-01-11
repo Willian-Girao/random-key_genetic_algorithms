@@ -22,10 +22,11 @@ void Chromosome::setResetGenes(Hallele * newGenes) {
 }
 
 void Chromosome::updateKey(int node, double key) {
-  if (node != 0) {
-    genes[node].key = key;
-  } else {
-    genes[length-1].key = key;
+  for (int i = 1; i < length; i++) {
+    if (genes[i].index == node) {
+      genes[i].key = key;
+      break;
+    }
   }
 }
 
