@@ -1489,3 +1489,68 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity) {
   delete[] x;
   delete[] xprime;
 }
+
+void Population::fixInvalidSolution(Instance *inst, int index, double muleVelocity) {
+  int finalBS = 0;
+  int solLength = population[index].getLength();
+  double curFitness = population[index].getFitness();
+  // cout << "\n> sol length " << solLength;
+
+  // SolutionStruct *x = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+  SolutionStruct *xprime = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+
+  for (int i = 1; i < solLength; i++) {
+    if (xprime[i].node == 0) {
+      finalBS = i;
+      break;
+    }
+  }
+
+  cout << "\n[befo.] { ";
+  for (int i = 0; i < solLength; i++) {
+    cout << xprime[i].node << " [" << xprime[i].key << "] " ;
+  }
+  cout << " - " << population[index].getFitness();
+
+  // cout << "\n> final bs " << finalBS;
+
+  double bestGain = 0.0;
+  double gain = 0.0;
+  int selectedIndex = 0;
+
+  while (inst->isInvalidSolution(curFitness) && finalBS <= solLength-1) {
+    for (int i = solLength-1; i > finalBS; i--) {
+      gain = inst->getGainAB(xprime[finalBS-1].node, xprime[i].node, muleVelocity);
+      if (gain > bestGain) {
+        bestGain = gain;
+        selectedIndex = i;
+      }
+    }
+
+    // cout << "\n\n> best gain " << bestGain;
+    // cout << "\n> selec index " << selectedIndex;
+
+    shiftFix(xprime, solLength, selectedIndex, finalBS);
+    curFitness = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
+    finalBS++;
+    bestGain = 0.0;
+
+    cout << "\n[xxxxx] { ";
+    for (int i = 0; i < solLength; i++) {
+      cout << xprime[i].node << " [" << xprime[i].demand << "] " ;
+    }
+    cout << " - " << curFitness;
+  }
+
+  // cout << "\n> final bs " << finalBS;
+
+  cout << "\n[afte.] { ";
+  for (int i = 0; i < solLength; i++) {
+    cout << xprime[i].node << " [" << xprime[i].key << "] " ;
+  }
+  cout << " - " << curFitness;
+
+  cout << "\n\n> paused";
+
+  cin >> finalBS;
+}

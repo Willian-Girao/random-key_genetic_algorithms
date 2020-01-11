@@ -41,6 +41,8 @@ class Population {
 
     int findAXFromA(SolutionStruct *solution, int a);
 
+    void fixInvalidSolution(Instance *inst, int index, double muleVelocity);
+
     // void localSearch(int index, double muleVelocity, Instance *inst); /* Upplies a loceal search to the chromosome 'index' */
 
     /* Utils */

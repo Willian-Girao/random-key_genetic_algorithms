@@ -650,8 +650,8 @@ double Instance::getGainAB(int A_index, int B_index, double muleSpeed) {
   //
   // cin >> pause;
 
-  double totalCost = totalDemandAttended / (totalDistance / muleSpeed);
-  // double totalCost = totalDemandAttended / totalDistance;
+  // double totalCost = totalDemandAttended / (totalDistance / muleSpeed);
+  double totalCost = totalDemandAttended / totalDistance;
 
   // cout << "total cost: " << totalCost << endl;
   //

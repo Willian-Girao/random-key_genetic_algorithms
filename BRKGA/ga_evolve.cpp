@@ -84,6 +84,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
           pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed, false));
           if (inst.isInvalidSolution(pop.getFitness(i))) {
             invalidCount++;
+            pop.fixInvalidSolution(&inst, i, muleSpeed);
           }
           totalCount++;
           pop.resetEvaluateFlag(i);
@@ -121,11 +122,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
     time = clock() - time;
 
-    //Printing best solution to screem.
-    // inst.printFinalSolution(pop.getSingleChromosome(0).getChromosomeAsArray(), muleSpeed);
-    // cout << "\nFitness: " << setprecision(10) << pop.getSingleChromosome(0).getFitness() << endl;
-
-    // //Calculating total time taken by the program.
+    //Calculating total time taken by the program.
     double elapsed = 0.0;
 
     if (timeFormat == "ms") {

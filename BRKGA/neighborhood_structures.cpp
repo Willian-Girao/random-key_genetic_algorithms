@@ -149,6 +149,40 @@ void nSwap21(SolutionStruct *solution, int solLength) {
 	}
 }
 
+void shiftFix(SolutionStruct *solution, int solLength, int swapA, int pos) {
+	solLength = solLength-1;
+
+	int posAuxNode = solution[pos].node;
+	int posAuxDemand = solution[pos].demand;
+
+	solution[pos].node = solution[swapA].node;
+	solution[pos].demand = solution[swapA].demand;
+
+	if (swapA < pos) {
+		for (int i = pos-1; i >= swapA; i--) {
+			int aux1 = solution[i].node;
+			double aux2 = solution[i].demand;
+
+			solution[i].node = posAuxNode;
+			solution[i].demand = posAuxDemand;
+
+			posAuxNode = aux1;
+			posAuxDemand = aux2;
+		}
+	} else {
+		for (int i = pos+1; i <= swapA; i++) {
+			int aux1 = solution[i].node;
+			double aux2 = solution[i].demand;
+
+			solution[i].node = posAuxNode;
+			solution[i].demand = posAuxDemand;
+
+			posAuxNode = aux1;
+			posAuxDemand = aux2;
+		}
+	}
+}
+
 // int main() {
 //
 // 	SolutionStruct *solution = new SolutionStruct[8];
