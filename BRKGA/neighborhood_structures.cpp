@@ -81,7 +81,7 @@ void nSwap21(SolutionStruct *solution, int solLength) {
 
 	while(swapA == solLength)
 	{
-		swapB = rand() % solLength + 1; /* Random in [1, solLength] */
+		swapA = rand() % solLength + 1; /* Random in [1, solLength] */
 	}
 
 	while(swapB == swapA || swapB == swapA+1)

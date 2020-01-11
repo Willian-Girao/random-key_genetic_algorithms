@@ -808,6 +808,8 @@ void Population::mateIndividuals(Instance *inst, double muleVelocity) {
 
 		population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
 		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
+
+    // local search
 		vnd(i, inst, muleVelocity);
 	}
 
@@ -1288,11 +1290,11 @@ void Population::vnd(int index, Instance *inst, double muleVelocity) {
 
   int solLength = population[0].getLength();
 
-  cout << "x  { ";
-  for (int j = 0; j < solLength; j++) {
-    cout << "[" << x[j].node << "]";
-  }
-  cout << " - " << fx << endl;
+  // cout << "x  { ";
+  // for (int j = 0; j < solLength; j++) {
+  //   cout << "[" << x[j].node << "]";
+  // }
+  // cout << " - " << fx << endl;
 
   while (k < kmax)
   {
@@ -1307,14 +1309,14 @@ void Population::vnd(int index, Instance *inst, double muleVelocity) {
     fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
 
     if (fxprime < fx) {
-      cout << "\n> Improvement ";
-      if (k == 0) {
-        cout << "(shift)\n";
-      } else if (k == 1) {
-        cout << "(swap)\n";
-      } else if (k == 2) {
-        cout << "(swap21)\n";
-      }
+      // cout << "\n> Improvement ";
+      // if (k == 0) {
+      //   cout << "(shift)\n";
+      // } else if (k == 1) {
+      //   cout << "(swap)\n";
+      // } else if (k == 2) {
+      //   cout << "(swap21)\n";
+      // }
       // update better fintness
       fx = fxprime;
       // update genes
@@ -1322,11 +1324,11 @@ void Population::vnd(int index, Instance *inst, double muleVelocity) {
         x[i].node = xprime[i].node;
         x[i].demand = xprime[i].demand;
       }
-      cout << "x' { ";
-      for (int j = 0; j < solLength; j++) {
-        cout << "[" << xprime[j].node << "]";
-      }
-      cout << " - " << fx << endl;
+      // cout << "x' { ";
+      // for (int j = 0; j < solLength; j++) {
+      //   cout << "[" << xprime[j].node << "]";
+      // }
+      // cout << " - " << fx << endl;
     } else {
       // reset x' to the previously x
       for (int i = 1; i < solLength; i++) {
@@ -1339,11 +1341,11 @@ void Population::vnd(int index, Instance *inst, double muleVelocity) {
   }
 
   if (fx < population[index].getFitness()) {
-    cout << "\nx  { ";
-    for (int j = 0; j < solLength; j++) {
-      cout << "[" << x[j].node << "]";
-    }
-    cout << " - " << fx << endl;
+    // cout << "\nx  { ";
+    // for (int j = 0; j < solLength; j++) {
+    //   cout << "[" << x[j].node << "]";
+    // }
+    // cout << " - " << fx << endl;
 
     // update genes
     for (int y = 1; y < solLength; y++) {
@@ -1352,15 +1354,18 @@ void Population::vnd(int index, Instance *inst, double muleVelocity) {
     // update fitness
     population[index].setFitness(fx);
 
-    cout << "\n\n> validation\n";
-    SolutionStruct *v = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
-    cout << "\nc  { ";
-    for (int j = 0; j < solLength; j++) {
-      cout << "[" << v[j].node << "]";
-    }
-    cout << " - " << population[index].getFitness() << endl;
-
-    cout << "\n\n> paused";
-    cin >> fx;
+    // cout << "\n\n> validation\n";
+    // SolutionStruct *v = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+    // cout << "\nc  { ";
+    // for (int j = 0; j < solLength; j++) {
+    //   cout << "[" << v[j].node << "]";
+    // }
+    // cout << " - " << population[index].getFitness() << endl;
+    //
+    // cout << "\n\n> paused";
+    // cin >> fx;
   }
+
+  delete[] x;
+  delete[] xprime;
 }

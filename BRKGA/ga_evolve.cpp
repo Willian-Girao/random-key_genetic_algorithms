@@ -91,10 +91,9 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
       //Introduce mutants.
       pop.introduceMutants(); /* Standard BRKGA mutation */
-      // pop.mutationBRKGA01(0.5, 0.7); /* NM01 - New Mutation 01 */
 
       //Complete with offspring.
-      pop.mateIndividuals(&inst, muleSpeed); /* Standard BRKGA crossover */
+      pop.mateIndividuals(&inst, muleSpeed); /* BRKGA crossover with local search (vnd) */
       // pop.sequentialConstructiveCrossover(&inst, muleSpeed); /* Produces bad results */
 
       //Updating previous best
@@ -152,9 +151,9 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   double avgSol = averageSol / totalExecution;
   double avgTime = everageTime / totalExecution;
 
-  cout << "===========================================\n\n";
+  // cout << "===========================================\n\n";
   cout << "Instance: " << instanceFileName << endl;
-  cout << "Total executions: " << totalExecution << endl << endl;
+  cout << "Total executions: " << totalExecution << endl;
   cout << "Best solution: " << setprecision(10) << overallBest << endl;
   cout << "Avg. solution: " << setprecision(10) << avgSol << endl;
   cout << "Avg. time: " << setprecision(10) << avgTime << endl;
