@@ -1397,17 +1397,17 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
   // cout << "\n> rvnd " << rvndMax;
   // // cin >> fx;
 
-  int kmax = 3;
+  int kmax = 4;
   int k = rand() % kmax;
   int lastk = k;
 
   int solLength = population[0].getLength();
 
-  // cout << "x  { ";
-  // for (int j = 0; j < solLength; j++) {
-  //   cout << "[" << x[j].node << "]";
-  // }
-  // cout << " - " << fx << endl;
+  cout << "x  { ";
+  for (int j = 0; j < solLength; j++) {
+    cout << "[" << x[j].node << "]";
+  }
+  cout << " - " << fx << endl;
 
   int i = 0;
   while (i < 20)
@@ -1418,19 +1418,16 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
       nSwap(xprime, solLength);
     } else if (k == 2) {
       nSwap21(xprime, solLength);
+    } else if (k == 3) {
+      fxprime = twoOpt(xprime, inst, muleVelocity, fxprime);
+      cout << "2-opt" << endl;
     }
 
-    fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
+    if (k != 3) {
+      fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
+    }
 
     if (fxprime < fx) {
-      // cout << "\n> Improvement ";
-      // if (k == 0) {
-      //   cout << "(shift)\n";
-      // } else if (k == 1) {
-      //   cout << "(swap)\n";
-      // } else if (k == 2) {
-      //   cout << "(swap21)\n";
-      // }
       // update better fintness
       fx = fxprime;
       // update genes
@@ -1439,11 +1436,6 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
         x[i].demand = xprime[i].demand;
       }
       i = 0;
-      // cout << "x' { ";
-      // for (int j = 0; j < solLength; j++) {
-      //   cout << "[" << xprime[j].node << "]";
-      // }
-      // cout << " - " << fx << endl;
     } else {
       // reset x' to the previously x
       for (int i = 1; i < solLength; i++) {
@@ -1461,33 +1453,83 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
   }
 
   if (fx < population[index].getFitness()) {
-    // cout << "\nx  { ";
-    // for (int j = 0; j < solLength; j++) {
-    //   cout << "[" << x[j].node << "]";
-    // }
-    // cout << " - " << fx << endl;
-
     // update genes
     for (int y = 1; y < solLength; y++) {
       population[index].updateKey(x[y].node, x[y].key);
     }
     // update fitness
     population[index].setFitness(fx);
-
-    // cout << "\n\n> validation\n";
-    // SolutionStruct *v = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
-    // cout << "\nc  { ";
-    // for (int j = 0; j < solLength; j++) {
-    //   cout << "[" << v[j].node << "]";
-    // }
-    // cout << " - " << population[index].getFitness() << endl;
-    //
-    // cout << "\n\n> paused";
-    // cin >> fx;
   }
+
+  cout << "\n\n> validation\n";
+  SolutionStruct *v = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+  cout << "\nc  { ";
+  for (int j = 0; j < solLength; j++) {
+    cout << "[" << v[j].node << "]" << v[j].demand;
+  }
+  cout << " - " << population[index].getFitness() << endl;
+
+  cout << "\n\n> paused";
+  cin >> fx;
 
   delete[] x;
   delete[] xprime;
+}
+
+double Population::twoOpt(SolutionStruct *x, Instance *inst, double muleVelocity, double curFit) {
+  SolutionStruct *xprime = NULL;
+
+  double fx = curFit;
+  double fxprime = fx;
+
+  int solLength = population[0].getLength();
+
+  // cout << "\ny  { ";
+	// for (int j = 0; j < solLength; j++) {
+	// 	cout << "[" << x[j].node << "]" << x[j].demand;
+	// }
+  // cout << " - " << fx << endl;
+
+  // 2-Opt
+  int i = 2;
+  while (i < (solLength - 1))
+	{
+		for (int k = (i + 1); k < solLength; ++k)
+		{
+			if (k != i+1)
+      {
+        xprime = twoOptLooop(x, solLength, i, k);
+        fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
+
+        if (fxprime < fx)
+        {
+          // cout << "\n> improment\n";
+          // cout << "\ny' { ";
+        	// for (int j = 0; j < solLength; j++) {
+        	// 	cout << "[" << xprime[j].node << "]";
+        	// }
+          // cout << " - " << fxprime << endl;
+          // cout << "i=" << i << ", k=" << k << endl;
+
+          // update genes
+          for (int i = 1; i < solLength; i++)
+          {
+            x[i].node = xprime[i].node;
+            x[i].demand = xprime[i].demand;
+          }
+          // update better fintness
+          fx = fxprime;
+          // start again
+          i = 2;
+        }
+			}
+		}
+    i++;
+	}
+
+  delete[] xprime;
+
+  return fx;
 }
 
 void Population::fixInvalidSolution(Instance *inst, int index, double muleVelocity) {

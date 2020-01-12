@@ -58,6 +58,7 @@ class Population {
 
     void vnd(int index, Instance *inst, double muleVelocity);
     void rvnd(int index, Instance *inst, double muleVelocity, int rvndMax);
+    double twoOpt(SolutionStruct *x, Instance *inst, double muleVelocity, double curFit);
 
   private:
     int size; /* Number of individuals within the population. */

@@ -183,6 +183,38 @@ void shiftFix(SolutionStruct *solution, int solLength, int swapA, int pos) {
 	}
 }
 
+SolutionStruct *twoOptLooop(SolutionStruct *solution, int solLength, int inputI, int inputK) {
+	SolutionStruct *newSol = new SolutionStruct[solLength];
+
+	// 1. take currentSol[0] to currentSol[inputI-1] and add them in order to newSol
+	for (int i = 0; i < inputI; ++i)
+	{
+		newSol[i].node = solution[i].node;
+		newSol[i].key = solution[i].key;
+		newSol[i].demand = solution[i].demand;
+	}
+
+	// 2. take currentSol[inputI] to currentSol[inputK] and add them in reverse order to newSol
+	for (int k = (inputK - 1); k >= inputI; --k)
+	{
+		int indx = (inputK - 1) - (k - inputI);
+
+		newSol[indx].node = solution[k].node;
+		newSol[indx].key = solution[k].key;
+		newSol[indx].demand = solution[k].demand;
+	}
+
+	// 3. take currentSol[inputK+1] to chromLength and add them in order to newSol
+	for (int x = inputK; x < solLength; ++x)
+	{
+		newSol[x].node = solution[x].node;
+		newSol[x].key = solution[x].key;
+		newSol[x].demand = solution[x].demand;
+	}
+
+	return newSol;
+}
+
 // int main() {
 //
 // 	SolutionStruct *solution = new SolutionStruct[8];

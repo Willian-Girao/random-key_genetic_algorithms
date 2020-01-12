@@ -10,10 +10,10 @@
 
 using namespace std;
 
-struct Hallele {
-  double key;
-  int index;
-};
+// struct Hallele {
+//   double key;
+//   int index;
+// };
 
 Hallele *twoOptSwapInner(Hallele *currentSol, int inputI, int inputK, int chromLength) {
 	Hallele *newSol = new Hallele[chromLength];
@@ -51,73 +51,73 @@ Hallele *twoOptSwapInner(Hallele *currentSol, int inputI, int inputK, int chromL
 	return newSol;
 }
 
-int main() {
-
-	int chromLength = 9;
-
-	//Example route: 0, 1, 2, 3, 4, 5, 6, 7, 0
-	Hallele *h = new Hallele[chromLength];
-
-	h[0].index = 0;
-	h[0].key = 0.0;
-
-	h[1].index = 1;
-	h[1].key = 0.0;
-
-	h[2].index = 2;
-	h[2].key = 0.0;
-
-	h[3].index = 3;
-	h[3].key = 0.0;
-
-	h[4].index = 4;
-	h[4].key = 0.0;
-
-	h[5].index = 5;
-	h[5].key = 0.0;
-
-	h[6].index = 6;
-	h[6].key = 0.0;
-
-	h[7].index = 7;
-	h[7].key = 0.0;
-
-	h[8].index = 0;
-	h[8].key = 0.0;
-
-	cout << "\n\n> Calculating 2-Opt...\n\n\n";
-
-	// cout << "\n\ncurSol [ A B C D E F G H A ]";
-	cout << "\n\ncurSol [ ";
-	for (int i = 1; i < chromLength; ++i)
-	{
-		cout << h[i].index << " ";
-	}
-	cout << " ]\n\n";
-
-	Hallele *newSol = NULL;
-
-	//Number of nodes eligible to be swapped - 1 | 'i' starts as '2' as to leave start BS out
-	for (int i = 2; i < (chromLength - 1) - 1; ++i)
-	{
-		//Number of nodes eligible to be swapped | '-1' to leave final BS out
-		for (int k = (i + 1); k < chromLength; ++k)
-		{
-			if (k != i+1) {
-				newSol = twoOptSwapInner(h, i, k, chromLength);
-				cout << "i=" << i << " ,k=" << k << "\n\n";
-			}
-		}
-	}
-
-	// newSol = twoOptSwapInner(h, 3, 5, chromLength);
-	//
-	// cout << "\n\nnewSol [ ";
-	// for (int i = 1; i < chromLength; ++i)
-	// {
-	// 	cout << newSol[i].index << " ";
-	// }
-	// cout << " ]\n\n";
-
-	return 0;
-}
+// int main() {
+//
+// 	int chromLength = 9;
+//
+// 	//Example route: 0, 1, 2, 3, 4, 5, 6, 7, 0
+// 	Hallele *h = new Hallele[chromLength];
+//
+// 	h[0].index = 0;
+// 	h[0].key = 0.0;
+//
+// 	h[1].index = 1;
+// 	h[1].key = 0.0;
+//
+// 	h[2].index = 2;
+// 	h[2].key = 0.0;
+//
+// 	h[3].index = 3;
+// 	h[3].key = 0.0;
+//
+// 	h[4].index = 4;
+// 	h[4].key = 0.0;
+//
+// 	h[5].index = 5;
+// 	h[5].key = 0.0;
+//
+// 	h[6].index = 6;
+// 	h[6].key = 0.0;
+//
+// 	h[7].index = 7;
+// 	h[7].key = 0.0;
+//
+// 	h[8].index = 0;
+// 	h[8].key = 0.0;
+//
+// 	cout << "\n\n> Calculating 2-Opt...\n\n\n";
+//
+// 	// cout << "\n\ncurSol [ A B C D E F G H A ]";
+// 	cout << "\n\ncurSol [ ";
+// 	for (int i = 1; i < chromLength; ++i)
+// 	{
+// 		cout << h[i].index << " ";
+// 	}
+// 	cout << " ]\n\n";
+//
+// 	Hallele *newSol = NULL;
+//
+// 	//Number of nodes eligible to be swapped - 1 | 'i' starts as '2' as to leave start BS out
+// 	for (int i = 2; i < (chromLength - 1); ++i)
+// 	{
+// 		//Number of nodes eligible to be swapped | '-1' to leave final BS out
+// 		for (int k = (i + 1); k < chromLength; ++k)
+// 		{
+// 			if (k != i+1) {
+// 				newSol = twoOptSwapInner(h, i, k, chromLength);
+// 				cout << "i=" << i << " ,k=" << k << "\n\n";
+// 			}
+// 		}
+// 	}
+//
+// 	// newSol = twoOptSwapInner(h, 3, 5, chromLength);
+// 	//
+// 	// cout << "\n\nnewSol [ ";
+// 	// for (int i = 1; i < chromLength; ++i)
+// 	// {
+// 	// 	cout << newSol[i].index << " ";
+// 	// }
+// 	// cout << " ]\n\n";
+//
+// 	return 0;
+// }
