@@ -37,6 +37,8 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   double localSearchPercent = 5.0;
 
   int executionsCount = 0;
+  int noImproveCount = 0;
+  int rvndKmax = 20;
 
   bool firstExecution = true;
 
@@ -82,12 +84,13 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
         if (pop.shouldCalcFitness(i))
         {
           pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed, false));
-          if (inst.isInvalidSolution(pop.getFitness(i))) {
-            invalidCount++;
-            pop.fixInvalidSolution(&inst, i, muleSpeed);
-          }
-          totalCount++;
           pop.resetEvaluateFlag(i);
+
+          // if (inst.isInvalidSolution(pop.getFitness(i))) {
+          //   invalidCount++;
+          //   pop.fixInvalidSolution(&inst, i, muleSpeed);
+          // }
+          // totalCount++;
         }
       }
 
@@ -97,14 +100,24 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       //Save best sol. thus far
       bestSolution = pop.getSingleChromosome(0).getFitness();
 
+      // if (bestSolution == previousBest) {
+      //   noImproveCount++;
+      //   if (noImproveCount > 9) {
+      //     rvndKmax += 2;
+      //   }
+      // } else {
+      //   noImproveCount = 0;
+      //   rvndKmax = 20;
+      // }
+
       //Introduce mutants.
       pop.introduceMutants(); /* Standard BRKGA mutation */
 
       //Complete with offspring.
       if (mating == "default") {
-        pop.mateIndividuals(&inst, muleSpeed, ls); /* BRKGA crossover (with local search - vnd/rvnd) */
+        pop.mateIndividuals(&inst, muleSpeed, ls, rvndKmax); /* BRKGA crossover (with local search - vnd/rvnd) */
       } else if (mating == "scc") {
-        pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls); /* Sequential Constructive Crossover */
+        pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls, rvndKmax); /* Sequential Constructive Crossover */
       }
 
       //Updating previous best
@@ -161,10 +174,10 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   // cout << "===========================================\n\n";
   cout << "\nInstance: " << instanceFileName << endl;
   cout << "Total executions: " << totalExecution << endl;
-  cout << "Mating: " << mating << endl;
+  cout << "\nMating: " << mating << endl;
   cout << "Local search: " << ls << endl;
-  cout << "Best solution: " << setprecision(10) << overallBest << endl;
+  cout << "\nBest solution: " << setprecision(10) << overallBest << endl;
   cout << "Avg. solution: " << setprecision(10) << avgSol << endl;
   cout << "Avg. time: " << setprecision(10) << avgTime << endl;
-  cout << "Invalid solutions : " << setprecision(2) << ((invalidCount*100.0) / totalCount) << "\% (" << invalidCount << ")";
+  // cout << "Invalid solutions : " << setprecision(2) << ((invalidCount*100.0) / totalCount) << "\% (" << invalidCount << ")";
 }

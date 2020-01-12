@@ -15,21 +15,20 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 
-  int popSize = stoi(argv[3]);
-  int maxInt = stoi(argv[2]);
   int debuggLevel = 1;
   int totalExecutions = stoi(argv[1]);
+  int maxInt = stoi(argv[2]);
+  int popSize = stoi(argv[3]);
   string ls = argv[4];
   string mating = argv[5];
+  string sensors = argv[6];
+  string instance = argv[7];
 
   bool debbug = true;
 
   double muleSpeed = 0.001;
 
-  string instanceFileName = "./instances/bs-central/6/100-0/instance_dmsp_c_n6_r50_0.dat.dat";
-  // string instanceFileName = "./instances/bs-central/11/100-0/instance_dmsp_c_n11_r50_0.dat.dat";
-  // string instanceFileName = "./instances/bs-central/16/100-0/instance_dmsp_c_n16_r50_0.dat.dat";
-  // string instanceFileName = "./instances/bs-central/21/100-0/instance_dmsp_c_n21_r50_2.dat.dat";
+  string instanceFileName = "./instances/bs-central/" + sensors + "/100-0/instance_dmsp_c_n" + sensors + "_r50_" + instance + ".dat.dat";
   string timeFormat = "s";
 
   solveDMSP_RKGA(popSize, maxInt, muleSpeed, instanceFileName, timeFormat, debbug, debuggLevel, totalExecutions, ls, mating);
