@@ -1491,9 +1491,9 @@ double Population::twoOpt(SolutionStruct *x, Instance *inst, double muleVelocity
   // cout << " - " << fx << endl;
 
   // 2-Opt
-  int i = 2;
-  while (i < (solLength - 1))
+  for (int i = 2; i < (solLength - 1); i++)
 	{
+    cout << "\n> i outside " << i << endl;
 		for (int k = (i + 1); k < solLength; ++k)
 		{
 			if (k != i+1)
@@ -1520,12 +1520,15 @@ double Population::twoOpt(SolutionStruct *x, Instance *inst, double muleVelocity
           // update better fintness
           fx = fxprime;
           // start again
-          i = 2;
+          cout << "\n> i inside " << i << endl;
+          i = 1; // for loop will make it '2'
+          break;
         }
 			}
 		}
-    i++;
 	}
+  cout << "\n\n> paused";
+  cin >> fx;
 
   delete[] xprime;
 
