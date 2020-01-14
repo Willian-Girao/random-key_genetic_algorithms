@@ -1403,14 +1403,14 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
 
   int solLength = population[0].getLength();
 
-  cout << "x  { ";
-  for (int j = 0; j < solLength; j++) {
-    cout << "[" << x[j].node << "]";
-  }
-  cout << " - " << fx << endl;
+  // cout << "x  { ";
+  // for (int j = 0; j < solLength; j++) {
+  //   cout << "[" << x[j].node << "]";
+  // }
+  // cout << " - " << fx << endl;
 
   int i = 0;
-  while (i < 20)
+  while (i < 10)
   {
     if (k == 0) {
       nShift(xprime, solLength);
@@ -1420,7 +1420,6 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
       nSwap21(xprime, solLength);
     } else if (k == 3) {
       fxprime = twoOpt(xprime, inst, muleVelocity, fxprime);
-      cout << "2-opt" << endl;
     }
 
     if (k != 3) {
@@ -1461,16 +1460,16 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
     population[index].setFitness(fx);
   }
 
-  cout << "\n\n> validation\n";
-  SolutionStruct *v = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
-  cout << "\nc  { ";
-  for (int j = 0; j < solLength; j++) {
-    cout << "[" << v[j].node << "]" << v[j].demand;
-  }
-  cout << " - " << population[index].getFitness() << endl;
-
-  cout << "\n\n> paused";
-  cin >> fx;
+  // cout << "\n\n> validation\n";
+  // SolutionStruct *v = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+  // cout << "\nc  { ";
+  // for (int j = 0; j < solLength; j++) {
+  //   cout << "[" << v[j].node << "]" << v[j].demand;
+  // }
+  // cout << " - " << population[index].getFitness() << endl;
+  //
+  // cout << "\n\n> paused";
+  // cin >> fx;
 
   delete[] x;
   delete[] xprime;
@@ -1493,7 +1492,7 @@ double Population::twoOpt(SolutionStruct *x, Instance *inst, double muleVelocity
   // 2-Opt
   for (int i = 2; i < (solLength - 1); i++)
 	{
-    cout << "\n> i outside " << i << endl;
+    // cout << "\n> i outside " << i << endl;
 		for (int k = (i + 1); k < solLength; ++k)
 		{
 			if (k != i+1)
@@ -1520,15 +1519,15 @@ double Population::twoOpt(SolutionStruct *x, Instance *inst, double muleVelocity
           // update better fintness
           fx = fxprime;
           // start again
-          cout << "\n> i inside " << i << endl;
+          // cout << "\n> i inside " << i << endl;
           i = 1; // for loop will make it '2'
           break;
         }
 			}
 		}
 	}
-  cout << "\n\n> paused";
-  cin >> fx;
+  // cout << "\n\n> paused";
+  // cin >> fx;
 
   delete[] xprime;
 
