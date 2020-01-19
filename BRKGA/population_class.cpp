@@ -827,6 +827,44 @@ void Population::mateIndividuals(Instance *inst, double muleVelocity, string ls,
 	// cin >> a;
 }
 
+void Population::localSearch2Opt(Instance *inst, double muleVelocity) {
+  SolutionStruct *xprime = inst->buildSolutionStructure(population[0].getChromosomeAsArray());
+
+  cout << "\nx  { ";
+  for (int j = 0; j < population[0].getLength(); j++) {
+    cout << xprime[j].node << " (" << setprecision(2) << xprime[j].key << ") ";
+  }
+  cout << " - " << population[0].getFitness() << endl;
+
+  double fx = population[0].getFitness();
+  double fxprime = fx;
+
+  fxprime = twoOpt(xprime, inst, muleVelocity, fxprime);
+
+  if (fxprime < fx) {
+    cout << "\n> improment";
+    // update genes
+    for (int y = 1; y < population[0].getLength(); y++) {
+      population[0].updateKey(xprime[y].node, xprime[y].key);
+    }
+    // update fitness
+    population[0].setFitness(fxprime);
+    population[0].resetEvaluateFlag();
+  }
+
+  SolutionStruct *v = inst->buildSolutionStructure(population[0].getChromosomeAsArray());
+  cout << "\nx' { ";
+  for (int j = 0; j < population[0].getLength(); j++) {
+    cout << v[j].node << " (" << setprecision(2) << v[j].key << ") ";
+  }
+  cout << " - " << population[0].getFitness() << endl;
+
+  cout << "\n\n> paused";
+  cin >> fx;
+
+  delete[] xprime;
+}
+
 int Population::findAXFromA(SolutionStruct *solution, int a) {
   int next = -1;
 
@@ -1513,13 +1551,13 @@ double Population::twoOpt(SolutionStruct *x, Instance *inst, double muleVelocity
 
         if (fxprime < fx)
         {
-          // cout << "\n> improment\n";
-          // cout << "\ny' { ";
-        	// for (int j = 0; j < solLength; j++) {
-        	// 	cout << "[" << xprime[j].node << "]";
-        	// }
-          // cout << " - " << fxprime << endl;
-          // cout << "i=" << i << ", k=" << k << endl;
+          cout << "\n> improment\n";
+          cout << "\ny { ";
+        	for (int j = 0; j < solLength; j++) {
+        		cout << "[" << xprime[j].node << "]";
+        	}
+          cout << " - " << fxprime << endl;
+          cout << "i=" << i << ", k=" << k << endl;
 
           // update genes
           for (int i = 1; i < solLength; i++)

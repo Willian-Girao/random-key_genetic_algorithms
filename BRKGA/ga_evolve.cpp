@@ -120,6 +120,8 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
         pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls, rvndKmax); /* Sequential Constructive Crossover */
       }
 
+      pop.localSearch2Opt(&inst, muleSpeed); /* 2-Opt Local Search */
+
       //Updating previous best
       previousBest = bestSolution;
     }
