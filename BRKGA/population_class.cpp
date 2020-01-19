@@ -1397,7 +1397,8 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
   // cout << "\n> rvnd " << rvndMax;
   // // cin >> fx;
 
-  int kmax = 4;
+  // int kmax = 4;
+  int kmax = 3;
   int k = rand() % kmax;
   int lastk = k;
 
@@ -1410,7 +1411,7 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
   // cout << " - " << fx << endl;
 
   int i = 0;
-  while (i < 10)
+  while (i < 20)
   {
     if (k == 0) {
       nShift(xprime, solLength);
@@ -1418,13 +1419,17 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
       nSwap(xprime, solLength);
     } else if (k == 2) {
       nSwap21(xprime, solLength);
-    } else if (k == 3) {
-      fxprime = twoOpt(xprime, inst, muleVelocity, fxprime);
     }
 
-    if (k != 3) {
-      fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
-    }
+    // else if (k == 3) {
+    //   fxprime = twoOpt(xprime, inst, muleVelocity, fxprime);
+    // }
+
+    // if (k != 3) {
+    //   fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
+    // }
+
+    fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
 
     if (fxprime < fx) {
       // update better fintness
