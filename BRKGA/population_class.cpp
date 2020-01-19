@@ -711,10 +711,11 @@ Hallele * Population::getSolutionAsArray(int solIndex) {
 }
 
 void Population::updateFitness(int index, double fitness) {
-	if (population[index].getFitness() == 0.0)
-	{
-		population[index].setFitness(fitness);
-	}
+	// if (population[index].getFitness() == 0.0)
+	// {
+	// 	population[index].setFitness(fitness);
+	// }
+  population[index].setFitness(fitness);
 }
 
 void Population::resetEvaluateFlag(int index) {
@@ -742,7 +743,7 @@ void Population::introduceMutants(void) {
 	{
 		// cout << "Solution " << index << " became a mutant.\n";
 		population[index].resetChromosome();
-		population[index].setFitness(0.0);
+		// population[index].setFitness(0.0);
 		population[index].setEvaluateFlag();
 
 		index--;
@@ -812,6 +813,7 @@ void Population::mateIndividuals(Instance *inst, double muleVelocity, string ls,
 
 		population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
 		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
+    population[i].resetEvaluateFlag();
 
     // local search
     if (ls == "vnd") {
@@ -1149,6 +1151,8 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
       population[i].updateKey(child[y].node, child[y].key);
     }
     population[i].setFitness(newFit);
+    population[i].resetEvaluateFlag();
+
 
     // SolutionStruct *l = inst->buildSolutionStructure(population[i].getChromosomeAsArray());
     //
@@ -1370,6 +1374,7 @@ void Population::vnd(int index, Instance *inst, double muleVelocity) {
     }
     // update fitness
     population[index].setFitness(fx);
+    population[index].resetEvaluateFlag();
 
     // cout << "\n\n> validation\n";
     // SolutionStruct *v = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
@@ -1463,6 +1468,7 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
     }
     // update fitness
     population[index].setFitness(fx);
+    population[index].resetEvaluateFlag();
   }
 
   // cout << "\n\n> validation\n";

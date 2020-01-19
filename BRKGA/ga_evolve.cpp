@@ -127,7 +127,10 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     //Updating fitness.
     for (int i = 0; i < popSize; ++i)
     {
-      pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed, false));
+      if (pop.shouldCalcFitness(i))
+      {
+        pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed, false));
+      }
     }
 
     //Sorting by fitness.
