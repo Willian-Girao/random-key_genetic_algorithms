@@ -23,6 +23,7 @@ int main(int argc, char* argv[]) {
   string mating = argv[5];
   string sensors = argv[6];
   string instance = argv[7];
+  string lso = argv[8];
 
   bool debbug = true;
 
@@ -31,7 +32,7 @@ int main(int argc, char* argv[]) {
   string instanceFileName = "./instances/bs-central/" + sensors + "/100-0/instance_dmsp_c_n" + sensors + "_r50_" + instance + ".dat.dat";
   string timeFormat = "s";
 
-  solveDMSP_RKGA(popSize, maxInt, muleSpeed, instanceFileName, timeFormat, debbug, debuggLevel, totalExecutions, ls, mating);
+  solveDMSP_RKGA(popSize, maxInt, muleSpeed, instanceFileName, timeFormat, debbug, debuggLevel, totalExecutions, ls, mating, lso);
 
   return 0;
 }

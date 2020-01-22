@@ -28,7 +28,7 @@
 // 'maxInt': maximum number of iterations.
 // 'muleSpeed': speed utilized by the mule.
 // 'instanceFileName': name of the .txt file containing the graph instance.
-void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFileName, string timeFormat, bool debbug, int debbugLevel, int totalExecution, string ls, string mating) {
+void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFileName, string timeFormat, bool debbug, int debbugLevel, int totalExecution, string ls, string mating, string lso) {
   srand(time(0));
 
   double overallBest = -1.0;
@@ -81,7 +81,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       //Updating fitness.
       for (int i = 0; i < popSize; ++i)
       {
-        if (pop.shouldCalcFitness(i))
+        if (pop.shouldCalcFitness(i) || (pop.getSingleChromosome(i).getFitness() == 0.0))
         {
           pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed, false));
           pop.resetEvaluateFlag(i);
@@ -99,6 +99,10 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
       //Save best sol. thus far
       bestSolution = pop.getSingleChromosome(0).getFitness();
+
+      // cout << j << " " << setprecision(10) << bestSolution << "\n";
+      // cout << setprecision(10) << bestSolution << "\n";
+      // cout << j << "\n";
 
       // if (bestSolution == previousBest) {
       //   noImproveCount++;
@@ -120,7 +124,9 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
         pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls, rvndKmax); /* Sequential Constructive Crossover */
       }
 
-      pop.localSearch2Opt(&inst, muleSpeed); /* 2-Opt Local Search */
+      if (lso == "2-opt") {
+        pop.localSearch2Opt(&inst, muleSpeed); /* 2-Opt Local Search */
+      }
 
       //Updating previous best
       previousBest = bestSolution;
@@ -129,7 +135,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     //Updating fitness.
     for (int i = 0; i < popSize; ++i)
     {
-      if (pop.shouldCalcFitness(i))
+      if (pop.shouldCalcFitness(i) || (pop.getSingleChromosome(i).getFitness() == 0.0))
       {
         pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed, false));
       }
@@ -137,6 +143,8 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
     //Sorting by fitness.
     pop.sortByFitness();
+
+    pop.localSearch2Opt(&inst, muleSpeed); /* 2-Opt Local Search */
 
     time = clock() - time;
 
@@ -180,7 +188,8 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   cout << "\nInstance: " << instanceFileName << endl;
   cout << "Total executions: " << totalExecution << endl;
   cout << "\nMating: " << mating << endl;
-  cout << "Local search: " << ls << endl;
+  cout << "Mating local search: " << ls << endl;
+  cout << "Local search out: " << lso << endl;
   cout << "\nBest solution: " << setprecision(10) << overallBest << endl;
   cout << "Avg. solution: " << setprecision(10) << avgSol << endl;
   cout << "Avg. time: " << setprecision(10) << avgTime << endl;
