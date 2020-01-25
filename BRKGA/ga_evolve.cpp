@@ -100,20 +100,6 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       //Save best sol. thus far
       bestSolution = pop.getSingleChromosome(0).getFitness();
 
-      // cout << j << " " << setprecision(10) << bestSolution << "\n";
-      // cout << setprecision(10) << bestSolution << "\n";
-      // cout << j << "\n";
-
-      // if (bestSolution == previousBest) {
-      //   noImproveCount++;
-      //   if (noImproveCount > 9) {
-      //     rvndKmax += 2;
-      //   }
-      // } else {
-      //   noImproveCount = 0;
-      //   rvndKmax = 20;
-      // }
-
       //Introduce mutants.
       pop.introduceMutants(); /* Standard BRKGA mutation */
 
@@ -124,8 +110,11 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
         pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls, rvndKmax); /* Sequential Constructive Crossover */
       }
 
+      //Local Search on best solution
       if (lso == "2-opt") {
-        pop.localSearch2Opt(&inst, muleSpeed); /* 2-Opt Local Search */
+        if (j == 0 || bestSolution < previousBest) {
+          pop.localSearch2Opt(&inst, muleSpeed); /* 2-Opt Local Search */
+        }
       }
 
       //Updating previous best
