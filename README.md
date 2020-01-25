@@ -101,7 +101,21 @@ The solution is represented as an array of length at most *n* **+ 1** (number of
 [0, 1, 2, 3, 4, 0] // All sensors are used
 ```
 
-The attendence service ends with the mule returning to the base station, where it departed from. Thus, sensors appearing after the base station ID (always 0) in the solution are the ones that were not used in the solution.
+The attendance service ends with the mule returning to the base station, where it departed from. Thus, sensors appearing after the base station ID (always 0) in the solution are the ones that were not used in the solution.
+
+# Code
+
+Compilation
+
+```c++
+g++ brkga.cpp -o <out_binary>
+```
+
+Execution
+
+```c++
+<out_binary> #execs #max_iter #pop_size #local_search #mating_type #sensors #instance #out_ls
+```
 
 
 # References
