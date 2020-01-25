@@ -1,0 +1,8 @@
+set title "Exchanged Messages"
+set logscale x 2
+set xlabel "Iteration"
+set ylabel "Best solution"
+
+plot "400_60_rvnd_default_16_1.dat" using 2 title '#1' with lines, \
+"400_60_rvnd_default_16_1.dat" using 3 title '#2' with lines, \
+"400_60_rvnd_default_16_1.dat" using 4 title '#3' with lines
