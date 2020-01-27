@@ -70,7 +70,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     double previousBest = -1.0;
 
     int genWithoutImprov = 0;
-    int rvndKmax = 10;
+    int rvndKmax = 5;
 
     //Initializing the initial population.
     pop.initializePopulation(popSize, inst.getNumberOfOriginalNodes());

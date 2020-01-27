@@ -1491,10 +1491,10 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
       }
       // change neighborhood structure
       k = rand() % kmax;
-      while (k == lastk) {
-        k = rand() % kmax;
-      }
-      lastk = k;
+      // while (k == lastk) {
+      //   k = rand() % kmax;
+      // }
+      // lastk = k;
       i++;
     }
   }
