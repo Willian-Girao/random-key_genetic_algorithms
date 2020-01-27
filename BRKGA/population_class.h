@@ -60,7 +60,7 @@ class Population {
     void rvnd(int index, Instance *inst, double muleVelocity, int rvndMax);
     double twoOpt(SolutionStruct *x, Instance *inst, double muleVelocity, double curFit);
 
-    void localSearch2Opt(Instance *inst, double muleVelocity);
+    void localSearch2Opt(int index, Instance *inst, double muleVelocity);
     void rvndLocalSearch(int index, Instance *inst, double muleVelocity, int rvndMax);
     void removeByGain(int index, Instance *inst, double muleVelocity);
 

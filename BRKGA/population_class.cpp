@@ -827,8 +827,8 @@ void Population::mateIndividuals(Instance *inst, double muleVelocity, string ls,
 	// cin >> a;
 }
 
-void Population::localSearch2Opt(Instance *inst, double muleVelocity) {
-  SolutionStruct *xprime = inst->buildSolutionStructure(population[0].getChromosomeAsArray());
+void Population::localSearch2Opt(int index, Instance *inst, double muleVelocity) {
+  SolutionStruct *xprime = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
 
   // cout << "\nx  { ";
   // for (int j = 0; j < population[0].getLength(); j++) {
@@ -836,7 +836,7 @@ void Population::localSearch2Opt(Instance *inst, double muleVelocity) {
   // }
   // cout << " - " << population[0].getFitness() << endl;
 
-  double fx = population[0].getFitness();
+  double fx = population[index].getFitness();
   double fxprime = fx;
 
   fxprime = twoOpt(xprime, inst, muleVelocity, fxprime);
@@ -844,12 +844,12 @@ void Population::localSearch2Opt(Instance *inst, double muleVelocity) {
   if (fxprime < fx) {
     // cout << "\n> improment";
     // update genes
-    for (int y = 1; y < population[0].getLength(); y++) {
-      population[0].updateKey(xprime[y].node, xprime[y].key);
+    for (int y = 1; y < population[index].getLength(); y++) {
+      population[index].updateKey(xprime[y].node, xprime[y].key);
     }
     // update fitness
-    population[0].setFitness(fxprime);
-    population[0].resetEvaluateFlag();
+    population[index].setFitness(fxprime);
+    population[index].resetEvaluateFlag();
   }
 
   // SolutionStruct *v = inst->buildSolutionStructure(population[0].getChromosomeAsArray());

@@ -101,26 +101,25 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
       /*-------------------------- 2. mating --------------------------*/
       //Complete with offspring.
-      // if (mating == "default") {
-      //   pop.mateIndividuals(&inst, muleSpeed, ls, rvndKmax); /* BRKGA crossover (with local search - vnd/rvnd) */
-      // } else if (mating == "scc") {
-      //   pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls, rvndKmax); /* Sequential Constructive Crossover */
-      // }
-
-      // Uses the Sequential Constructive Crossover on the 1st quarter of the iterations, then the regular crossover.
-      if (j < floor(maxInt/4)) {
-        pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls, rvndKmax); /* Sequential Constructive Crossover */
-      } else {
+      if (mating == "default") {
         pop.mateIndividuals(&inst, muleSpeed, ls, rvndKmax); /* BRKGA crossover (with local search - vnd/rvnd) */
+      } else if (mating == "scc") {
+        pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls, rvndKmax); /* Sequential Constructive Crossover */
+      } else if (mating == "hybrid") {
+        // Uses the Sequential Constructive Crossover on the 1st quarter of the iterations, then the regular crossover.
+        if (j < floor(maxInt/4)) {
+          pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls, rvndKmax);
+        } else {
+          pop.mateIndividuals(&inst, muleSpeed, ls, rvndKmax);
+        }
       }
       /*------------------------------------------------------------*/
-
 
       /*-------------------------- 3. local search --------------------------*/
       //Local Search on best solution
       if (lso == "2-opt") {
         if (j == 0 || bestSolution < previousBest) {
-          pop.localSearch2Opt(&inst, muleSpeed); /* 2-Opt Local Search */
+          pop.localSearch2Opt(0, &inst, muleSpeed); /* 2-Opt Local Search */
         }
       }
       /*------------------------------------------------------------*/
@@ -155,7 +154,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     pop.sortByFitness();
 
     /* Local Search ONLY ON BEST SOLUTION */
-    pop.localSearch2Opt(&inst, muleSpeed);
+    pop.localSearch2Opt(0, &inst, muleSpeed);
     // pop.rvndLocalSearch(0, &inst, muleSpeed, 100);
     // pop.removeByGain(0, &inst, muleSpeed);
 
