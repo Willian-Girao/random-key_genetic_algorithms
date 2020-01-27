@@ -1454,7 +1454,7 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
   // cout << " - " << fx << endl;
 
   int i = 0;
-  while (i < 20)
+  while (i < rvndMax)
   {
     if (k == 0) {
       nShift(xprime, solLength);

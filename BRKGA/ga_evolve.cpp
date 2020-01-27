@@ -38,7 +38,6 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
   int executionsCount = 0;
   int noImproveCount = 0;
-  int rvndKmax = 20;
 
   bool firstExecution = true;
 
@@ -71,6 +70,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     double previousBest = -1.0;
 
     int genWithoutImprov = 0;
+    int rvndKmax = 10;
 
     //Initializing the initial population.
     pop.initializePopulation(popSize, inst.getNumberOfOriginalNodes());
@@ -93,13 +93,13 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
       //Save best sol. thus far
       bestSolution = pop.getSingleChromosome(0).getFitness();
-      // cout << setprecision(10) << bestSolution << endl;
 
+      /*-------------------------- 1. mutants --------------------------*/
       //Introduce mutants.
       pop.introduceMutants(); /* Standard BRKGA mutation */
+      /*------------------------------------------------------------*/
 
-      /*-------------------------- mating --------------------------*/
-
+      /*-------------------------- 2. mating --------------------------*/
       //Complete with offspring.
       // if (mating == "default") {
       //   pop.mateIndividuals(&inst, muleSpeed, ls, rvndKmax); /* BRKGA crossover (with local search - vnd/rvnd) */
@@ -115,12 +115,28 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       }
       /*------------------------------------------------------------*/
 
+
+      /*-------------------------- 3. local search --------------------------*/
       //Local Search on best solution
       if (lso == "2-opt") {
         if (j == 0 || bestSolution < previousBest) {
           pop.localSearch2Opt(&inst, muleSpeed); /* 2-Opt Local Search */
         }
       }
+      /*------------------------------------------------------------*/
+
+      /*-------------------------- 4. tracking stagnation --------------------------*/
+      if (j > 0 && bestSolution == previousBest) {
+        genWithoutImprov++;
+      } else {
+        genWithoutImprov = 0;
+      }
+
+      if (genWithoutImprov > 5) {
+        rvndKmax += 2;
+        genWithoutImprov = 0;
+      }
+      /*------------------------------------------------------------*/
 
       //Updating previous best
       previousBest = bestSolution;
@@ -190,5 +206,6 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   cout << "\nBest solution: " << setprecision(10) << overallBest << endl;
   cout << "Avg. solution: " << setprecision(10) << avgSol << endl;
   cout << "Avg. time: " << setprecision(10) << avgTime << endl;
+  // cout << "Iterations without improvement: " << genWithoutImprov << endl;
   // cout << "Invalid solutions : " << setprecision(2) << ((invalidCount*100.0) / totalCount) << "\% (" << invalidCount << ")";
 }
