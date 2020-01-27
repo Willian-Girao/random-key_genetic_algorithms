@@ -85,12 +85,6 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
         {
           pop.updateFitness(i, inst.evaluateSolution(pop.getSolutionAsArray(i), muleSpeed, false));
           pop.resetEvaluateFlag(i);
-
-          // if (inst.isInvalidSolution(pop.getFitness(i))) {
-          //   invalidCount++;
-          //   pop.fixInvalidSolution(&inst, i, muleSpeed);
-          // }
-          // totalCount++;
         }
       }
 
@@ -99,16 +93,27 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
       //Save best sol. thus far
       bestSolution = pop.getSingleChromosome(0).getFitness();
+      // cout << setprecision(10) << bestSolution << endl;
 
       //Introduce mutants.
       pop.introduceMutants(); /* Standard BRKGA mutation */
 
+      /*-------------------------- mating --------------------------*/
+
       //Complete with offspring.
-      if (mating == "default") {
-        pop.mateIndividuals(&inst, muleSpeed, ls, rvndKmax); /* BRKGA crossover (with local search - vnd/rvnd) */
-      } else if (mating == "scc") {
+      // if (mating == "default") {
+      //   pop.mateIndividuals(&inst, muleSpeed, ls, rvndKmax); /* BRKGA crossover (with local search - vnd/rvnd) */
+      // } else if (mating == "scc") {
+      //   pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls, rvndKmax); /* Sequential Constructive Crossover */
+      // }
+
+      // Uses the Sequential Constructive Crossover on the 1st quarter of the iterations, then the regular crossover.
+      if (j < floor(maxInt/4)) {
         pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls, rvndKmax); /* Sequential Constructive Crossover */
+      } else {
+        pop.mateIndividuals(&inst, muleSpeed, ls, rvndKmax); /* BRKGA crossover (with local search - vnd/rvnd) */
       }
+      /*------------------------------------------------------------*/
 
       //Local Search on best solution
       if (lso == "2-opt") {
@@ -133,7 +138,10 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
     //Sorting by fitness.
     pop.sortByFitness();
 
-    pop.localSearch2Opt(&inst, muleSpeed); /* 2-Opt Local Search */
+    /* Local Search ONLY ON BEST SOLUTION */
+    pop.localSearch2Opt(&inst, muleSpeed);
+    // pop.rvndLocalSearch(0, &inst, muleSpeed, 100);
+    // pop.removeByGain(0, &inst, muleSpeed);
 
     time = clock() - time;
 
