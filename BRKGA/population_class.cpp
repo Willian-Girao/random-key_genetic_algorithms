@@ -1437,11 +1437,7 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
   double fx = population[index].getFitness();
   double fxprime = fx;
 
-  // cout << "\n> rvnd " << rvndMax;
-  // // cin >> fx;
-
-  // int kmax = 4;
-  int kmax = 3;
+  int kmax = 4;
   int k = rand() % kmax;
   int lastk = k;
 
@@ -1451,9 +1447,10 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
   // for (int j = 0; j < solLength; j++) {
   //   cout << "[" << x[j].node << "]";
   // }
-  // cout << " - " << fx << endl;
+  // cout << " - " << setprecision(10) << fx << endl;
 
   int i = 0;
+  int startIndex = 0;
   while (i < rvndMax)
   {
     if (k == 0) {
@@ -1462,15 +1459,12 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
       nSwap(xprime, solLength);
     } else if (k == 2) {
       nSwap21(xprime, solLength);
+    } else if (k == 3) {
+      startIndex = getSmallestGainStartingVerticeIndex(index, inst, muleVelocity);
+      if (startIndex != 0) {
+        nRemove(xprime, solLength, startIndex);
+      }
     }
-
-    // else if (k == 3) {
-    //   fxprime = twoOpt(xprime, inst, muleVelocity, fxprime);
-    // }
-
-    // if (k != 3) {
-    //   fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
-    // }
 
     fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
 
@@ -1491,10 +1485,10 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
       }
       // change neighborhood structure
       k = rand() % kmax;
-      // while (k == lastk) {
-      //   k = rand() % kmax;
-      // }
-      // lastk = k;
+      while (k == lastk) {
+        k = rand() % kmax;
+      }
+      lastk = k;
       i++;
     }
   }
@@ -1507,18 +1501,21 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
     // update fitness
     population[index].setFitness(fx);
     population[index].resetEvaluateFlag();
-  }
 
-  // cout << "\n\n> validation\n";
-  // SolutionStruct *v = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
-  // cout << "\nc  { ";
-  // for (int j = 0; j < solLength; j++) {
-  //   cout << "[" << v[j].node << "]" << v[j].demand;
-  // }
-  // cout << " - " << population[index].getFitness() << endl;
-  //
-  // cout << "\n\n> paused";
-  // cin >> fx;
+    // cout << "\n\n> validation\n";
+    // SolutionStruct *v = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+    //
+    // cout << "\nc  { ";
+    // for (int j = 0; j < solLength; j++) {
+    //   cout << "[" << v[j].node << "]";
+    // }
+    // cout << " - " << setprecision(10) << inst->evalSolFromSolStructure(v, muleVelocity, false) << " (" << population[index].getFitness() << ")" << endl;
+    //
+    // // cout << "\n fitness : " << setprecision(10) << inst->evalSolFromSolStructure2(x, muleVelocity, false);
+    //
+    // cout << "\n\n> paused";
+    // cin >> fx;
+  }
 
   delete[] x;
   delete[] xprime;
@@ -1667,6 +1664,47 @@ void Population::removeByGain(int index, Instance *inst, double muleVelocity) {
   // cin >> fx;
 
   delete[] x;
+}
+
+int Population::getSmallestGainStartingVerticeIndex(int index, Instance *inst, double muleVelocity) {
+  SolutionStruct *x = inst->buildSolutionStructure(population[index].getChromosomeAsArray());
+
+  int solLength = population[index].getLength();
+  int sensorIndex = 0;
+
+  double gainTrack = -1.0;
+  double lastGainTrack = -1.0;
+
+  // cout << "\n";
+  // for (int j = 0; j < solLength; j++) {
+  //   cout << "[" << x[j].node << "]";
+  // }
+  // cout << " - " << setprecision(10) << population[index].getFitness() << endl;
+
+  for (int i = 1; i < solLength; i++) {
+    if (x[i+1].node == 0) {
+      break;
+    } else {
+      gainTrack = inst->getGainAB(x[i].node, x[i+1].node, muleVelocity);
+
+      // cout << "\n> pair [" << x[i].node << " , " << x[i+1].node << "] - " << setprecision(10) << gainTrack;
+
+      if (i == 1 || gainTrack < lastGainTrack) {
+        lastGainTrack = gainTrack;
+        sensorIndex = i;
+      }
+    }
+  }
+
+  // cout << "\n\nsmallest gain " << lastGainTrack;
+  // cout << "\nsensor index " << sensorIndex;
+  //
+  // cout << "\n\n> paused";
+  // cin >> solLength;
+
+  delete[] x;
+
+  return sensorIndex;
 }
 
 double Population::twoOpt(SolutionStruct *x, Instance *inst, double muleVelocity, double curFit) {

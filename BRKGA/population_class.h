@@ -63,6 +63,7 @@ class Population {
     void localSearch2Opt(int index, Instance *inst, double muleVelocity);
     void rvndLocalSearch(int index, Instance *inst, double muleVelocity, int rvndMax);
     void removeByGain(int index, Instance *inst, double muleVelocity);
+    int getSmallestGainStartingVerticeIndex(int index, Instance *inst, double muleVelocity);
 
   private:
     int size; /* Number of individuals within the population. */

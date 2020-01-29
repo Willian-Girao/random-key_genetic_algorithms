@@ -912,7 +912,7 @@ double Instance::evalSolFromSolStructure(SolutionStruct *solutionInput, double m
   double demandMet = 0.0;
   int sizeC = original_nodes_n + 1;
 
-  SolutionStruct *solution = new SolutionStruct[sizeC];;
+  SolutionStruct *solution = new SolutionStruct[sizeC];
 
   for (int i = 0; i < sizeC; ++i)
   {
@@ -993,6 +993,117 @@ double Instance::evalSolFromSolStructure(SolutionStruct *solutionInput, double m
   }
 
   double fit = (totalDistance / muleVelocity);
+
+  if ((total_demand - demandLeft) < total_demand) {
+    fit = numeric_limits<double>::max();
+  }
+
+  delete[] solution;
+
+  return fit;
+};
+
+double Instance::evalSolFromSolStructure2(SolutionStruct *solutionInput, double muleVelocity, bool skipDemandBreak) {
+  double totalDistance = 0.0;
+  double timeElapsedServing = 0.0;
+  double demandMet = 0.0;
+  int sizeC = original_nodes_n + 1;
+
+  SolutionStruct *solution = new SolutionStruct[sizeC];
+
+  for (int i = 0; i < sizeC; ++i)
+  {
+    SolutionStruct s;
+    s.node = solutionInput[i].node;
+    s.demand = solutionInput[i].demand;
+    s.key = solutionInput[i].key;
+
+    solution[i] = s;
+  }
+
+  cout << "\n\n==================================== EVALUATION ====================================";
+
+  for (int i = 0; i < sizeC; ++i)
+  {
+    if (i < (sizeC-1))
+    {
+      int nodeA = solution[i].node;
+      int nodeB = solution[i+1].node;
+      int aeBetween = getNumberOfAEBP(nodeA, nodeB);
+
+      // Acounting time to cross edge between main nodes under consideration.
+      totalDistance += getDistanceBP(nodeA, nodeB);
+
+      // cout << "\n\n>>> Pair : " << nodeA << " " << nodeB << " | # A.E.s : " << aeBetween << " | path length : " << getDistanceBP(nodeA, nodeB) << endl;
+      // cout << "\n\n>>> path length : " << getDistanceBP(nodeA, nodeB) << endl;
+
+      // Going through the artificial edges metadata ('j' is an artificial edge "id").
+      for (int j = (aeBetween-1); j >= 0; --j)
+      {
+        int countAux = 0;
+        int numNodesCanServe = getAENumberNodeCanBeServed(nodeA, nodeB, j);
+        double aeLength = getAELength(nodeA, nodeB, j);
+        double timeInJ = aeLength / muleVelocity;
+        double timeLeftInJ = timeInJ; //"Workble time" left while in 'j'.
+
+        // cout << "\n>> A.E. : " << j+1 << " | # reacheble sensors : " << numNodesCanServe << " | workable time : " << timeInJ << endl;
+
+        // Getting G's nodes that can be served in 'j'.
+        for (int k = 0; k < sizeC; ++k)
+        {
+          // Processing information regarding each node that can be served by 'j'.
+          if (canXbeServedInAE(nodeA, nodeB, j, solution[k].node) && (timeLeftInJ > 0) && (solution[k].demand > 0))
+          {
+            double timeRequired = solution[k].demand / getNodesTRate(solution[k].node);
+
+            // cout << "\n> Serving : " << solution[k].node << " | Demand : " << solution[k].demand << " | Required time : " << timeRequired << " | Time available : " << timeLeftInJ << endl;
+
+            if (timeRequired <= timeLeftInJ)
+            {
+              timeLeftInJ -= timeRequired;
+              timeElapsedServing += timeRequired;
+
+              solution[k].demand -= solution[k].demand;
+
+              if (solution[k].demand < 0)
+              {
+                cout << " - WARNING 2 -\n";
+              }
+            }
+          }
+        }
+        // Finished parsing artificial edge metadata.
+      }
+
+      // cout << "\n ***** ***** ***** ***** *****";
+    }
+
+    if (solution[i+1].node == 0)
+    {
+      break;
+    }
+  }
+
+  double demandLeft = 0.0;
+  for (int i = 1; i < sizeC; ++i)
+  {
+    demandLeft += solution[i].demand;
+
+    if (solution[i].demand < 0)
+    {
+      cout << " - WARNING 2 -\n";
+    }
+
+    if (solution[i].node == 0 && skipDemandBreak)
+    {
+      break;
+    }
+  }
+
+  double fit = (totalDistance / muleVelocity);
+
+  cout << "\n\ntotal distance : " << totalDistance;
+  cout << "\nmule velocity : " << muleVelocity << endl;
 
   if ((total_demand - demandLeft) < total_demand) {
     fit = numeric_limits<double>::max();

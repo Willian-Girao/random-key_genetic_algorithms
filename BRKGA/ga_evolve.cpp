@@ -120,6 +120,11 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       if (lso == "2-opt") {
         if (j == 0 || bestSolution < previousBest) {
           pop.localSearch2Opt(0, &inst, muleSpeed); /* 2-Opt Local Search */
+          pop.localSearch2Opt(5, &inst, muleSpeed); /* 2-Opt Local Search */
+          pop.localSearch2Opt(10, &inst, muleSpeed); /* 2-Opt Local Search */
+          pop.localSearch2Opt(15, &inst, muleSpeed); /* 2-Opt Local Search */
+          pop.localSearch2Opt(20, &inst, muleSpeed); /* 2-Opt Local Search */
+          pop.localSearch2Opt(25, &inst, muleSpeed); /* 2-Opt Local Search */
         }
       }
       /*------------------------------------------------------------*/

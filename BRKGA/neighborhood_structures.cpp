@@ -6,6 +6,14 @@
 
 using namespace std;
 
+// struct SolutionStruct { /* Structure used to evaluate the solution for the DMSP - Mr. Pablo's graph instance's structure based. */
+//     int node; //Node id.
+//     double key;
+//     double demand; //Node demand to be served.
+// };
+
+/*================================================================================*/
+
 /* Swap */
 void nSwap(SolutionStruct *solution, int solLength) {
 	solLength = solLength - 1;
@@ -43,7 +51,7 @@ void nShift(SolutionStruct *solution, int solLength) {
 	// cout << "\nshiffting: " << swapA  << " to pos. " << pos << endl;
 
 	int posAuxNode = solution[pos].node;
-	int posAuxDemand = solution[pos].demand;
+	double posAuxDemand = solution[pos].demand;
 
 	solution[pos].node = solution[swapA].node;
 	solution[pos].demand = solution[swapA].demand;
@@ -149,11 +157,38 @@ void nSwap21(SolutionStruct *solution, int solLength) {
 	}
 }
 
+void nRemove(SolutionStruct *solution, int solLength, int posPairRemove) {
+	// cout << "\n\n> Removing pair " << solution[posPairRemove].node  << " " << solution[posPairRemove+1].node << endl;
+
+	int aNode = solution[posPairRemove].node;
+	double aDemand = solution[posPairRemove].demand;
+
+	int bNode = solution[posPairRemove+1].node;
+	double bDemand = solution[posPairRemove+1].demand;
+
+	int posAux = posPairRemove;
+
+	for (int i = posPairRemove+2; i < solLength; i++) {
+		solution[posAux].node = solution[i].node;
+		solution[posAux].demand = solution[i].demand;
+
+		posAux++;
+	}
+
+	solution[solLength-2].node = aNode;
+	solution[solLength-2].demand = aDemand;
+
+	solution[solLength-1].node = bNode;
+	solution[solLength-1].demand = bDemand;
+}
+
+/*================================================================================*/
+
 void shiftFix(SolutionStruct *solution, int solLength, int swapA, int pos) {
 	solLength = solLength-1;
 
 	int posAuxNode = solution[pos].node;
-	int posAuxDemand = solution[pos].demand;
+	double posAuxDemand = solution[pos].demand;
 
 	solution[pos].node = solution[swapA].node;
 	solution[pos].demand = solution[swapA].demand;
@@ -257,9 +292,10 @@ SolutionStruct *twoOptLooop(SolutionStruct *solution, int solLength, int inputI,
 //     	cout << solution[i].node << " (" << solution[i].key << ") ";
 //     }
 //
-//     nShift(solution, 8);
+//     // nShift(solution, 8);
 //     // nSwap(solution, 8);
 //     // nSwap21(solution, 8);
+// 		nRemove(solution, 8, 6);
 //
 //     cout << "\n\n";
 //     for (int i = 0; i < 8; ++i)
