@@ -114,7 +114,7 @@ g++ brkga.cpp -o <out_binary>
 Execution
 
 ```c++
-<out_binary> #execs #max_iter #pop_size #local_search #mating_type #sensors #instance #out_ls
+<out_binary> #execs #max_iter #pop_size #mating_type #mating_ls #lso #sensors #instance
 ```
 
 

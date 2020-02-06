@@ -841,7 +841,7 @@ void Population::localSearch2Opt(int index, Instance *inst, double muleVelocity)
 
   fxprime = twoOpt(xprime, inst, muleVelocity, fxprime);
 
-  if (fxprime < fx) {
+  if ((fxprime < fx) || (fx == 0.0)) {
     // cout << "\n> improment";
     // update genes
     for (int y = 1; y < population[index].getLength(); y++) {
@@ -880,7 +880,7 @@ int Population::findAXFromA(SolutionStruct *solution, int a) {
   return next;
 }
 
-void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelocity, string ls, int rvndMax) {
+void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelocity, string ls, int rvndMax, string mating) {
 	int numMutants = floor((size / 4.0));
 	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
 
@@ -1204,6 +1204,13 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
     // cin >> hl;
 
     // local search
+    // if (mating != "hybrid") {
+    //   if (ls == "vnd") {
+    //     vnd(i, inst, muleVelocity);
+    //   } else if (ls == "rvnd") {
+    //     rvnd(i, inst, muleVelocity, rvndMax);
+    //   }
+    // }
     if (ls == "vnd") {
       vnd(i, inst, muleVelocity);
     } else if (ls == "rvnd") {
@@ -1345,9 +1352,10 @@ void Population::vnd(int index, Instance *inst, double muleVelocity) {
   // cin >> fx;
 
   int k = 0;
-  int kmax = 3;
+  int kmax = 4;
 
   int solLength = population[0].getLength();
+  int startIndex = 0;
 
   // cout << "x  { ";
   // for (int j = 0; j < solLength; j++) {
@@ -1363,11 +1371,16 @@ void Population::vnd(int index, Instance *inst, double muleVelocity) {
       nSwap(xprime, solLength);
     } else if (k == 2) {
       nSwap21(xprime, solLength);
+    } else if (k == 3) {
+      startIndex = getSmallestGainStartingVerticeIndex(index, inst, muleVelocity);
+      if (startIndex != 0) {
+        nRemove(xprime, solLength, startIndex);
+      }
     }
 
     fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
 
-    if (fxprime < fx) {
+    if ((fxprime < fx) || (fx == 0.0)) {
       // cout << "\n> Improvement ";
       // if (k == 0) {
       //   cout << "(shift)\n";
@@ -1468,7 +1481,7 @@ void Population::rvnd(int index, Instance *inst, double muleVelocity, int rvndMa
 
     fxprime = inst->evalSolFromSolStructure(xprime, muleVelocity, false);
 
-    if (fxprime < fx) {
+    if ((fxprime < fx) || (fx == 0.0)) {
       // update better fintness
       fx = fxprime;
       // update genes
