@@ -33,6 +33,9 @@ class Chromosome {
     void setEvaluateFlag(void); /* Resets 'evaluate' back to true */
     void updateKeysIndex(double key, int newIndex); /**/
     bool shouldCalcFitness(void);
+    void setTwoOptPerformedTrue(void);
+    void setTwoOptPerformedFalse(void);
+    bool getTwoOptPerformedFlag(void);
 
     /* Utillities */
     void printGenes(void); /* Prints the vector to the screen. */
@@ -45,6 +48,7 @@ class Chromosome {
     int length; /* Dimension of solution vector. */
     Hallele *genes; /* Raw array representing the solution. */
     bool mustEvaluate; /* Flags if the fitness value for the chromosome must be calculated */
+    bool twoOptPerformed;
     void updateGene(int i, double key); /* Updates the key 'i' of the vector with the value 'key'. */
     void updateKey(int node, double key); /*  */
     void updateGenesSCX(int sensor, double key); /* Updates the key 'i' of the vector with the value 'key'. */

@@ -143,6 +143,8 @@ void Chromosome::generateGenes(int chromosomeSize) {
   length = chromosomeSize + 1;
   genes = new Hallele[length];
 
+  twoOptPerformed = false;
+
   double lowestKey = 2.0;
   int lowestKeySensor = 0;
   int lowestKeyIndex = 0;
@@ -351,4 +353,16 @@ void Chromosome::updateKeysIndex(double key, int newIndex) {
       break;
     }
   }
+}
+
+void Chromosome::setTwoOptPerformedFalse(void) {
+  twoOptPerformed = false;
+}
+
+void Chromosome::setTwoOptPerformedTrue(void) {
+  twoOptPerformed = true;
+}
+
+bool Chromosome::getTwoOptPerformedFlag(void) {
+  return twoOptPerformed;
 }

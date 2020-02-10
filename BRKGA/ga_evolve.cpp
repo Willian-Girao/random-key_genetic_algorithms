@@ -28,7 +28,7 @@
 // 'maxInt': maximum number of iterations.
 // 'muleSpeed': speed utilized by the mule.
 // 'instanceFileName': name of the .txt file containing the graph instance.
-void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFileName, string timeFormat, bool debbug, int debbugLevel, int totalExecution, string mating, string lso, int lsoIncrement, string printBest) {
+void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFileName, string timeFormat, bool debbug, int debbugLevel, int totalExecution, string mating, string lso, int lsoIncrement, int twoOptIncrement, string printBest) {
   srand(time(0));
 
   double overallBest = -1.0;
@@ -60,6 +60,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
   int invalidCount = 0;
   int totalCount = 0;
+  int lastMutant = popSize - floor((popSize / 4.0));
 
   while(executionsCount < totalExecution)
   {
@@ -95,7 +96,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       bestSolution = pop.getSingleChromosome(0).getFitness();
 
       //Show best (yes/no)
-      if (printBest == "yes") {
+      if (printBest == "yes" && j < maxInt-1) {
         cout << setprecision(10) << bestSolution << endl;
       }
 
@@ -140,9 +141,18 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       /*-------------------------- 3.1 local search --------------------------*/
       if (j >= 60) {
         int eliteLs = 0;
-        for (int el = 0; el < 41; el++) {
-          pop.localSearch2Opt(eliteLs, &inst, muleSpeed); /* 2-Opt Local Search */
-          eliteLs += 4;
+        int updatedCounter = 0;
+
+        while (updatedCounter < 40 && eliteLs < lastMutant)
+        {
+          if (!pop.getTwoOptFlag(eliteLs))
+          {
+            pop.localSearch2Opt(eliteLs, &inst, muleSpeed); /* 2-Opt Local Search */
+            updatedCounter++;
+            eliteLs += twoOptIncrement;
+          } else {
+            eliteLs += 1;
+          }
         }
       }
       /*------------------------------------------------------------*/
@@ -155,21 +165,14 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
         rvndKmax = 5;
       }
 
-      // if (genWithoutImprov >= 5) {
-      //   rvndKmax += 5;
-      // }
-
       if (genWithoutImprov >= 5) {
-        if (j < 60) {
+        if (j < 60 && rvndKmax < 100) { //Depending only on local search 3.
           rvndKmax += 5;
-          if (rvndKmax > 60) {
-            rvndKmax = 20;
-          }
-        } else {
+        } else { //Stop steep increment - local search 3.1 kicks in
           if (j == 60) {
             rvndKmax = 0;
           }
-          if (rvndKmax < 25) {
+          if (rvndKmax < 40) { //Towards the end increment must be limited
             rvndKmax += 5;
           }
         }
@@ -210,6 +213,10 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
 
     //Updating average solution
     averageSol += pop.getSingleChromosome(0).getFitness();
+
+    if (printBest == "yes") {
+      cout << setprecision(10) << pop.getSingleChromosome(0).getFitness() << endl;
+    }
 
     //Executions/Experiments metrics
     if (firstExecution)

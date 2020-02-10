@@ -23,9 +23,10 @@ int main(int argc, char* argv[]) {
   // string ls = argv[5];
   string lso = argv[5];
   int lsoIncrement = stoi(argv[6]);
-  string sensors = argv[7];
-  string instance = argv[8];
-  string printBest = argv[9];
+  int twoOptIncrement = stoi(argv[7]);
+  string sensors = argv[8];
+  string instance = argv[9];
+  string printBest = argv[10];
 
   bool debbug = true;
 
@@ -34,7 +35,7 @@ int main(int argc, char* argv[]) {
   string instanceFileName = "./instances/bs-central/" + sensors + "/100-0/instance_dmsp_c_n" + sensors + "_r50_" + instance + ".dat.dat";
   string timeFormat = "s";
 
-  solveDMSP_RKGA(popSize, maxInt, muleSpeed, instanceFileName, timeFormat, debbug, debuggLevel, totalExecutions, mating, lso, lsoIncrement, printBest);
+  solveDMSP_RKGA(popSize, maxInt, muleSpeed, instanceFileName, timeFormat, debbug, debuggLevel, totalExecutions, mating, lso, lsoIncrement, twoOptIncrement, printBest);
 
   return 0;
 }

@@ -745,6 +745,7 @@ void Population::introduceMutants(void) {
 		population[index].resetChromosome();
 		// population[index].setFitness(0.0);
 		population[index].setEvaluateFlag();
+    population[index].setTwoOptPerformedFalse();
 
 		index--;
 		endIndex--;
@@ -785,6 +786,10 @@ double Population::getFitness(int index) {
 	return population[index].getFitness();
 }
 
+bool Population::getTwoOptFlag(int index) {
+	return population[index].getTwoOptPerformedFlag();
+}
+
 void Population::mateIndividuals(Instance *inst, double muleVelocity, int rvndMax) {
 	int numMutants = floor((size / 4.0));
 	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
@@ -814,6 +819,7 @@ void Population::mateIndividuals(Instance *inst, double muleVelocity, int rvndMa
 		population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
 		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
     population[i].resetEvaluateFlag();
+    population[i].setTwoOptPerformedFalse();
 	}
 
 	// int a;
@@ -845,15 +851,7 @@ void Population::localSearch2Opt(int index, Instance *inst, double muleVelocity)
     population[index].resetEvaluateFlag();
   }
 
-  // SolutionStruct *v = inst->buildSolutionStructure(population[0].getChromosomeAsArray());
-  // cout << "\nx' { ";
-  // for (int j = 0; j < population[0].getLength(); j++) {
-  //   cout << v[j].node << " (" << setprecision(2) << v[j].key << ") ";
-  // }
-  // cout << " - " << population[0].getFitness() << endl;
-  //
-  // cout << "\n\n> paused";
-  // cin >> fx;
+  population[index].setTwoOptPerformedTrue();
 
   delete[] xprime;
 }
@@ -908,26 +906,6 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
     child[0].node = 0;
     child[0].demand = 0.0;
     child[0].key = 0.0;
-
-    // cout << endl;
-    // cout << "[a] - ";
-    // for (int x = 0; x < solVecSize; x++) {
-    //   cout << a[x].node << " (" << a[x].key << ") ";
-    // }
-    // cout << " { " << population[parentAIndex].getFitness();
-    // cout << endl;
-    // cout << "[b] - ";
-    // for (int x = 0; x < solVecSize; x++) {
-    //   cout << b[x].node << " (" << b[x].key << ") ";
-    // }
-    // cout << " { " << population[parentBIndex].getFitness();
-    // cout << endl;
-    // cout << "[o] - ";
-    // for (int x = 0; x < solVecSize; x++) {
-    //   cout << o[x].node << " (" << o[x].key << ") ";
-    // }
-    // cout << " { " << population[parentBIndex].getFitness();
-    // cout << endl;
 
     // get final BS positions
     int aFBS = inst->findFinalBSIndex(a);
@@ -1183,27 +1161,7 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
     }
     population[i].setFitness(newFit);
     population[i].resetEvaluateFlag();
-
-
-    // SolutionStruct *l = inst->buildSolutionStructure(population[i].getChromosomeAsArray());
-    //
-    // cout << "[c] - ";
-    // for (int x = 0; x < solVecSize; x++) {
-    //   cout << l[x].node << " (" << l[x].key << ") ";
-    // }
-    // cout << " { " << population[i].getFitness() << endl;
-    //
-    // int hl = 0;
-    // cin >> hl;
-
-    // local search
-    // if (mating != "hybrid") {
-    //   if (ls == "vnd") {
-    //     vnd(i, inst, muleVelocity);
-    //   } else if (ls == "rvnd") {
-    //     rvnd(i, inst, muleVelocity, rvndMax);
-    //   }
-    // }
+    population[i].setTwoOptPerformedFalse();
 
     // freeing allocated memory
     delete[] a;
