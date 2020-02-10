@@ -28,7 +28,7 @@
 // 'maxInt': maximum number of iterations.
 // 'muleSpeed': speed utilized by the mule.
 // 'instanceFileName': name of the .txt file containing the graph instance.
-void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFileName, string timeFormat, bool debbug, int debbugLevel, int totalExecution, string ls, string mating, string lso, int lsoIncrement) {
+void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFileName, string timeFormat, bool debbug, int debbugLevel, int totalExecution, string mating, string lso, int lsoIncrement, string printBest) {
   srand(time(0));
 
   double overallBest = -1.0;
@@ -94,7 +94,10 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       //Save best sol. thus far
       bestSolution = pop.getSingleChromosome(0).getFitness();
 
-      // cout << setprecision(10) << bestSolution << endl;
+      //Show best (yes/no)
+      if (printBest == "yes") {
+        cout << setprecision(10) << bestSolution << endl;
+      }
 
       /*-------------------------- 1. mutants --------------------------*/
       //Introduce mutants.
@@ -104,15 +107,15 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       /*-------------------------- 2. mating --------------------------*/
       //Complete with offspring.
       if (mating == "default") {
-        pop.mateIndividuals(&inst, muleSpeed, ls, rvndKmax); /* BRKGA crossover (with local search - vnd/rvnd) */
+        pop.mateIndividuals(&inst, muleSpeed, rvndKmax); /* BRKGA crossover (with local search - vnd/rvnd) */
       } else if (mating == "scc") {
-        pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls, rvndKmax, mating); /* Sequential Constructive Crossover */
+        pop.sequentialConstructiveCrossover(&inst, muleSpeed, rvndKmax, mating); /* Sequential Constructive Crossover */
       } else if (mating == "hybrid") {
         // Uses the Sequential Constructive Crossover on the 1st quarter of the iterations, then the regular crossover.
         if (j < 5) {
-          pop.sequentialConstructiveCrossover(&inst, muleSpeed, ls, rvndKmax, mating);
+          pop.sequentialConstructiveCrossover(&inst, muleSpeed, rvndKmax, mating);
         } else {
-          pop.mateIndividuals(&inst, muleSpeed, ls, rvndKmax);
+          pop.mateIndividuals(&inst, muleSpeed, rvndKmax);
         }
       }
       /*------------------------------------------------------------*/
@@ -135,13 +138,11 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       /*------------------------------------------------------------*/
 
       /*-------------------------- 3.1 local search --------------------------*/
-      if (j >= 30) {
-        if ((bestSolution < previousBest) || (j == 30))
-        {
-          pop.localSearch2Opt(0, &inst, muleSpeed); /* 2-Opt Local Search */
-          pop.localSearch2Opt(4, &inst, muleSpeed); /* 2-Opt Local Search */
-          pop.localSearch2Opt(8, &inst, muleSpeed); /* 2-Opt Local Search */
-          pop.localSearch2Opt(12, &inst, muleSpeed); /* 2-Opt Local Search */
+      if (j >= 60) {
+        int eliteLs = 0;
+        for (int el = 0; el < 41; el++) {
+          pop.localSearch2Opt(eliteLs, &inst, muleSpeed); /* 2-Opt Local Search */
+          eliteLs += 4;
         }
       }
       /*------------------------------------------------------------*/
@@ -149,13 +150,29 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       /*-------------------------- 4. tracking stagnation --------------------------*/
       if (j > 0 && bestSolution == previousBest) {
         genWithoutImprov++;
-      } else {
+      } else if (bestSolution < previousBest) {
         genWithoutImprov = 0;
+        rvndKmax = 5;
       }
 
-      if (genWithoutImprov > 5) {
-        rvndKmax += 2;
-        genWithoutImprov = 0;
+      // if (genWithoutImprov >= 5) {
+      //   rvndKmax += 5;
+      // }
+
+      if (genWithoutImprov >= 5) {
+        if (j < 60) {
+          rvndKmax += 5;
+          if (rvndKmax > 60) {
+            rvndKmax = 20;
+          }
+        } else {
+          if (j == 60) {
+            rvndKmax = 0;
+          }
+          if (rvndKmax < 25) {
+            rvndKmax += 5;
+          }
+        }
       }
       /*------------------------------------------------------------*/
 
@@ -218,7 +235,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   cout << "\nInstance: " << instanceFileName << endl;
   cout << "Total executions: " << totalExecution << endl;
   cout << "\nMating: " << mating << endl;
-  cout << "Mating local search: " << ls << endl;
+  // cout << "Mating local search: " << ls << endl;
   cout << "Local search: " << lso << endl;
   cout << "\nBest solution: " << setprecision(10) << overallBest << endl;
   cout << "Avg. solution: " << setprecision(10) << avgSol << endl;

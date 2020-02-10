@@ -785,7 +785,7 @@ double Population::getFitness(int index) {
 	return population[index].getFitness();
 }
 
-void Population::mateIndividuals(Instance *inst, double muleVelocity, string ls, int rvndMax) {
+void Population::mateIndividuals(Instance *inst, double muleVelocity, int rvndMax) {
 	int numMutants = floor((size / 4.0));
 	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
 
@@ -814,13 +814,6 @@ void Population::mateIndividuals(Instance *inst, double muleVelocity, string ls,
 		population[i].setResetGenes(matePair(population[parentAIndex].getChromosomeAsArray(), population[parentAIndex].getFitness(), population[parentBIndex].getChromosomeAsArray(), population[parentBIndex].getFitness()));
 		population[i].setFitness(inst->evaluateSolution(population[i].getChromosomeAsArray(), muleVelocity, false));
     population[i].resetEvaluateFlag();
-
-    // local search
-    if (ls == "vnd") {
-      vnd(i, inst, muleVelocity);
-    } else if (ls == "rvnd") {
-      rvnd(i, inst, muleVelocity, rvndMax);
-    }
 	}
 
 	// int a;
@@ -880,7 +873,7 @@ int Population::findAXFromA(SolutionStruct *solution, int a) {
   return next;
 }
 
-void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelocity, string ls, int rvndMax, string mating) {
+void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelocity, int rvndMax, string mating) {
 	int numMutants = floor((size / 4.0));
 	int x = size - ceil((size / 2.0)) - floor((size / 4.0));
 
@@ -1211,11 +1204,6 @@ void Population::sequentialConstructiveCrossover(Instance *inst, double muleVelo
     //     rvnd(i, inst, muleVelocity, rvndMax);
     //   }
     // }
-    if (ls == "vnd") {
-      vnd(i, inst, muleVelocity);
-    } else if (ls == "rvnd") {
-      rvnd(i, inst, muleVelocity, rvndMax);
-    }
 
     // freeing allocated memory
     delete[] a;
