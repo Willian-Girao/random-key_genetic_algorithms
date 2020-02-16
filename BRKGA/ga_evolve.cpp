@@ -51,19 +51,18 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   //Calculating instance demand.
   inst.setTotalDemand();
 
-  // int pause = 0;
-  // inst.getGainAB(0, 3);
-  // cin >> pause;
-
   clock_t time;
-  time = clock();
 
   int invalidCount = 0;
   int totalCount = 0;
   int lastMutant = popSize - floor((popSize / 4.0));
+  int twoOptStartGen = 60;
 
   while(executionsCount < totalExecution)
   {
+    //Initializing matric variables
+    time = clock();
+
     //Initializing control varibles
     bool firstGen = true;
 
@@ -139,7 +138,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       /*------------------------------------------------------------*/
 
       /*-------------------------- 3.1 local search --------------------------*/
-      if (j >= 60) {
+      if (j >= twoOptStartGen) {
         int eliteLs = 0;
         int updatedCounter = 0;
 
@@ -166,16 +165,20 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       }
 
       if (genWithoutImprov >= 5) {
-        if (j < 60 && rvndKmax < 100) { //Depending only on local search 3.
+        if (j < twoOptStartGen && rvndKmax < 100) { //Depending only on local search 3.
           rvndKmax += 5;
         } else { //Stop steep increment - local search 3.1 kicks in
-          if (j == 60) {
+          if (j == twoOptStartGen) {
             rvndKmax = 0;
           }
           if (rvndKmax < 40) { //Towards the end increment must be limited
             rvndKmax += 5;
           }
         }
+      }
+
+      if (genWithoutImprov > 20) {
+        break;
       }
       /*------------------------------------------------------------*/
 
@@ -207,7 +210,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
       everageTime += elapsed;
     } else if (timeFormat == "s") {
       elapsed = (time * 1.0) / CLOCKS_PER_SEC;
-      // cout << "Execution time (s): " << elapsed << endl << endl << endl;
+      // cout << "Execution #" << executionsCount << " time: " << elapsed << endl;
       everageTime += elapsed;
     }
 
@@ -244,6 +247,7 @@ void solveDMSP_RKGA(int popSize, int maxInt, double muleSpeed, string instanceFi
   cout << "\nMating: " << mating << endl;
   // cout << "Mating local search: " << ls << endl;
   cout << "Local search: " << lso << endl;
+  cout << "2-Opt start generation: " << twoOptStartGen << endl;
   cout << "\nBest solution: " << setprecision(10) << overallBest << endl;
   cout << "Avg. solution: " << setprecision(10) << avgSol << endl;
   cout << "Avg. time: " << setprecision(10) << avgTime << endl;
